@@ -1,0 +1,540 @@
+import { useState, useEffect } from 'react';
+import * as React from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { 
+  Menu, X, ShoppingBag, Search, Sun, Moon, 
+  Instagram, Twitter, Facebook, Youtube,
+  Phone, Mail, MapPin, ChevronRight,
+  CreditCard, Smartphone, Heart, BarChart2, Trash2, Plus, Minus, Copy, Check, User as UserIcon, LogOut, Settings
+} from 'lucide-react';
+import { CartItem, Product, User } from '../types';
+
+interface LayoutProps {
+  children: React.ReactNode;
+  cart: CartItem[];
+  favorites: Product[];
+  comparisonList: Product[];
+  cartCount: number;
+  favCount: number;
+  compareCount: number;
+  cartTotal: number;
+  user: User | null;
+  isDarkMode: boolean;
+  setIsDarkMode: (val: boolean) => void;
+  setIsCartOpen: (val: boolean) => void;
+  isCartOpen: boolean;
+  isFavOpen: boolean;
+  setIsFavOpen: (val: boolean) => void;
+  setIsAuthModalOpen: (val: boolean) => void;
+  setAuthMode: (val: 'choice' | 'login' | 'register') => void;
+  removeFromCart: (id: number) => void;
+  removeFromFav: (id: number) => void;
+  addToCart: (p: Product) => void;
+  updateQuantity: (id: number, delta: number) => void;
+  onNavigate: (page: string) => void;
+  isNavSidebarOpen: boolean;
+  setIsNavSidebarOpen: (val: boolean) => void;
+  onLogout: () => void;
+}
+
+export default function Layout({ 
+  children, cart, favorites, comparisonList, cartCount, favCount, compareCount, cartTotal, user, isDarkMode, setIsDarkMode, 
+  setIsCartOpen, isCartOpen, isFavOpen, setIsFavOpen, setIsAuthModalOpen, setAuthMode, removeFromCart, removeFromFav, 
+  addToCart, updateQuantity, onNavigate, isNavSidebarOpen, setIsNavSidebarOpen, onLogout
+}: LayoutProps) {
+  const [selectedBank, setSelectedBank] = useState<string | null>(null);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      {/* --- Header --- */}
+      <header className="fixed top-0 left-0 right-0 z-50 glass-nav">
+        <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button onClick={() => setIsNavSidebarOpen(true)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+              <Menu size={24} />
+            </button>
+            <h1 
+              onClick={() => onNavigate('home')}
+              className="text-2xl font-display font-bold tracking-tighter text-blue-600 cursor-pointer"
+            >
+              GÜZEL TEKNOLOJİ
+            </h1>
+          </div>
+
+          <nav className="hidden lg:flex items-center gap-6 text-sm font-bold uppercase tracking-widest text-slate-500">
+            {[
+              { name: 'Ana Sayfa', id: 'home' },
+              { name: 'Markalar', id: 'brands' },
+              { name: 'Hakkımızda', id: 'hakkimizda' },
+              { name: 'İletişim', id: 'iletisim' },
+              { name: 'SSS', id: 'faq' }
+            ].map(item => (
+              <button 
+                key={item.id} 
+                onClick={() => onNavigate(item.id)}
+                className="hover:text-blue-600 transition-colors"
+              >
+                {item.name}
+              </button>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2 sm:gap-4">
+            <button 
+              className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-700 dark:text-slate-300"
+              onClick={() => setIsSearchOpen(true)}
+            >
+              <Search size={20} />
+            </button>
+            <button 
+              onClick={() => onNavigate('comparison')}
+              className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
+            >
+              <BarChart2 size={20} className="text-slate-700 dark:text-slate-300" />
+              {compareCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                  {compareCount}
+                </span>
+              )}
+            </button>
+            <button onClick={() => setIsFavOpen(true)} className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+              <Heart size={20} className="text-slate-700 dark:text-slate-300" />
+              {favCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                  {favCount}
+                </span>
+              )}
+            </button>
+            <div className="relative">
+              <button 
+                onClick={() => {
+                  if (user) {
+                    setIsUserMenuOpen(!isUserMenuOpen);
+                  } else {
+                    setAuthMode('choice');
+                    setIsAuthModalOpen(true);
+                  }
+                }} 
+                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg flex items-center gap-2"
+              >
+                <UserIcon size={20} className={user ? 'text-blue-600' : 'text-slate-700 dark:text-slate-300'} />
+                {user && <span className="hidden sm:inline text-xs font-bold text-slate-900 dark:text-white">{user.name.split(' ')[0]}</span>}
+              </button>
+              <AnimatePresence>
+                {isUserMenuOpen && user && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)} />
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 p-2 z-50"
+                    >
+                      <button 
+                        onClick={() => { onNavigate('my-account'); setIsUserMenuOpen(false); }}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-all"
+                      >
+                        <UserIcon size={18} /> Hesabım
+                      </button>
+                      <button 
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-all"
+                      >
+                        <Settings size={18} /> Ayarlar
+                      </button>
+                      <div className="h-px bg-slate-100 dark:bg-slate-800 my-2" />
+                      <button 
+                        onClick={() => { onLogout(); setIsUserMenuOpen(false); }}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                      >
+                        <LogOut size={18} /> Çıkış Yap
+                      </button>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+            <button onClick={() => setIsDarkMode(!isDarkMode)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+              {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-slate-700" />}
+            </button>
+            <button onClick={() => setIsCartOpen(true)} className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+              <ShoppingBag size={20} className="text-slate-700 dark:text-slate-300" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* --- Navigation Sidebar --- */}
+      <AnimatePresence>
+        {isNavSidebarOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsNavSidebarOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
+            />
+            <motion.div 
+              initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
+              className="fixed top-0 left-0 bottom-0 w-80 bg-white dark:bg-slate-950 z-[110] shadow-2xl p-8 flex flex-col"
+            >
+              <div className="flex justify-between items-center mb-12">
+                <h2 className="text-2xl font-display font-bold text-blue-600">MENÜ</h2>
+                <button onClick={() => setIsNavSidebarOpen(false)} className="text-slate-900 dark:text-white"><X size={28} /></button>
+              </div>
+              <nav className="space-y-6">
+                {[
+                  { name: 'Ana Sayfa', id: 'home' },
+                  { name: 'Markalar', id: 'brands' },
+                  { name: 'Hakkımızda', id: 'hakkimizda' },
+                  { name: 'İletişim', id: 'iletisim' },
+                  { name: 'SSS', id: 'faq' },
+                  { name: '404 Sayfası', id: '404' }
+                ].map((item) => (
+                  <button 
+                    key={item.id}
+                    onClick={() => {
+                      onNavigate(item.id);
+                      setIsNavSidebarOpen(false);
+                    }}
+                    className="w-full text-left text-2xl font-display font-bold text-slate-900 dark:text-white hover:text-blue-600 transition-colors flex justify-between items-center group"
+                  >
+                    {item.name} <ChevronRight size={24} className="text-slate-200 group-hover:text-blue-600 transition-colors" />
+                  </button>
+                ))}
+              </nav>
+              <div className="mt-auto pt-8 border-t border-slate-100 dark:border-slate-900">
+                <div className="flex gap-4">
+                  <Instagram size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer" />
+                  <Twitter size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer" />
+                  <Facebook size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer" />
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* --- Main Content --- */}
+      <main className="flex-1 pt-20">
+        {children}
+      </main>
+
+      {/* --- Footer --- */}
+      <footer className="bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900">
+        <div className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-4 gap-12 text-slate-900 dark:text-white">
+          <div>
+            <h4 className="font-display font-bold mb-6">İletişim Bilgileri</h4>
+            <ul className="space-y-4 text-sm text-slate-500 dark:text-slate-400">
+              <li className="flex items-start gap-3"><MapPin size={18} className="text-blue-600 shrink-0" /> Teknoloji Cad. No:123, İstanbul</li>
+              <li className="flex items-center gap-3"><Phone size={18} className="text-blue-600 shrink-0" /> 0850 123 45 67</li>
+              <li className="flex items-center gap-3"><Mail size={18} className="text-blue-600 shrink-0" /> destek@guzelteknoloji.com</li>
+            </ul>
+            <div className="flex gap-4 mt-6">
+              <Instagram size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
+              <Twitter size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
+              <Facebook size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
+              <Youtube size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
+            </div>
+          </div>
+          <div>
+            <h4 className="font-display font-bold mb-6">Sık Kullanılanlar</h4>
+            <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">Yeni Gelenler</li>
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">Çok Satanlar</li>
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">Kampanyalar</li>
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">Markalar</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-display font-bold mb-6">Sözleşmeler</h4>
+            <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">Mesafeli Satış Sözleşmesi</li>
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">İptal ve İade Koşulları</li>
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">Gizlilik Politikası</li>
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">KVKK Aydınlatma Metni</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-display font-bold mb-6">Bilgi/İletişim</h4>
+            <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+              <li onClick={() => onNavigate('hakkimizda')} className="hover:text-blue-600 cursor-pointer transition-colors">Hakkımızda</li>
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">Mağazalarımız</li>
+              <li className="hover:text-blue-600 cursor-pointer transition-colors">Kariyer</li>
+              <li onClick={() => onNavigate('iletisim')} className="hover:text-blue-600 cursor-pointer transition-colors">Bize Ulaşın</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* SATIŞ PLATFORMLARIMIZ Bantı */}
+        <div className="bg-slate-100 dark:bg-slate-900 py-6">
+          <div className="max-w-7xl mx-auto px-4">
+            <h5 className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4">SATIŞ PLATFORMLARIMIZ</h5>
+            <div className="flex flex-wrap justify-center items-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all">
+              <span className="font-bold text-lg">Hepsiburada</span>
+              <span className="font-bold text-lg">Trendyol</span>
+              <span className="font-bold text-lg">N11</span>
+              <span className="font-bold text-lg">Amazon</span>
+              <span className="font-bold text-lg">Çiçeksepeti</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Banka Hesapları Bölümü (Gradyanlı) */}
+        <div className="footer-gradient py-10 text-white">
+          <div className="max-w-7xl mx-auto px-4">
+            <h5 className="text-center text-sm font-bold uppercase tracking-widest mb-8">Banka Hesaplarımız</h5>
+            <div className="flex flex-wrap justify-center gap-4">
+              {['QNB Finansbank', 'Garanti BBVA', 'Akbank', 'İş Bankası', 'Ziraat Bankası'].map(bank => (
+                <button 
+                  key={bank} 
+                  onClick={() => setSelectedBank(bank)}
+                  className="px-8 py-3 bg-white/10 hover:bg-white/20 rounded-full text-xs font-bold transition-all border border-white/20 backdrop-blur-sm"
+                >
+                  {bank}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Alt Bilgi */}
+        <div className="bg-white dark:bg-slate-950 py-8 border-t border-slate-100 dark:border-slate-900">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-xs text-slate-400 font-medium">© 2024 GÜZEL TEKNOLOJİ. TÜM HAKLARI SAKLIDIR.</p>
+            <div className="flex gap-4">
+              <button className="flex items-center gap-2 px-5 py-2.5 bg-black text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-all shadow-lg">
+                <Smartphone size={16} /> App Store
+              </button>
+              <button className="flex items-center gap-2 px-5 py-2.5 bg-black text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-all shadow-lg">
+                <CreditCard size={16} /> Google Play
+              </button>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* --- Search Overlay --- */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl z-[300] p-8"
+          >
+            <div className="max-w-4xl mx-auto">
+              <div className="flex justify-end mb-20">
+                <button onClick={() => setIsSearchOpen(false)} className="p-4 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all">
+                  <X size={32} />
+                </button>
+              </div>
+              <div className="relative">
+                <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-blue-600" size={48} />
+                <input 
+                  autoFocus
+                  type="text" 
+                  placeholder="Ürün, marka veya kategori ara..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-transparent border-b-4 border-slate-100 dark:border-slate-800 py-8 pl-20 text-4xl md:text-6xl font-display font-bold outline-none focus:border-blue-600 transition-all text-slate-900 dark:text-white"
+                />
+              </div>
+              <div className="mt-12 space-y-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Popüler Aramalar</p>
+                <div className="flex flex-wrap gap-3">
+                  {['iPhone 15', 'MacBook Pro', 'PlayStation 5', 'Sony WH-1000XM5', 'DJI Mini'].map(tag => (
+                    <button key={tag} className="px-6 py-3 bg-slate-100 dark:bg-slate-900 rounded-2xl text-sm font-bold hover:bg-blue-600 hover:text-white transition-all">
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* --- Cart Drawer --- */}
+      <AnimatePresence>
+        {isCartOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsCartOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[150]"
+            />
+            <motion.div 
+              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+              className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white dark:bg-slate-950 z-[160] shadow-2xl flex flex-col"
+            >
+              <div className="p-6 border-b border-slate-100 dark:border-slate-900 flex justify-between items-center">
+                <h2 className="text-xl font-display font-bold text-slate-900 dark:text-white">Sepetim ({cartCount})</h2>
+                <button onClick={() => setIsCartOpen(false)} className="text-slate-900 dark:text-white"><X size={24} /></button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                {cart.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-slate-400">
+                    <ShoppingBag size={64} className="mb-4 opacity-20" />
+                    <p>Sepetiniz henüz boş.</p>
+                  </div>
+                ) : (
+                  cart.map(item => (
+                    <div key={item.id} className="flex gap-4">
+                      <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-lg" />
+                      <div className="flex-1">
+                        <h4 className="font-medium text-sm text-slate-900 dark:text-white">{item.name}</h4>
+                        <p className="text-blue-600 font-bold text-sm">{item.price.toLocaleString('tr-TR')} TL</p>
+                        <div className="flex items-center gap-3 mt-2">
+                          <button onClick={() => updateQuantity(item.id, -1)} className="w-6 h-6 border border-slate-200 dark:border-slate-800 rounded flex items-center justify-center text-slate-900 dark:text-white">-</button>
+                          <span className="text-xs text-slate-900 dark:text-white">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.id, 1)} className="w-6 h-6 border border-slate-200 dark:border-slate-800 rounded flex items-center justify-center text-slate-900 dark:text-white">+</button>
+                          <button onClick={() => removeFromCart(item.id)} className="ml-auto text-red-500 text-xs">Kaldır</button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+              {cart.length > 0 && (
+                <div className="p-6 border-t border-slate-100 dark:border-slate-900">
+                  <div className="flex justify-between font-bold mb-4 text-slate-900 dark:text-white">
+                    <span>Toplam</span>
+                    <span>{cartTotal.toLocaleString('tr-TR')} TL</span>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      onNavigate('checkout');
+                      setIsCartOpen(false);
+                    }}
+                    className="btn-primary w-full"
+                  >
+                    Ödemeye Geç
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* --- Favorites Drawer --- */}
+      <AnimatePresence>
+        {isFavOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsFavOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[150]"
+            />
+            <motion.div 
+              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+              className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white dark:bg-slate-950 z-[160] shadow-2xl flex flex-col"
+            >
+              <div className="p-6 border-b border-slate-100 dark:border-slate-900 flex justify-between items-center">
+                <h2 className="text-xl font-display font-bold text-red-500 flex items-center gap-2">
+                  <Heart size={24} fill="currentColor" /> Favorilerim ({favCount})
+                </h2>
+                <button onClick={() => setIsFavOpen(false)} className="text-slate-900 dark:text-white"><X size={24} /></button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                {favorites.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-slate-400">
+                    <Heart size={64} className="mb-4 opacity-20" />
+                    <p>Henüz favori ürününüz yok.</p>
+                  </div>
+                ) : (
+                  favorites.map(item => (
+                    <div key={item.id} className="flex gap-4">
+                      <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-lg" />
+                      <div className="flex-1">
+                        <h4 className="font-medium text-sm text-slate-900 dark:text-white">{item.name}</h4>
+                        <p className="text-blue-600 font-bold text-sm">{item.price.toLocaleString('tr-TR')} TL</p>
+                        <div className="flex items-center gap-3 mt-4">
+                          <button 
+                            onClick={() => {
+                              addToCart(item);
+                              removeFromFav(item.id);
+                            }}
+                            className="text-xs font-bold text-blue-600 hover:underline"
+                          >
+                            Sepete Ekle
+                          </button>
+                          <button 
+                            onClick={() => removeFromFav(item.id)}
+                            className="ml-auto text-slate-400 hover:text-red-500 transition-colors"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* --- Bank Modal --- */}
+      <AnimatePresence>
+        {selectedBank && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setSelectedBank(null)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-md z-[200]"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-slate-900 z-[210] shadow-2xl rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800"
+            >
+              <div className="flex justify-between items-center mb-8">
+                <div className="space-y-1">
+                  <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white">{selectedBank}</h3>
+                  <p className="text-xs font-bold text-blue-600 uppercase tracking-widest">Hesap Bilgileri</p>
+                </div>
+                <button onClick={() => setSelectedBank(null)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"><X size={24} /></button>
+              </div>
+
+              <div className="space-y-6">
+                <div className="p-6 bg-slate-50 dark:bg-slate-950 rounded-3xl border border-slate-100 dark:border-slate-800 space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Alıcı Adı</label>
+                    <p className="font-bold text-slate-900 dark:text-white">ERCAN GÜZEL</p>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">IBAN</label>
+                    <div className="flex items-center justify-between gap-4">
+                      <p className="font-mono text-sm font-bold text-blue-600 break-all">TR00 0000 0000 0000 0000 0000 00</p>
+                      <button 
+                        onClick={() => copyToClipboard('TR00 0000 0000 0000 0000 0000 00')}
+                        className="p-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all shrink-0"
+                      >
+                        {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} className="text-slate-400" />}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-400 text-center leading-relaxed">Ödeme yaparken açıklama kısmına sipariş numaranızı yazmayı unutmayınız.</p>
+                <button onClick={() => setSelectedBank(null)} className="btn-primary w-full py-5">Kapat</button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

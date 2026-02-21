@@ -1,0 +1,590 @@
+import { Product, FAQItem } from './types';
+
+export const PRODUCTS: Product[] = [
+  {
+    id: 1,
+    name: "MacBook Pro M3 Max",
+    brand: "Apple",
+    category: "Bilgisayar",
+    price: 124999,
+    oldPrice: 139999,
+    image: "https://picsum.photos/seed/macbookpro/800/800",
+    description: "En zorlu iş akışları için tasarlanmış, sınırları zorlayan performans.",
+    features: ["M3 Max Çip", "32GB Birleşik Bellek", "1TB SSD", "16 inç Liquid Retina XDR"],
+    specs: {
+      "İşlemci": "Apple M3 Max (14 çekirdekli CPU)",
+      "Grafik": "30 çekirdekli GPU",
+      "Bellek": "32GB Birleşik Bellek",
+      "Depolama": "1TB SSD",
+      "Ekran": "16.2 inç Liquid Retina XDR (3456 x 2234)",
+      "Pil": "22 saate kadar video oynatma"
+    },
+    color: "Uzay Grisi",
+    inStock: true,
+    rating: 5,
+    badge: 'En Çok Satan'
+  },
+  {
+    id: 2,
+    name: "iPhone 15 Pro Max",
+    brand: "Apple",
+    category: "Telefon",
+    price: 82999,
+    image: "https://picsum.photos/seed/iphone15/800/800",
+    description: "Titanyum tasarım, A17 Pro çip ve şimdiye kadarki en gelişmiş kamera sistemi.",
+    features: ["A17 Pro Çip", "48MP Ana Kamera", "5x Optik Zoom", "USB-C"],
+    specs: {
+      "Ekran": "6.7 inç Super Retina XDR OLED",
+      "İşlemci": "A17 Pro",
+      "Kamera": "48MP Ana + 12MP Ultra Geniş + 12MP Telefoto",
+      "Güvenlik": "Face ID",
+      "Suya Dayanıklılık": "IP68 (30 dakikaya kadar 6 metre derinlik)"
+    },
+    color: "Naturel Titanyum",
+    inStock: true,
+    rating: 4.9,
+    badge: 'Trend'
+  },
+  {
+    id: 3,
+    name: "Sony WH-1000XM5",
+    brand: "Sony",
+    category: "Ses",
+    price: 13499,
+    oldPrice: 15999,
+    image: "https://picsum.photos/seed/sonyheadphones/800/800",
+    description: "Gürültü engelleme teknolojisinde yeni bir standart.",
+    features: ["Sektör Lideri ANC", "30 Saat Pil Ömrü", "Hızlı Şarj", "Kristal Netliğinde Aramalar"],
+    specs: {
+      "Sürücü Ünitesi": "30 mm",
+      "Frekans Tepkisi": "4 Hz - 40.000 Hz",
+      "Bluetooth": "Sürüm 5.2",
+      "Ağırlık": "250g"
+    },
+    color: "Siyah",
+    inStock: true,
+    rating: 4.8,
+    badge: 'İndirim'
+  },
+  {
+    id: 4,
+    name: "Samsung Galaxy Watch 6 Classic",
+    brand: "Samsung",
+    category: "Giyilebilir",
+    price: 8999,
+    image: "https://picsum.photos/seed/galaxywatch/800/800",
+    description: "Zamansız tasarım, gelişmiş sağlık takibi ve döner çerçeve.",
+    features: ["Döner Çerçeve", "Safir Kristal Cam", "EKG ve Tansiyon Takibi", "Uyku Koçluğu"],
+    specs: {
+      "Ekran": "1.5 inç Super AMOLED",
+      "İşlemci": "Exynos W930",
+      "Pil": "425 mAh",
+      "Dayanıklılık": "5ATM + IP68 / MIL-STD-810H"
+    },
+    color: "Gümüş",
+    inStock: false,
+    rating: 4.5
+  },
+  {
+    id: 5,
+    name: "Logitech MX Master 3S",
+    brand: "Logitech",
+    category: "Aksesuar",
+    price: 3999,
+    image: "https://picsum.photos/seed/mxmaster/800/800",
+    description: "Hız, hassasiyet ve sessizlik için tasarlanmış ikonik mouse.",
+    features: ["8K DPI Sensör", "MagSpeed Kaydırma", "Sessiz Tıklama", "Ergonomik Tasarım"],
+    specs: {
+      "Sensör": "Darkfield yüksek hassasiyet",
+      "Buton Sayısı": "7",
+      "Bağlantı": "Bluetooth + Logi Bolt",
+      "Şarj": "USB-C (70 güne kadar kullanım)"
+    },
+    color: "Grafit",
+    inStock: true,
+    rating: 4.7
+  },
+  {
+    id: 6,
+    name: "Asus ROG Zephyrus G14",
+    brand: "Asus",
+    category: "Bilgisayar",
+    price: 64999,
+    oldPrice: 74999,
+    image: "https://picsum.photos/seed/rogzephyrus/800/800",
+    description: "Dünyanın en güçlü 14 inç oyun dizüstü bilgisayarı.",
+    features: ["Ryzen 9 İşlemci", "RTX 4060 GPU", "165Hz Nebula Ekran", "AniMe Matrix"],
+    specs: {
+      "İşlemci": "AMD Ryzen 9 7940HS",
+      "Ekran Kartı": "NVIDIA GeForce RTX 4060 8GB",
+      "Ekran": "14 inç QHD+ 165Hz",
+      "Ağırlık": "1.65 kg"
+    },
+    color: "Beyaz",
+    inStock: true,
+    rating: 4.9,
+    badge: 'İndirim'
+  },
+  {
+    id: 7,
+    name: "Samsung Galaxy S24 Ultra",
+    brand: "Samsung",
+    category: "Telefon",
+    price: 69999,
+    image: "https://picsum.photos/seed/s24ultra/800/800",
+    description: "Galaxy AI ile yapay zeka çağına adım atın.",
+    features: ["Snapdragon 8 Gen 3", "200MP Kamera", "Titanyum Kasa", "S Pen"],
+    specs: {
+      "Ekran": "6.8 inç Dynamic AMOLED 2X",
+      "İşlemci": "Snapdragon 8 Gen 3",
+      "Kamera": "200MP + 50MP + 12MP + 10MP",
+      "Pil": "5000 mAh"
+    },
+    color: "Titanyum Siyah",
+    inStock: true,
+    rating: 4.9,
+    badge: 'Trend'
+  },
+  {
+    id: 8,
+    name: "iPad Pro 12.9 M2",
+    brand: "Apple",
+    category: "Bilgisayar",
+    price: 45999,
+    image: "https://picsum.photos/seed/ipadpro/800/800",
+    description: "İnanılmaz performans ve gelişmiş ekran teknolojisi.",
+    features: ["M2 Çip", "Liquid Retina XDR", "ProRes Video", "Apple Pencil Desteği"],
+    specs: {
+      "Ekran": "12.9 inç mini-LED",
+      "İşlemci": "Apple M2",
+      "Bellek": "8GB / 16GB",
+      "Bağlantı": "Thunderbolt / USB 4"
+    },
+    color: "Gümüş",
+    inStock: true,
+    rating: 4.8
+  },
+  {
+    id: 9,
+    name: "AirPods Max",
+    brand: "Apple",
+    category: "Ses",
+    price: 24999,
+    image: "https://picsum.photos/seed/airpodsmax/800/800",
+    description: "Yüksek ses kalitesi ile kullanım kolaylığı arasındaki mükemmel denge.",
+    features: ["Aktif Gürültü Engelleme", "Şeffaf Mod", "Uzamsal Ses", "20 Saat Pil Ömrü"],
+    specs: {
+      "Sürücü": "Dinamik Sürücü",
+      "Mikrofon": "9 adet",
+      "Sensörler": "Optik, Konum, İvmeölçer",
+      "Ağırlık": "384g"
+    },
+    color: "Gök Mavisi",
+    inStock: true,
+    rating: 4.7
+  },
+  {
+    id: 10,
+    name: "PlayStation 5 Slim",
+    brand: "Sony",
+    category: "Bilgisayar",
+    price: 19999,
+    image: "https://picsum.photos/seed/ps5/800/800",
+    description: "Oyunun sınırlarını zorlayan yeni nesil konsol.",
+    features: ["Ultra Hızlı SSD", "Ray Tracing", "4K 120FPS", "DualSense Desteği"],
+    specs: {
+      "İşlemci": "AMD Ryzen Zen 2",
+      "Grafik": "AMD Radeon RDNA 2",
+      "Depolama": "1TB SSD",
+      "Sürücü": "Ultra HD Blu-ray"
+    },
+    color: "Beyaz",
+    inStock: true,
+    rating: 4.9,
+    badge: 'En Çok Satan'
+  },
+  {
+    id: 11,
+    name: "Nintendo Switch OLED",
+    brand: "Nintendo",
+    category: "Bilgisayar",
+    price: 12999,
+    image: "https://picsum.photos/seed/nintendo/800/800",
+    description: "Canlı OLED ekran ile her yerde oyun keyfi.",
+    features: ["7 inç OLED Ekran", "Geniş Ayarlanabilir Stand", "Kablolu LAN Portu", "64GB Depolama"],
+    specs: {
+      "Ekran": "7 inç OLED (1280x720)",
+      "Depolama": "64GB",
+      "Pil Ömrü": "4.5 - 9 saat",
+      "Ağırlık": "320g"
+    },
+    color: "Neon",
+    inStock: true,
+    rating: 4.6
+  },
+  {
+    id: 12,
+    name: "DJI Mini 4 Pro",
+    brand: "DJI",
+    category: "Aksesuar",
+    price: 34999,
+    image: "https://picsum.photos/seed/dji/800/800",
+    description: "Avucunuzun içindeki profesyonel kamera.",
+    features: ["4K/60fps HDR", "Dikey Çekim", "Engel Algılama", "34 Dakika Uçuş"],
+    specs: {
+      "Ağırlık": "249g",
+      "Kamera": "1/1.3 inç CMOS",
+      "Menzil": "20 km",
+      "Hız": "16 m/s"
+    },
+    color: "Gri",
+    inStock: true,
+    rating: 4.9,
+    badge: 'Trend'
+  },
+  {
+    id: 13,
+    name: "Apple Watch Ultra 2",
+    brand: "Apple",
+    category: "Giyilebilir",
+    price: 39999,
+    image: "https://picsum.photos/seed/watchultra/800/800",
+    description: "En zorlu sporcular ve maceracılar için tasarlanmış en yetenekli saat.",
+    features: ["S9 SiP", "3000 Nit Ekran", "Hassas Çift Frekanslı GPS", "72 Saat Pil"],
+    specs: { "Ekran": "49mm Safir Kristal", "Parlaklık": "3000 Nit", "Suya Dayanıklılık": "100m", "Kasa": "Havacılık Sınıfı Titanyum" },
+    color: "Titanyum",
+    inStock: true,
+    rating: 4.9,
+    badge: 'Trend'
+  },
+  {
+    id: 14,
+    name: "Dell XPS 15",
+    brand: "Dell",
+    category: "Bilgisayar",
+    price: 89999,
+    image: "https://picsum.photos/seed/dellxps/800/800",
+    description: "Performans ve taşınabilirliğin mükemmel dengesi.",
+    features: ["i9 İşlemci", "RTX 4070", "OLED Dokunmatik Ekran", "CNC Alüminyum"],
+    specs: { "İşlemci": "Intel Core i9-13900H", "Ekran": "15.6 inç 3.5K OLED", "Bellek": "32GB DDR5", "Depolama": "1TB SSD" },
+    color: "Platin Gümüş",
+    inStock: true,
+    rating: 4.7
+  },
+  {
+    id: 15,
+    name: "Sony Alpha a7 IV",
+    brand: "Sony",
+    category: "Aksesuar",
+    price: 74999,
+    image: "https://picsum.photos/seed/sonya7iv/800/800",
+    description: "Yeni nesil hibrit aynasız kamera.",
+    features: ["33MP Full Frame Sensör", "4K 60p Video", "Gerçek Zamanlı Takip", "Gelişmiş AF"],
+    specs: { "Sensör": "Exmor R CMOS", "ISO": "50 - 204.800", "Video": "10-bit 4:2:2", "Ekran": "Değişken Açılı Dokunmatik" },
+    color: "Siyah",
+    inStock: true,
+    rating: 4.9,
+    badge: 'En Çok Satan'
+  },
+  {
+    id: 16,
+    name: "Keychron Q1 Pro",
+    brand: "Keychron",
+    category: "Aksesuar",
+    price: 6499,
+    image: "https://picsum.photos/seed/keychron/800/800",
+    description: "Tamamen özelleştirilebilir kablosuz mekanik klavye.",
+    features: ["Alüminyum Kasa", "QMK/VIA Desteği", "Gateron Jupiter Switch", "RGB Aydınlatma"],
+    specs: { "Bağlantı": "Bluetooth 5.1 + Kablolu", "Polling Rate": "1000Hz", "Pil": "4000mAh", "Ağırlık": "1.7kg" },
+    color: "Karbon Siyahı",
+    inStock: true,
+    rating: 4.8
+  },
+  {
+    id: 17,
+    name: "Samsung Galaxy Tab S9 Ultra",
+    brand: "Samsung",
+    category: "Bilgisayar",
+    price: 32999,
+    image: "https://picsum.photos/seed/tabs9/800/800",
+    description: "En büyük ve en güçlü Galaxy tablet.",
+    features: ["14.6 inç AMOLED", "Snapdragon 8 Gen 2", "IP68 Dayanıklılık", "S Pen Dahil"],
+    specs: { "Ekran": "14.6 inç 120Hz", "İşlemci": "Snapdragon 8 Gen 2", "Pil": "11.200 mAh", "Kalınlık": "5.5 mm" },
+    color: "Bej",
+    inStock: true,
+    rating: 4.8
+  },
+  {
+    id: 18,
+    name: "Bose QuietComfort Ultra",
+    brand: "Bose",
+    category: "Ses",
+    price: 15999,
+    image: "https://picsum.photos/seed/boseqc/800/800",
+    description: "Dünyanın en iyi gürültü engelleme performansı.",
+    features: ["CustomTune Teknolojisi", "Sürükleyici Ses", "24 Saat Pil", "Üstün Konfor"],
+    specs: { "Bluetooth": "5.3", "Codec": "aptX Adaptive", "Şarj": "USB-C", "Mikrofon": "Gürültü Reddetme" },
+    color: "Kumtaşı",
+    inStock: true,
+    rating: 4.9,
+    badge: 'Trend'
+  },
+  {
+    id: 19,
+    name: "Razer DeathAdder V3 Pro",
+    brand: "Razer",
+    category: "Aksesuar",
+    price: 4999,
+    image: "https://picsum.photos/seed/razer/800/800",
+    description: "Profesyoneller için ultra hafif kablosuz mouse.",
+    features: ["63g Ultra Hafif", "Focus Pro 30K Sensör", "90M Tıklama Ömrü", "90 Saat Pil"],
+    specs: { "Sensör": "Optik 30.000 DPI", "Hızlanma": "70G", "Bağlantı": "HyperSpeed Wireless", "Ağırlık": "63g" },
+    color: "Beyaz",
+    inStock: true,
+    rating: 4.8
+  },
+  {
+    id: 20,
+    name: "Google Pixel 8 Pro",
+    brand: "Google",
+    category: "Telefon",
+    price: 42999,
+    image: "https://picsum.photos/seed/pixel8/800/800",
+    description: "Google'ın şimdiye kadarki en akıllı telefonu.",
+    features: ["Google Tensor G3", "Gelişmiş AI Kamera", "7 Yıl Güncelleme Sözü", "Sıcaklık Sensörü"],
+    specs: { "Ekran": "6.7 inç LTPO OLED", "İşlemci": "Tensor G3", "Kamera": "50MP + 48MP + 48MP", "Güvenlik": "Titan M2" },
+    color: "Porselen",
+    inStock: true,
+    rating: 4.6
+  },
+  {
+    id: 21,
+    name: "SteelSeries Arctis Nova Pro",
+    brand: "SteelSeries",
+    category: "Ses",
+    price: 11999,
+    image: "https://picsum.photos/seed/steelseries/800/800",
+    description: "Oyun sesinde yeni bir zirve.",
+    features: ["Hi-Res Audio", "Aktif Gürültü Engelleme", "Çift Batarya Sistemi", "GameDAC Gen 2"],
+    specs: { "Sürücü": "40mm Neodimyum", "Frekans": "10 - 40.000 Hz", "Bağlantı": "2.4GHz + Bluetooth", "Uyumluluk": "PC, PS5, Switch" },
+    color: "Siyah",
+    inStock: true,
+    rating: 4.7
+  },
+  {
+    id: 22,
+    name: "MSI GeForce RTX 4090",
+    brand: "MSI",
+    category: "Aksesuar",
+    price: 84999,
+    image: "https://picsum.photos/seed/rtx4090/800/800",
+    description: "Nihai grafik performansı.",
+    features: ["24GB GDDR6X", "Ada Lovelace Mimarisi", "DLSS 3 Desteği", "Suprim X Soğutma"],
+    specs: { "Bellek": "24GB", "Bus": "384-bit", "Saat Hızı": "2625 MHz", "Güç": "450W" },
+    color: "Gümüş/Gri",
+    inStock: true,
+    rating: 5,
+    badge: 'Trend'
+  },
+  {
+    id: 23,
+    name: "Garmin Fenix 7X Pro",
+    brand: "Garmin",
+    category: "Giyilebilir",
+    price: 34999,
+    image: "https://picsum.photos/seed/garmin/800/800",
+    description: "Güneş enerjili multisport GPS saati.",
+    features: ["Solar Şarj", "Dahili El Feneri", "Topografik Haritalar", "Gelişmiş Antrenman Metrikleri"],
+    specs: { "Ekran": "1.4 inç Solar", "Pil": "37 güne kadar", "Su Geçirmezlik": "10 ATM", "Bellek": "32GB" },
+    color: "Siyah",
+    inStock: true,
+    rating: 4.9
+  },
+  {
+    id: 24,
+    name: "GoPro HERO12 Black",
+    brand: "GoPro",
+    category: "Aksesuar",
+    price: 15499,
+    image: "https://picsum.photos/seed/gopro/800/800",
+    description: "Şimdiye kadarki en iyi görüntü kalitesi ve stabilizasyon.",
+    features: ["5.3K 60 Video", "HyperSmooth 6.0", "HDR Video", "Bluetooth Ses Desteği"],
+    specs: { "Çözünürlük": "27MP", "Video": "5.3K 60fps", "Su Geçirmezlik": "10m", "Ekran": "Çift Ekran" },
+    color: "Siyah",
+    inStock: true,
+    rating: 4.7,
+    badge: 'İndirim'
+  },
+  {
+    id: 25,
+    name: "Marshall Emberton II",
+    brand: "Marshall",
+    category: "Ses",
+    price: 6999,
+    image: "https://picsum.photos/seed/marshall/800/800",
+    description: "İkonik tasarım, güçlü taşınabilir ses.",
+    features: ["30+ Saat Çalma Süresi", "IP67 Dayanıklılık", "Stack Modu", "True Stereophonic"],
+    specs: { "Sürücü": "2x 10W", "Frekans": "60Hz - 20kHz", "Bluetooth": "5.1", "Ağırlık": "0.7kg" },
+    color: "Siyah/Pirinç",
+    inStock: true,
+    rating: 4.8
+  },
+  {
+    id: 26,
+    name: "ASUS ProArt Display PA32UCG",
+    brand: "Asus",
+    category: "Aksesuar",
+    price: 119999,
+    image: "https://picsum.photos/seed/proart/800/800",
+    description: "Profesyonel içerik üreticileri için dünyanın ilk 1600 nit monitörü.",
+    features: ["4K HDR", "120Hz Yenileme", "1600 Nit Parlaklık", "Mini-LED Arka Aydınlatma"],
+    specs: { "Ekran": "32 inç IPS", "Renk": "100% sRGB, 98% DCI-P3", "Bağlantı": "Thunderbolt 3", "HDR": "Dolby Vision" },
+    color: "Siyah",
+    inStock: true,
+    rating: 4.9
+  },
+  {
+    id: 27,
+    name: "Corsair Dominator Titanium",
+    brand: "Corsair",
+    category: "Aksesuar",
+    price: 8999,
+    image: "https://picsum.photos/seed/corsair/800/800",
+    description: "Üstün performanslı DDR5 bellek kiti.",
+    features: ["7200MT/s Hız", "DHX Soğutma", "RGB Aydınlatma", "Özelleştirilebilir Üst Çubuklar"],
+    specs: { "Kapasite": "32GB (2x16GB)", "Gecikme": "CL34", "Voltaj": "1.45V", "Yazılım": "iCUE Desteği" },
+    color: "Beyaz",
+    inStock: true,
+    rating: 4.9
+  },
+  {
+    id: 28,
+    name: "Elgato Stream Deck MK.2",
+    brand: "Elgato",
+    category: "Aksesuar",
+    price: 5499,
+    image: "https://picsum.photos/seed/streamdeck/800/800",
+    description: "Yayıncılar ve içerik üreticileri için kontrol merkezi.",
+    features: ["15 Özelleştirilebilir LCD Tuş", "Değiştirilebilir Ön Plaka", "Geniş Eklenti Mağazası", "Tek Dokunuşla İşlem"],
+    specs: { "Tuş Sayısı": "15", "Bağlantı": "USB 2.0", "Boyut": "118 x 84 x 25 mm", "Ağırlık": "145g" },
+    color: "Siyah",
+    inStock: true,
+    rating: 4.8
+  },
+  {
+    id: 29,
+    name: "Western Digital Black SN850X",
+    brand: "Western Digital",
+    category: "Aksesuar",
+    price: 4599,
+    image: "https://picsum.photos/seed/wdblack/800/800",
+    description: "Oyunlar için en yüksek hızda NVMe SSD.",
+    features: ["7300MB/s Okuma", "Game Mode 2.0", "Düşük Gecikme", "Isı Emici Seçeneği"],
+    specs: { "Kapasite": "2TB", "Arabirim": "PCIe Gen4 x4", "Yazma Hızı": "6600MB/s", "Form Faktörü": "M.2 2280" },
+    color: "Siyah",
+    inStock: true,
+    rating: 4.9,
+    badge: 'Trend'
+  },
+  {
+    id: 30,
+    name: "Philips Hue Akıllı Başlangıç Seti",
+    brand: "Philips",
+    category: "Aksesuar",
+    price: 3999,
+    image: "https://picsum.photos/seed/hue/800/800",
+    description: "Evinizin atmosferini tek dokunuşla değiştirin.",
+    features: ["16 Milyon Renk", "Sesle Kontrol", "Hue Bridge Dahil", "Zamanlama Özelliği"],
+    specs: { "Lamba Sayısı": "3", "Duy": "E27", "Ömür": "25.000 Saat", "Güç": "9W" },
+    color: "Beyaz",
+    inStock: true,
+    rating: 4.7
+  },
+  {
+    id: 31,
+    name: "Nothing Phone (2)",
+    brand: "Nothing",
+    category: "Telefon",
+    price: 26999,
+    image: "https://picsum.photos/seed/nothing/800/800",
+    description: "Şeffaf tasarım, eşsiz Glyph arayüzü.",
+    features: ["Glyph Arayüzü", "Snapdragon 8+ Gen 1", "Nothing OS 2.0", "50MP Çift Kamera"],
+    specs: { "Ekran": "6.7 inç LTPO OLED", "İşlemci": "Snapdragon 8+ Gen 1", "Pil": "4700 mAh", "Hızlı Şarj": "45W" },
+    color: "Koyu Gri",
+    inStock: true,
+    rating: 4.5
+  },
+  {
+    id: 32,
+    name: "Anker 737 Power Bank",
+    brand: "Anker",
+    category: "Aksesuar",
+    price: 4299,
+    image: "https://picsum.photos/seed/anker/800/800",
+    description: "Laptop şarj edebilen ultra güçlü taşınabilir şarj cihazı.",
+    features: ["140W Hızlı Şarj", "Akıllı Dijital Ekran", "24.000mAh Kapasite", "GaNPrime Teknolojisi"],
+    specs: { "Kapasite": "24.000 mAh", "Çıkış": "2x USB-C, 1x USB-A", "Ekran": "Renkli TFT", "Ağırlık": "630g" },
+    color: "Siyah",
+    inStock: true,
+    rating: 4.9,
+    badge: 'En Çok Satan'
+  }
+];
+
+export const FAQ_DATA: FAQItem[] = [
+  {
+    question: "Kargo ne kadar sürede ulaşır?",
+    answer: "Siparişleriniz genellikle 24 saat içinde kargoya verilir ve bulunduğunuz bölgeye göre 1-3 iş günü içinde teslim edilir. İstanbul içi teslimatlarımızda aynı gün kargo seçeneği de mevcuttur."
+  },
+  {
+    question: "İade politikanız nedir?",
+    answer: "Ürünlerimizi teslim aldığınız tarihten itibaren 14 gün içinde orijinal kutusu ve faturasıyla birlikte ücretsiz olarak iade edebilirsiniz. Hijyenik ürünler (kulaklık vb.) kutusu açılmadığı sürece iade kapsamındadır."
+  },
+  {
+    question: "Ürünleriniz garantili mi?",
+    answer: "Evet, tüm ürünlerimiz en az 2 yıl resmi distribütör veya üretici garantisi altındadır. Bazı ürün gruplarında ek garanti paketleri satın alma imkanınız bulunmaktadır."
+  },
+  {
+    question: "Taksit imkanı var mı?",
+    answer: "Anlaşmalı bankaların kredi kartlarına 12 aya varan taksit seçenekleri sunuyoruz. Ayrıca alışveriş kredisi seçeneklerimizle 36 aya kadar vadelendirme yapabilirsiniz."
+  },
+  {
+    question: "Ürünler orijinal mi?",
+    answer: "Güzel Teknoloji olarak sadece yetkili satıcı ve distribütörlerden temin edilen %100 orijinal ürünlerin satışını yapıyoruz. Her ürünün orijinalliği garantimiz altındadır."
+  },
+  {
+    question: "Mağazanız nerede?",
+    answer: "Merkez mağazamız İstanbul Teknoloji Caddesi'nde bulunmaktadır. Ayrıca Ankara ve İzmir'de de deneyim mağazalarımız mevcuttur."
+  },
+  {
+    question: "Kurumsal satış yapıyor musunuz?",
+    answer: "Evet, şirketler için toplu alımlarda özel fiyatlandırma ve danışmanlık hizmeti sunuyoruz. Kurumsal talepleriniz için kurumsal@guzelteknoloji.com adresinden bize ulaşabilirsiniz."
+  }
+];
+
+export const HERO_SLIDES = [
+  {
+    id: 1,
+    title: "Geleceğin Teknolojisi",
+    subtitle: "M3 Max Çipli Yeni MacBook Pro",
+    image: "https://picsum.photos/seed/slide1/1920/1080",
+    buttonText: "Hemen İncele",
+    color: "bg-blue-600"
+  },
+  {
+    id: 2,
+    title: "Sınırları Zorlayın",
+    subtitle: "iPhone 15 Pro Titanyum Tasarım",
+    image: "https://picsum.photos/seed/slide2/1920/1080",
+    buttonText: "Keşfet",
+    color: "bg-slate-900"
+  },
+  {
+    id: 3,
+    title: "Müzik Hiç Bu Kadar Net Olmamıştı",
+    subtitle: "Sony WH-1000XM5 ANC Kulaklık",
+    image: "https://picsum.photos/seed/slide3/1920/1080",
+    buttonText: "Satın Al",
+    color: "bg-blue-500"
+  }
+];
