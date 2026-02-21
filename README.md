@@ -140,7 +140,17 @@ npm run dev
 
 ### 📸 Screenshots / Ekran Görüntüleri
 
-*Coming soon... / Yakında...*
+#### 🏠 Ana Sayfa / Home Page
+<img src="screenshots/home.png" width="800" alt="Ana Sayfa">
+
+#### 🛍️ Ürün Detay / Product Detail
+<img src="screenshots/product-detail.png" width="800" alt="Ürün Detay">
+
+#### 🛒 Sepet / Cart
+<img src="screenshots/cart.png" width="800" alt="Sepet">
+
+#### 🌙 Karanlık Mod / Dark Mode
+<img src="screenshots/dark-mode.png" width="800" alt="Karanlık Mod">
 
 ---
 
