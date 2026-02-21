@@ -149,8 +149,8 @@ npm run dev
 #### 🛒 Sepet / Cart
 <img src="screenshots/cart.png" width="800" alt="Sepet">
 
-#### 🌙 Karanlık Mod / Dark Mode
-<img src="screenshots/dark-mode.png" width="800" alt="Karanlık Mod">
+#### 🌙 Karşılaştırma Modu
+<img src="screenshots/km.png" width="800" alt="Karşılaştırma Modu">
 
 ---
 
