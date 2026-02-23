@@ -35,7 +35,7 @@ export default function LiveChat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: 'Merhaba! 👋 Ben Güzel Asistan. Size nasıl yardımcı olabilirim?',
+      text: 'Merhaba! 👋 Ben GT. Sizin şahsi asistanınız olarak nasıl yardımcı olabilirim?',
       isBot: true,
       timestamp: new Date()
     }

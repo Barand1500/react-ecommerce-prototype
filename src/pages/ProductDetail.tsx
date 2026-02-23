@@ -243,57 +243,30 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
             </div>
           </div>
 
-          {/* Mağaza Durumu */}
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-2xl p-6 border border-blue-200 dark:border-blue-800">
-            <div className="flex items-center gap-3 mb-4">
-              <Store size={20} className="text-blue-600" />
-              <h4 className="font-bold text-sm uppercase tracking-widest text-blue-600">Mağaza Durumu</h4>
-            </div>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between bg-white dark:bg-slate-900/50 rounded-xl p-4">
-                <div className="flex items-center gap-3">
-                  <MapPin size={18} className="text-slate-400" />
-                  <div>
-                    <p className="font-medium text-sm">Antalya / Merkez</p>
-                    <p className="text-[10px] text-slate-400">Konyaaltı Cad. No: 45</p>
-                  </div>
-                </div>
+          {/* Mağaza Durumu - Kompakt */}
+          <div className="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl">
+            <Store size={18} className="text-blue-600 flex-shrink-0" />
+            <div className="flex-1 flex items-center gap-4 flex-wrap">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Mağaza:</span>
+              <div className="flex items-center gap-2">
+                <MapPin size={12} className="text-slate-400" />
+                <span className="text-xs text-slate-600 dark:text-slate-300">Antalya</span>
                 {STORE_AVAILABILITY[product.id]?.antalya ? (
-                  <div className="flex items-center gap-2 text-green-600">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-xs font-bold">Mevcut</span>
-                  </div>
+                  <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/40 text-green-600 text-[10px] font-bold rounded-full">✓ Mevcut</span>
                 ) : (
-                  <div className="flex items-center gap-2 text-red-500">
-                    <div className="w-2 h-2 bg-red-500 rounded-full" />
-                    <span className="text-xs font-bold">Stokta Yok</span>
-                  </div>
+                  <span className="px-2 py-0.5 bg-red-100 dark:bg-red-900/40 text-red-500 text-[10px] font-bold rounded-full">Yok</span>
                 )}
               </div>
-              <div className="flex items-center justify-between bg-white dark:bg-slate-900/50 rounded-xl p-4">
-                <div className="flex items-center gap-3">
-                  <MapPin size={18} className="text-slate-400" />
-                  <div>
-                    <p className="font-medium text-sm">Nevşehir / Merkez</p>
-                    <p className="text-[10px] text-slate-400">Atatürk Blv. No: 78</p>
-                  </div>
-                </div>
+              <div className="flex items-center gap-2">
+                <MapPin size={12} className="text-slate-400" />
+                <span className="text-xs text-slate-600 dark:text-slate-300">Nevşehir</span>
                 {STORE_AVAILABILITY[product.id]?.nevsehir ? (
-                  <div className="flex items-center gap-2 text-green-600">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-xs font-bold">Mevcut</span>
-                  </div>
+                  <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/40 text-green-600 text-[10px] font-bold rounded-full">✓ Mevcut</span>
                 ) : (
-                  <div className="flex items-center gap-2 text-red-500">
-                    <div className="w-2 h-2 bg-red-500 rounded-full" />
-                    <span className="text-xs font-bold">Stokta Yok</span>
-                  </div>
+                  <span className="px-2 py-0.5 bg-red-100 dark:bg-red-900/40 text-red-500 text-[10px] font-bold rounded-full">Yok</span>
                 )}
               </div>
             </div>
-            <p className="text-[10px] text-slate-400 mt-4 text-center">
-              Mağazadan satın almak için önce rezervasyon yapmanızı öneririz.
-            </p>
           </div>
         </div>
       </div>
