@@ -695,6 +695,7 @@ export default function App() {
       onLogout={handleLogout}
       selectedStore={selectedStore}
       setSelectedStore={setSelectedStore}
+      onNavigateToProduct={navigateToProduct}
     >
       {renderPage()}
 

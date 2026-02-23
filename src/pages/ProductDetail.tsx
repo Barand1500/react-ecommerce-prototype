@@ -13,14 +13,14 @@ interface ProductDetailProps {
   isComparing: boolean;
 }
 
-// Taksit Seçenekleri
+// Taksit Seçenekleri - Farklı bankalarda farklı faizsiz taksit seçenekleri
 const INSTALLMENT_OPTIONS = [
-  { bank: 'Ziraat Bankası', logo: '🏦', rates: { 3: 0, 6: 1.49, 9: 1.79, 12: 1.99 } },
-  { bank: 'Garanti BBVA', logo: '💳', rates: { 3: 0, 6: 1.39, 9: 1.69, 12: 1.89 } },
-  { bank: 'İş Bankası', logo: '🏛️', rates: { 3: 0, 6: 1.59, 9: 1.89, 12: 2.09 } },
-  { bank: 'Yapı Kredi', logo: '🔷', rates: { 3: 0, 6: 1.49, 9: 1.79, 12: 1.99 } },
-  { bank: 'Akbank', logo: '🔴', rates: { 3: 0, 6: 1.45, 9: 1.75, 12: 1.95 } },
-  { bank: 'QNB Finansbank', logo: '🟣', rates: { 3: 0, 6: 1.55, 9: 1.85, 12: 2.05 } },
+  { bank: 'Ziraat Bankası', logo: '🏦', rates: { 3: 0, 6: 0, 9: 1.79, 12: 1.99 } },      // 6 taksit faizsiz
+  { bank: 'Garanti BBVA', logo: '💳', rates: { 3: 0, 6: 0, 9: 0, 12: 1.89 } },           // 9 taksit faizsiz
+  { bank: 'İş Bankası', logo: '🏛️', rates: { 3: 0, 6: 1.59, 9: 1.89, 12: 2.09 } },       // 3 taksit faizsiz
+  { bank: 'Yapı Kredi', logo: '🔷', rates: { 3: 0, 6: 0, 9: 1.79, 12: 1.99 } },          // 6 taksit faizsiz
+  { bank: 'Akbank', logo: '🔴', rates: { 3: 0, 6: 0, 9: 0, 12: 1.95 } },                 // 9 taksit faizsiz
+  { bank: 'QNB Finansbank', logo: '🟣', rates: { 3: 0, 6: 1.55, 9: 1.85, 12: 2.05 } },   // 3 taksit faizsiz
 ];
 
 export default function ProductDetail({ product, onAddToCart, onToggleFav, onToggleCompare, isFavorite, isComparing }: ProductDetailProps) {
@@ -310,6 +310,8 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
           <div className="space-y-2">
             {INSTALLMENT_OPTIONS.map((option) => {
               const isExpanded = expandedBank === option.bank;
+              // En yüksek faizsiz taksit sayısını bul
+              const maxInterestFree = [12, 9, 6, 3].find(m => option.rates[m as keyof typeof option.rates] === 0) || 3;
               
               return (
                 <div 
@@ -324,11 +326,15 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">{option.logo}</span>
                       <span className="font-bold text-slate-900 dark:text-white">{option.bank}</span>
-                      {option.rates[3] === 0 && (
-                        <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-600 text-[10px] font-bold rounded-full">
-                          3 TAKSİT FAİZSİZ
-                        </span>
-                      )}
+                      <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
+                        maxInterestFree >= 9 
+                          ? 'bg-green-100 dark:bg-green-900/30 text-green-600' 
+                          : maxInterestFree >= 6 
+                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                      }`}>
+                        {maxInterestFree} TAKSİT FAİZSİZ
+                      </span>
                     </div>
                     <ChevronDown 
                       size={20} 

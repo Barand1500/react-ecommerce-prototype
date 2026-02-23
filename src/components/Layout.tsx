@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import * as React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Menu, X, ShoppingBag, Search, Sun, Moon, 
   Instagram, Twitter, Facebook, Youtube,
   Phone, Mail, MapPin, ChevronRight,
-  CreditCard, Smartphone, Heart, BarChart2, Trash2, Plus, Minus, Copy, Check, User as UserIcon, LogOut, Settings
+  CreditCard, Smartphone, Heart, BarChart2, Trash2, Plus, Minus, Copy, Check, User as UserIcon, LogOut, Settings,
+  MessageCircle
 } from 'lucide-react';
 import { CartItem, Product, User } from '../types';
+import { PRODUCTS } from '../constants';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -37,12 +39,13 @@ interface LayoutProps {
   onLogout: () => void;
   selectedStore: string;
   setSelectedStore: (val: string) => void;
+  onNavigateToProduct: (p: Product) => void;
 }
 
 export default function Layout({ 
   children, cart, favorites, comparisonList, cartCount, favCount, compareCount, cartTotal, user, isDarkMode, setIsDarkMode, 
   setIsCartOpen, isCartOpen, isFavOpen, setIsFavOpen, setIsAuthModalOpen, setAuthMode, removeFromCart, removeFromFav, 
-  addToCart, updateQuantity, onNavigate, isNavSidebarOpen, setIsNavSidebarOpen, onLogout, selectedStore, setSelectedStore
+  addToCart, updateQuantity, onNavigate, isNavSidebarOpen, setIsNavSidebarOpen, onLogout, selectedStore, setSelectedStore, onNavigateToProduct
 }: LayoutProps) {
   const [selectedBank, setSelectedBank] = useState<string | null>(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -57,6 +60,18 @@ export default function Layout({
     { id: 'antalya', name: 'Antalya / Merkez' },
     { id: 'nevsehir', name: 'Nevşehir / Merkez' }
   ];
+
+  // Arama sonuçları
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const query = searchQuery.toLowerCase().trim();
+    return PRODUCTS.filter(p => 
+      p.name.toLowerCase().includes(query) || 
+      p.brand.toLowerCase().includes(query) || 
+      p.category.toLowerCase().includes(query) ||
+      p.description.toLowerCase().includes(query)
+    ).slice(0, 6); // İlk 6 sonuç
+  }, [searchQuery]);
 
   const handleThemeToggle = () => {
     setShowThemeTooltip(true);
@@ -501,21 +516,62 @@ export default function Layout({
                 </button>
               </div>
               
-              {/* Popular Searches */}
-              <div className="p-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Popüler Aramalar</p>
-                <div className="flex flex-wrap gap-2">
-                  {['iPhone 15', 'MacBook Pro', 'PlayStation 5', 'AirPods', 'Samsung'].map(tag => (
-                    <button 
-                      key={tag} 
-                      onClick={() => setSearchQuery(tag)}
-                      className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-medium hover:bg-blue-600 hover:text-white transition-all text-slate-600 dark:text-slate-300"
-                    >
-                      {tag}
-                    </button>
-                  ))}
+              {/* Arama Sonuçları */}
+              {searchResults.length > 0 ? (
+                <div className="p-4 max-h-80 overflow-y-auto">
+                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">
+                    {searchResults.length} sonuç bulundu
+                  </p>
+                  <div className="space-y-2">
+                    {searchResults.map(product => (
+                      <button
+                        key={product.id}
+                        onClick={() => {
+                          onNavigateToProduct(product);
+                          setIsSearchOpen(false);
+                          setSearchQuery('');
+                        }}
+                        className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left group"
+                      >
+                        <img 
+                          src={product.image} 
+                          alt={product.name} 
+                          className="w-14 h-14 rounded-lg object-cover" 
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-blue-600">{product.brand}</p>
+                          <p className="font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors truncate">{product.name}</p>
+                          <p className="text-sm font-bold text-green-600">{product.price.toLocaleString('tr-TR')} TL</p>
+                        </div>
+                        <ChevronRight size={18} className="text-slate-300 group-hover:text-blue-600 transition-colors" />
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : searchQuery.trim() ? (
+                <div className="p-8 text-center">
+                  <Search size={48} className="mx-auto mb-4 text-slate-200 dark:text-slate-700" />
+                  <p className="text-slate-500 font-medium">"{searchQuery}" için sonuç bulunamadı</p>
+                  <p className="text-sm text-slate-400 mt-1">Farklı kelimelerle aramayı deneyin</p>
+                </div>
+              ) : (
+                /* Popular Searches */
+                <div className="p-4">
+                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Popüler Aramalar</p>
+                  <div className="flex flex-wrap gap-2">
+                    {['iPhone 15', 'MacBook Pro', 'PlayStation 5', 'AirPods', 'Samsung'].map(tag => (
+                      <button 
+                        key={tag} 
+                        onClick={() => setSearchQuery(tag)}
+                        className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-medium hover:bg-blue-600 hover:text-white transition-all text-slate-600 dark:text-slate-300"
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               
               {/* Keyboard shortcut hint */}
               <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-400">
@@ -696,6 +752,35 @@ export default function Layout({
           </>
         )}
       </AnimatePresence>
+
+      {/* WhatsApp Floating Button */}
+      <a
+        href="https://wa.me/905001234567?text=Merhaba,%20ürünleriniz%20hakkında%20bilgi%20almak%20istiyorum."
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 group"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="relative"
+        >
+          <div className="w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-shadow">
+            <MessageCircle size={26} className="text-white fill-white" />
+          </div>
+          
+          {/* Tooltip */}
+          <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 px-3 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            WhatsApp ile yazın
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full border-4 border-transparent border-l-slate-900" />
+          </div>
+          
+          {/* Pulse Animation */}
+          <span className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-20" />
+        </motion.div>
+      </a>
     </div>
   );
 }
