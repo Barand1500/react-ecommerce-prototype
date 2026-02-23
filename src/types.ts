@@ -6,6 +6,7 @@ export interface Product {
   price: number;
   oldPrice?: number;
   image: string;
+  images?: string[]; // Çoklu görsel desteği
   description: string;
   features: string[];
   specs: Record<string, string>;

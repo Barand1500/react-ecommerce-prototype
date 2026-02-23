@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingBag, CheckCircle, ShieldCheck, Truck, RefreshCcw, Heart, BarChart2, Bell, X, Mail, MapPin, Store } from 'lucide-react';
+import { ShoppingBag, CheckCircle, ShieldCheck, Truck, RefreshCcw, Heart, BarChart2, Bell, X, Mail, MapPin, Store, ChevronLeft, ChevronRight, CreditCard, Calculator } from 'lucide-react';
 import { Product } from '../types';
 import { STORE_AVAILABILITY } from '../constants';
 
@@ -13,17 +13,37 @@ interface ProductDetailProps {
   isComparing: boolean;
 }
 
+// Taksit Seçenekleri
+const INSTALLMENT_OPTIONS = [
+  { bank: 'Ziraat Bankası', logo: '🏦', rates: { 3: 0, 6: 1.49, 9: 1.79, 12: 1.99 } },
+  { bank: 'Garanti BBVA', logo: '💳', rates: { 3: 0, 6: 1.39, 9: 1.69, 12: 1.89 } },
+  { bank: 'İş Bankası', logo: '🏛️', rates: { 3: 0, 6: 1.59, 9: 1.89, 12: 2.09 } },
+  { bank: 'Yapı Kredi', logo: '🔷', rates: { 3: 0, 6: 1.49, 9: 1.79, 12: 1.99 } },
+  { bank: 'Akbank', logo: '🔴', rates: { 3: 0, 6: 1.45, 9: 1.75, 12: 1.95 } },
+  { bank: 'QNB Finansbank', logo: '🟣', rates: { 3: 0, 6: 1.55, 9: 1.85, 12: 2.05 } },
+];
+
 export default function ProductDetail({ product, onAddToCart, onToggleFav, onToggleCompare, isFavorite, isComparing }: ProductDetailProps) {
   const [isNotifyModalOpen, setIsNotifyModalOpen] = useState(false);
   const [notifyEmail, setNotifyEmail] = useState('');
   const [isNotifySubmitted, setIsNotifySubmitted] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showInstallments, setShowInstallments] = useState(false);
+  const [selectedInstallment, setSelectedInstallment] = useState(6);
   
   const discount = product.oldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : null;
+
+  // Ürün için görseller oluştur (picsum.photos ile farklı görüntüler)
+  const productImages = product.images || [
+    product.image,
+    product.image.replace(/seed\/[^/]+/, `seed/${product.id}_angle1`),
+    product.image.replace(/seed\/[^/]+/, `seed/${product.id}_angle2`),
+    product.image.replace(/seed\/[^/]+/, `seed/${product.id}_detail`),
+  ];
 
   const handleNotifySubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (notifyEmail) {
-      // Simüle edilmiş kayıt
       setIsNotifySubmitted(true);
       setTimeout(() => {
         setIsNotifyModalOpen(false);
@@ -33,36 +53,107 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
     }
   };
 
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length);
+  };
+
+  // Taksit hesaplama
+  const calculateInstallment = (months: number, rate: number) => {
+    const totalWithInterest = product.price * (1 + rate / 100);
+    return Math.ceil(totalWithInterest / months);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       <div className="flex flex-col lg:flex-row gap-16 mb-24">
-        {/* Görsel */}
+        {/* Görsel Galerisi */}
         <div className="flex-1">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="aspect-square bg-slate-50 dark:bg-slate-900 rounded-[3rem] overflow-hidden border border-slate-100 dark:border-slate-800 relative group"
-          >
-            <img 
-              src={product.image} 
-              alt={product.name} 
-              className="w-full h-full object-cover"
-              referrerPolicy="no-referrer"
-            />
-            {product.badge && (
-              <div className="absolute top-8 left-8 px-4 py-2 bg-blue-600 text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-xl">
-                {product.badge}
-              </div>
-            )}
-            <button 
-              onClick={() => onToggleFav(product)}
-              className={`absolute top-8 right-8 p-4 rounded-full shadow-xl transition-all ${
-                isFavorite ? 'bg-red-500 text-white' : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-slate-400 hover:text-red-500'
-              }`}
+          <div className="space-y-4">
+            {/* Ana Görsel */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="aspect-square bg-slate-50 dark:bg-slate-900 rounded-[3rem] overflow-hidden border border-slate-100 dark:border-slate-800 relative group"
             >
-              <Heart size={24} fill={isFavorite ? "currentColor" : "none"} />
-            </button>
-          </motion.div>
+              <AnimatePresence mode="wait">
+                <motion.img 
+                  key={currentImageIndex}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  src={productImages[currentImageIndex]} 
+                  alt={`${product.name} - Görsel ${currentImageIndex + 1}`} 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </AnimatePresence>
+              
+              {product.badge && (
+                <div className="absolute top-8 left-8 px-4 py-2 bg-blue-600 text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-xl">
+                  {product.badge}
+                </div>
+              )}
+              
+              <button 
+                onClick={() => onToggleFav(product)}
+                className={`absolute top-8 right-8 p-4 rounded-full shadow-xl transition-all ${
+                  isFavorite ? 'bg-red-500 text-white' : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-slate-400 hover:text-red-500'
+                }`}
+              >
+                <Heart size={24} fill={isFavorite ? "currentColor" : "none"} />
+              </button>
+
+              {/* Navigation Arrows */}
+              {productImages.length > 1 && (
+                <>
+                  <button 
+                    onClick={prevImage}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-slate-800"
+                  >
+                    <ChevronLeft size={24} className="text-slate-700 dark:text-slate-300" />
+                  </button>
+                  <button 
+                    onClick={nextImage}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-slate-800"
+                  >
+                    <ChevronRight size={24} className="text-slate-700 dark:text-slate-300" />
+                  </button>
+                </>
+              )}
+
+              {/* Image Counter */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/50 backdrop-blur-md rounded-full text-white text-xs font-bold">
+                {currentImageIndex + 1} / {productImages.length}
+              </div>
+            </motion.div>
+
+            {/* Thumbnail Gallery */}
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {productImages.map((img, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
+                    currentImageIndex === index 
+                      ? 'border-blue-600 ring-2 ring-blue-600/30' 
+                      : 'border-slate-200 dark:border-slate-700 hover:border-blue-400'
+                  }`}
+                >
+                  <img 
+                    src={img} 
+                    alt={`Thumbnail ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Bilgiler */}
@@ -205,6 +296,85 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
           </div>
         </div>
       </div>
+
+      {/* Taksit Hesaplayıcı */}
+      <section className="mb-24">
+        <div className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-800/20 rounded-[2rem] p-8 border border-green-200 dark:border-green-800">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30">
+                <Calculator size={28} className="text-white" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white">Taksit Hesaplayıcı</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Banka bazlı taksit seçeneklerini görüntüleyin</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {[3, 6, 9, 12].map((months) => (
+                <button
+                  key={months}
+                  onClick={() => setSelectedInstallment(months)}
+                  className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${
+                    selectedInstallment === months
+                      ? 'bg-green-600 text-white shadow-lg shadow-green-600/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-green-100 dark:hover:bg-green-900/30'
+                  }`}
+                >
+                  {months} Taksit
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {INSTALLMENT_OPTIONS.map((option) => {
+              const rate = option.rates[selectedInstallment as keyof typeof option.rates];
+              const monthlyPayment = calculateInstallment(selectedInstallment, rate);
+              const totalPrice = monthlyPayment * selectedInstallment;
+              
+              return (
+                <div 
+                  key={option.bank}
+                  className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 hover:shadow-lg hover:border-green-300 dark:hover:border-green-700 transition-all"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-2xl">{option.logo}</span>
+                    <span className="font-bold text-slate-900 dark:text-white">{option.bank}</span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-500">Aylık Taksit:</span>
+                      <span className="font-bold text-green-600">{monthlyPayment.toLocaleString('tr-TR')} TL</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-500">Toplam Tutar:</span>
+                      <span className="font-medium text-slate-700 dark:text-slate-300">{totalPrice.toLocaleString('tr-TR')} TL</span>
+                    </div>
+                    {rate > 0 && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-500">Faiz Oranı:</span>
+                        <span className="text-orange-500 font-medium">%{rate}</span>
+                      </div>
+                    )}
+                    {rate === 0 && (
+                      <div className="mt-2 text-center">
+                        <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs font-bold rounded-full">
+                          FAİZSİZ
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <p className="text-xs text-slate-400 mt-6 text-center">
+            * Taksit oranları güncel piyasa koşullarına göre değişiklik gösterebilir. Kesin taksit tutarı için bankanızla iletişime geçiniz.
+          </p>
+        </div>
+      </section>
 
       {/* Teknik Özellikler Tablosu */}
       <section className="space-y-12">
