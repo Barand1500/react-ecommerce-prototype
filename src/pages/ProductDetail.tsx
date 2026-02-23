@@ -353,29 +353,36 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                               const monthlyPayment = calculateInstallment(months, rate);
                               const totalPrice = monthlyPayment * months;
                               const interestAmount = totalPrice - product.price;
+                              const isSelected = selectedInstallment === months;
                               
                               return (
-                                <div 
+                                <button 
                                   key={months}
-                                  className={`rounded-xl p-4 border-2 transition-all ${
-                                    rate === 0 
-                                      ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700' 
-                                      : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+                                  onClick={() => setSelectedInstallment(months)}
+                                  className={`rounded-xl p-4 border-2 transition-all text-left ${
+                                    isSelected
+                                      ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-500 dark:border-blue-400 ring-2 ring-blue-500/20' 
+                                      : rate === 0 
+                                        ? 'bg-green-50/50 dark:bg-green-900/10 border-green-200 dark:border-green-800 hover:border-green-400' 
+                                        : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-400'
                                   }`}
                                 >
                                   <div className="text-center mb-3">
-                                    <span className={`text-2xl font-black ${rate === 0 ? 'text-green-600' : 'text-slate-900 dark:text-white'}`}>
+                                    <span className={`text-2xl font-black ${isSelected ? 'text-blue-600' : rate === 0 ? 'text-green-600' : 'text-slate-900 dark:text-white'}`}>
                                       {months}x
                                     </span>
-                                    {rate === 0 && (
+                                    {rate === 0 && !isSelected && (
                                       <span className="block text-[10px] font-bold text-green-600 mt-1">FAİZSİZ</span>
+                                    )}
+                                    {isSelected && (
+                                      <span className="block text-[10px] font-bold text-blue-600 mt-1">SEÇİLİ ✓</span>
                                     )}
                                   </div>
                                   
                                   <div className="space-y-2 text-sm">
                                     <div className="flex justify-between">
                                       <span className="text-slate-500">Aylık:</span>
-                                      <span className="font-bold text-green-600">{monthlyPayment.toLocaleString('tr-TR')} TL</span>
+                                      <span className={`font-bold ${isSelected ? 'text-blue-600' : 'text-green-600'}`}>{monthlyPayment.toLocaleString('tr-TR')} TL</span>
                                     </div>
                                     <div className="flex justify-between">
                                       <span className="text-slate-500">Toplam:</span>
@@ -395,7 +402,7 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                                       </>
                                     )}
                                   </div>
-                                </div>
+                                </button>
                               );
                             })}
                           </div>
