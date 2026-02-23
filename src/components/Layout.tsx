@@ -758,7 +758,7 @@ export default function Layout({
         href="https://wa.me/905001234567?text=Merhaba,%20ürünleriniz%20hakkında%20bilgi%20almak%20istiyorum."
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 group"
+        className="fixed bottom-6 left-6 z-50 group"
       >
         <motion.div
           initial={{ scale: 0 }}
@@ -772,9 +772,9 @@ export default function Layout({
           </div>
           
           {/* Tooltip */}
-          <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 px-3 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-3 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             WhatsApp ile yazın
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full border-4 border-transparent border-l-slate-900" />
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full border-4 border-transparent border-r-slate-900" />
           </div>
           
           {/* Pulse Animation */}
