@@ -34,6 +34,7 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
   const [onlyInStock, setOnlyInStock] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState('Önerilen');
+  const [isSortOpen, setIsSortOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   const brands = useMemo(() => Array.from(new Set(PRODUCTS.map(p => p.brand))), []);
@@ -101,24 +102,40 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="relative group">
-              <button className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-xs font-bold transition-all text-slate-900 dark:text-white">
-                Sırala: {sortBy} <ChevronDown size={14} />
+            <div className="relative">
+              <button 
+                onClick={() => setIsSortOpen(!isSortOpen)}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-xs font-bold transition-all text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700"
+              >
+                Sırala: {sortBy} <ChevronDown size={14} className={`transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
               </button>
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all p-2 z-50">
-                {['Önerilen', 'Fiyat (Artan)', 'Fiyat (Azalan)', 'Puan (Azalan)'].map(opt => (
-                  <button 
-                    key={opt}
-                    onClick={() => {
-                      setSortBy(opt);
-                      setCurrentPage(1);
-                    }}
-                    className="w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl text-xs font-bold transition-all text-slate-900 dark:text-white"
-                  >
-                    {opt}
-                  </button>
-                ))}
-              </div>
+              <AnimatePresence>
+                {isSortOpen && (
+                  <>
+                    <div className="fixed inset-0 z-[999]" onClick={() => setIsSortOpen(false)} />
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 p-2 z-[1000]"
+                    >
+                      {['Önerilen', 'Fiyat (Artan)', 'Fiyat (Azalan)', 'Puan (Azalan)'].map(opt => (
+                        <button 
+                          key={opt}
+                          onClick={() => {
+                            setSortBy(opt);
+                            setCurrentPage(1);
+                            setIsSortOpen(false);
+                          }}
+                          className={`w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl text-xs font-bold transition-all ${sortBy === opt ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' : 'text-slate-900 dark:text-white'}`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>

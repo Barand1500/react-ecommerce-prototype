@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { ShoppingBag, Eye, Star, Heart, BarChart2 } from 'lucide-react';
+import { ShoppingBag, Eye, Star, Heart, BarChart2, Bell } from 'lucide-react';
 import { Product } from '../types';
 
 interface ProductCardProps {
@@ -90,13 +90,22 @@ export default function ProductCard({ product, onAddToCart, onQuickView, onNavig
           >
             <Eye size={16} /> Hızlı Bakış
           </button>
-          <button 
-            onClick={() => onAddToCart(product)}
-            disabled={!product.inStock}
-            className="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center hover:bg-blue-700 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <ShoppingBag size={18} />
-          </button>
+          {product.inStock ? (
+            <button 
+              onClick={() => onAddToCart(product)}
+              className="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center hover:bg-blue-700 transition-all shadow-lg"
+            >
+              <ShoppingBag size={18} />
+            </button>
+          ) : (
+            <button 
+              onClick={() => onNavigate(product)}
+              className="w-12 h-12 bg-orange-500 text-white rounded-2xl flex items-center justify-center hover:bg-orange-600 transition-all shadow-lg"
+              title="Stok bildirimi al"
+            >
+              <Bell size={18} />
+            </button>
+          )}
         </div>
       </div>
 

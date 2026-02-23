@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { X, ShoppingBag, ChevronRight, Phone, Mail, MapPin, Heart, CreditCard, Settings, User as UserIcon, Plus } from 'lucide-react';
+import { X, ShoppingBag, ChevronRight, Phone, Mail, MapPin, Heart, CreditCard, Settings, User as UserIcon, Plus, Home as HomeIcon } from 'lucide-react';
 import { PRODUCTS } from './constants';
 import { Product, CartItem, User } from './types';
 import Layout from './components/Layout';
+import LiveChat from './components/LiveChat';
 import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
 import Checkout from './pages/Checkout';
@@ -25,7 +26,15 @@ export default function App() {
   });
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'choice' | 'login' | 'register'>('choice');
-  const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('gt-theme') === 'dark');
+  
+  // Dark Mode - Sistem tercihini de algıla
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const saved = localStorage.getItem('gt-theme');
+    if (saved) return saved === 'dark';
+    // Sistem tercihini kontrol et
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+  
   const [accountTab, setAccountTab] = useState('Siparişlerim');
   const [cart, setCart] = useState<CartItem[]>(() => {
     const saved = localStorage.getItem('gt-cart');
@@ -45,11 +54,36 @@ export default function App() {
     localStorage.setItem('gt-favorites', JSON.stringify(favorites));
   }, [favorites]);
 
+  // Dark Mode Effect - Geliştirilmiş versiyon
   useEffect(() => {
-    if (isDarkMode) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
+    const root = document.documentElement;
+    
+    if (isDarkMode) {
+      root.classList.add('dark');
+      root.style.colorScheme = 'dark';
+    } else {
+      root.classList.remove('dark');
+      root.style.colorScheme = 'light';
+    }
+    
     localStorage.setItem('gt-theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
+
+  // Sistem tema değişikliğini dinle
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      // Sadece kullanıcı manuel olarak tema seçmediyse sistem tercihini uygula
+      const savedTheme = localStorage.getItem('gt-theme');
+      if (!savedTheme) {
+        setIsDarkMode(e.matches);
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
 
   // --- Calculations ---
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -543,11 +577,70 @@ export default function App() {
         );
       default:
         return (
-          <div className="h-[60vh] flex flex-col items-center justify-center space-y-6">
-            <h1 className="text-9xl font-display font-bold text-slate-100 dark:text-slate-900">404</h1>
-            <p className="text-xl text-slate-500">Aradığınız sayfa bulunamadı.</p>
-            <button onClick={() => setCurrentPage('home')} className="btn-primary">Ana Sayfaya Dön</button>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="min-h-[70vh] flex flex-col items-center justify-center px-4"
+          >
+            <div className="relative">
+              {/* Floating elements */}
+              <motion.div 
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-8 -left-12 w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full blur-xl"
+              />
+              <motion.div 
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -bottom-4 -right-8 w-20 h-20 bg-purple-100 dark:bg-purple-900/30 rounded-full blur-xl"
+              />
+              
+              {/* 404 Number */}
+              <motion.h1 
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                className="text-[12rem] md:text-[16rem] font-display font-black leading-none text-transparent bg-clip-text bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 select-none"
+              >
+                404
+              </motion.h1>
+            </div>
+            
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-center mt-4 space-y-4"
+            >
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-800 dark:text-white">
+                Sayfa Bulunamadı
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 max-w-md">
+                Aradığınız sayfa taşınmış, silinmiş ya da hiç var olmamış olabilir.
+              </p>
+            </motion.div>
+            
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-3 mt-8"
+            >
+              <button 
+                onClick={() => setCurrentPage('home')} 
+                className="btn-primary flex items-center gap-2"
+              >
+                <HomeIcon size={18} />
+                Ana Sayfaya Dön
+              </button>
+              <button 
+                onClick={() => window.history.back()} 
+                className="px-6 py-3 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-slate-700 dark:text-slate-300"
+              >
+                Geri Git
+              </button>
+            </motion.div>
+          </motion.div>
         );
     }
   };
@@ -696,6 +789,9 @@ export default function App() {
           </>
         )}
       </AnimatePresence>
+
+      {/* Live Chat */}
+      <LiveChat />
     </Layout>
   );
 }

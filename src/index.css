@@ -9,13 +9,65 @@
 }
 
 @layer base {
-  body {
-    @apply bg-white text-slate-900 transition-colors duration-300;
+  html {
+    @apply transition-colors duration-500;
   }
   
-  .dark body {
+  body {
+    @apply bg-slate-50 text-slate-900 transition-colors duration-500;
+  }
+  
+  html.dark body {
     @apply bg-slate-950 text-slate-100;
   }
+  
+  html.dark {
+    color-scheme: dark;
+  }
+}
+
+/* Theme Toggle Animation */
+.theme-toggle {
+  @apply relative w-16 h-8 rounded-full cursor-pointer transition-all duration-500;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+html.dark .theme-toggle {
+  background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+}
+
+.theme-toggle::before {
+  content: '';
+  @apply absolute top-1 left-1 w-6 h-6 rounded-full transition-all duration-500 shadow-lg;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+}
+
+html.dark .theme-toggle::before {
+  @apply left-9;
+  background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+}
+
+/* Sun rays animation */
+.sun-icon {
+  @apply transition-all duration-500;
+}
+
+html.dark .sun-icon {
+  @apply opacity-0 rotate-90 scale-0;
+}
+
+.moon-icon {
+  @apply transition-all duration-500 opacity-0 -rotate-90 scale-0;
+}
+
+html.dark .moon-icon {
+  @apply opacity-100 rotate-0 scale-100;
+}
+
+/* Theme transition overlay */
+.theme-transition-overlay {
+  @apply fixed inset-0 pointer-events-none z-[9999];
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), transparent 0%, transparent 100%);
 }
 
 @layer components {
@@ -55,4 +107,48 @@
 
 .footer-gradient {
   background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+}
+
+/* Dark mode için ek stiller */
+html.dark .footer-gradient {
+  background: linear-gradient(135deg, #312e81 0%, #1e40af 100%);
+}
+
+/* Input ve form elementleri */
+html.dark input,
+html.dark textarea,
+html.dark select {
+  @apply bg-slate-800 border-slate-700 text-slate-100 placeholder-slate-400;
+}
+
+html.dark input:focus,
+html.dark textarea:focus,
+html.dark select:focus {
+  @apply border-blue-500 ring-blue-500;
+}
+
+/* Modal ve overlay */
+html.dark .modal-overlay {
+  @apply bg-black/70;
+}
+
+/* Divider ve border */
+html.dark hr {
+  @apply border-slate-800;
+}
+
+/* Selection */
+::selection {
+  @apply bg-blue-600 text-white;
+}
+
+html.dark ::selection {
+  @apply bg-blue-500 text-white;
+}
+
+/* Smooth theme transition */
+* {
+  transition-property: background-color, border-color;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
 }

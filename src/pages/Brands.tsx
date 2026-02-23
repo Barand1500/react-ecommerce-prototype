@@ -2,6 +2,37 @@ import { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { Search, ArrowRight } from 'lucide-react';
 import { PRODUCTS } from '../constants';
+import { 
+  SiApple, SiSamsung, SiSony, SiLg, SiXiaomi, SiHuawei,
+  SiDell, SiHp, SiLenovo, SiAsus,
+  SiLogitech, SiRazer, SiCorsair, SiJbl, SiBose,
+  SiNvidia, SiIntel, SiAmd
+} from 'react-icons/si';
+import { BsMicrosoft } from 'react-icons/bs';
+import { IconType } from 'react-icons';
+
+// Marka logoları ve renkleri
+const BRAND_CONFIG: Record<string, { icon: IconType; color: string; productCount: string }> = {
+  'Apple': { icon: SiApple, color: '#555555', productCount: '150+' },
+  'Samsung': { icon: SiSamsung, color: '#1428A0', productCount: '160+' },
+  'Sony': { icon: SiSony, color: '#000000', productCount: '90+' },
+  'LG': { icon: SiLg, color: '#A50034', productCount: '100+' },
+  'Xiaomi': { icon: SiXiaomi, color: '#FF6700', productCount: '120+' },
+  'Huawei': { icon: SiHuawei, color: '#CF0A2C', productCount: '85+' },
+  'Dell': { icon: SiDell, color: '#007DB8', productCount: '120+' },
+  'HP': { icon: SiHp, color: '#0096D6', productCount: '135+' },
+  'Lenovo': { icon: SiLenovo, color: '#E2231A', productCount: '110+' },
+  'ASUS': { icon: SiAsus, color: '#000000', productCount: '145+' },
+  'Microsoft': { icon: BsMicrosoft, color: '#00A4EF', productCount: '85+' },
+  'Logitech': { icon: SiLogitech, color: '#00B8FC', productCount: '95+' },
+  'Razer': { icon: SiRazer, color: '#44D62C', productCount: '75+' },
+  'Corsair': { icon: SiCorsair, color: '#000000', productCount: '80+' },
+  'JBL': { icon: SiJbl, color: '#FF6600', productCount: '70+' },
+  'Bose': { icon: SiBose, color: '#000000', productCount: '55+' },
+  'NVIDIA': { icon: SiNvidia, color: '#76B900', productCount: '40+' },
+  'Intel': { icon: SiIntel, color: '#0071C5', productCount: '35+' },
+  'AMD': { icon: SiAmd, color: '#ED1C24', productCount: '30+' },
+};
 
 export default function Brands() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,6 +48,10 @@ export default function Brands() {
   const filteredBrands = brandStats.filter(b => 
     b.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const getBrandConfig = (brandName: string) => {
+    return BRAND_CONFIG[brandName] || null;
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-24">
@@ -40,37 +75,48 @@ export default function Brands() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {filteredBrands.map((brand, i) => (
-          <motion.div 
-            key={brand.name}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05 }}
-            className="group p-10 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[3rem] text-center space-y-6 hover:shadow-2xl hover:shadow-blue-500/10 transition-all cursor-pointer relative overflow-hidden"
-          >
-            <div className="absolute top-0 left-0 w-full h-1 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
-            
-            <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-[2rem] mx-auto flex items-center justify-center text-blue-600 font-display font-bold text-2xl shadow-inner group-hover:bg-blue-600 group-hover:text-white transition-all">
-              {brand.name.charAt(0)}
-            </div>
-            
-            <div className="space-y-1">
-              <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
-                {brand.name}
-              </h3>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                {brand.count} Ürün
-              </p>
-            </div>
-
-            <div className="pt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-              <span className="inline-flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-widest">
-                Ürünleri Gör <ArrowRight size={14} />
-              </span>
-            </div>
-          </motion.div>
-        ))}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        {filteredBrands.map((brand, i) => {
+          const config = getBrandConfig(brand.name);
+          const BrandIcon = config?.icon;
+          
+          return (
+            <motion.div 
+              key={brand.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              className="group p-8 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl text-center space-y-5 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-slate-200 dark:hover:border-slate-700 transition-all cursor-pointer"
+            >
+              {/* Logo */}
+              <div className="h-16 flex items-center justify-center transition-transform group-hover:scale-110">
+                {BrandIcon ? (
+                  <BrandIcon 
+                    size={52} 
+                    color={config?.color}
+                  />
+                ) : (
+                  <span 
+                    className="text-4xl font-display font-bold"
+                    style={{ color: '#3b82f6' }}
+                  >
+                    {brand.name.charAt(0)}
+                  </span>
+                )}
+              </div>
+              
+              {/* Brand Name & Count */}
+              <div className="space-y-1.5">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  {brand.name}
+                </h3>
+                <p className="text-sm text-slate-400">
+                  {config?.productCount || brand.count}+ Ürün
+                </p>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       {filteredBrands.length === 0 && (

@@ -163,9 +163,83 @@ export default function Layout({
                 )}
               </AnimatePresence>
             </div>
-            <button onClick={() => setIsDarkMode(!isDarkMode)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
-              {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-slate-700" />}
+            
+            {/* Geliştirilmiş Dark Mode Toggle */}
+            <button 
+              onClick={() => setIsDarkMode(!isDarkMode)} 
+              className="relative w-14 h-7 rounded-full transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+              style={{
+                background: isDarkMode 
+                  ? 'linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%)' 
+                  : 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)'
+              }}
+              aria-label={isDarkMode ? 'Açık moda geç' : 'Karanlık moda geç'}
+            >
+              {/* Toggle Circle */}
+              <motion.div 
+                className="absolute top-1 w-5 h-5 rounded-full shadow-lg flex items-center justify-center"
+                animate={{ 
+                  left: isDarkMode ? '2rem' : '0.25rem',
+                  background: isDarkMode 
+                    ? 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)' 
+                    : 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)'
+                }}
+                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+              >
+                <AnimatePresence mode="wait">
+                  {isDarkMode ? (
+                    <motion.div
+                      key="moon"
+                      initial={{ rotate: -90, scale: 0 }}
+                      animate={{ rotate: 0, scale: 1 }}
+                      exit={{ rotate: 90, scale: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Moon size={12} className="text-slate-700" />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="sun"
+                      initial={{ rotate: 90, scale: 0 }}
+                      animate={{ rotate: 0, scale: 1 }}
+                      exit={{ rotate: -90, scale: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Sun size={12} className="text-amber-600" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+              
+              {/* Stars for dark mode */}
+              <AnimatePresence>
+                {isDarkMode && (
+                  <>
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0 }}
+                      className="absolute top-1.5 left-1.5 w-1 h-1 bg-white rounded-full"
+                    />
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 0.7, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="absolute top-3 left-3 w-0.5 h-0.5 bg-white rounded-full"
+                    />
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 0.5, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="absolute bottom-2 left-2 w-0.5 h-0.5 bg-white rounded-full"
+                    />
+                  </>
+                )}
+              </AnimatePresence>
             </button>
+            
             <button onClick={() => setIsCartOpen(true)} className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
               <ShoppingBag size={20} className="text-slate-700 dark:text-slate-300" />
               {cartCount > 0 && (
@@ -330,39 +404,62 @@ export default function Layout({
       {/* --- Search Overlay --- */}
       <AnimatePresence>
         {isSearchOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl z-[300] p-8"
-          >
-            <div className="max-w-4xl mx-auto">
-              <div className="flex justify-end mb-20">
-                <button onClick={() => setIsSearchOpen(false)} className="p-4 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all">
-                  <X size={32} />
-                </button>
-              </div>
-              <div className="relative">
-                <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-blue-600" size={48} />
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
+              onClick={() => setIsSearchOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[300]"
+            />
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              exit={{ opacity: 0, y: -20 }}
+              className="fixed top-24 left-1/2 -translate-x-1/2 w-full max-w-xl bg-white dark:bg-slate-900 z-[310] shadow-2xl rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800"
+            >
+              {/* Search Input */}
+              <div className="relative border-b border-slate-100 dark:border-slate-800">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
                 <input 
                   autoFocus
                   type="text" 
                   placeholder="Ürün, marka veya kategori ara..." 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-transparent border-b-4 border-slate-100 dark:border-slate-800 py-8 pl-20 text-4xl md:text-6xl font-display font-bold outline-none focus:border-blue-600 transition-all text-slate-900 dark:text-white"
+                  className="w-full bg-transparent py-4 pl-12 pr-12 text-base outline-none text-slate-900 dark:text-white placeholder-slate-400"
                 />
+                <button 
+                  onClick={() => setIsSearchOpen(false)} 
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all"
+                >
+                  <X size={18} className="text-slate-400" />
+                </button>
               </div>
-              <div className="mt-12 space-y-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Popüler Aramalar</p>
-                <div className="flex flex-wrap gap-3">
-                  {['iPhone 15', 'MacBook Pro', 'PlayStation 5', 'Sony WH-1000XM5', 'DJI Mini'].map(tag => (
-                    <button key={tag} className="px-6 py-3 bg-slate-100 dark:bg-slate-900 rounded-2xl text-sm font-bold hover:bg-blue-600 hover:text-white transition-all">
+              
+              {/* Popular Searches */}
+              <div className="p-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Popüler Aramalar</p>
+                <div className="flex flex-wrap gap-2">
+                  {['iPhone 15', 'MacBook Pro', 'PlayStation 5', 'AirPods', 'Samsung'].map(tag => (
+                    <button 
+                      key={tag} 
+                      onClick={() => setSearchQuery(tag)}
+                      className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-medium hover:bg-blue-600 hover:text-white transition-all text-slate-600 dark:text-slate-300"
+                    >
                       {tag}
                     </button>
                   ))}
                 </div>
               </div>
-            </div>
-          </motion.div>
+              
+              {/* Keyboard shortcut hint */}
+              <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                <span>Aramak için yazın</span>
+                <kbd className="px-2 py-1 bg-white dark:bg-slate-700 rounded border border-slate-200 dark:border-slate-600 font-mono text-[10px]">ESC</kbd>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
