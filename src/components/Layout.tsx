@@ -104,71 +104,7 @@ export default function Layout({
             ))}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-4">
-            {/* Mağaza Seçici */}
-            <div className="relative">
-              <button 
-                onClick={() => setIsStoreDropdownOpen(!isStoreDropdownOpen)}
-                className="hidden sm:flex items-center gap-2 px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-700 dark:text-slate-300 transition-colors"
-              >
-                <MapPin size={18} className="text-blue-600" />
-                <span className="text-sm font-medium max-w-[120px] truncate">
-                  {stores.find(s => s.id === selectedStore)?.name || 'Mağaza Seç'}
-                </span>
-              </button>
-              
-              <AnimatePresence>
-                {isStoreDropdownOpen && (
-                  <>
-                    <motion.div 
-                      initial={{ opacity: 0 }} 
-                      animate={{ opacity: 1 }} 
-                      exit={{ opacity: 0 }} 
-                      onClick={() => setIsStoreDropdownOpen(false)} 
-                      className="fixed inset-0 z-[60]" 
-                    />
-                    <motion.div 
-                      initial={{ opacity: 0, y: -10, scale: 0.95 }} 
-                      animate={{ opacity: 1, y: 0, scale: 1 }} 
-                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                      className="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden z-[70]"
-                    >
-                      <div className="p-2">
-                        <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                          Mağaza Seçin
-                        </div>
-                        {stores.map(store => (
-                          <button
-                            key={store.id}
-                            onClick={() => {
-                              setSelectedStore(store.id);
-                              setIsStoreDropdownOpen(false);
-                            }}
-                            className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all ${
-                              selectedStore === store.id 
-                                ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' 
-                                : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
-                            }`}
-                          >
-                            <MapPin size={16} className={selectedStore === store.id ? 'text-blue-600' : 'text-slate-400'} />
-                            <span className="text-sm font-medium">{store.name}</span>
-                            {selectedStore === store.id && (
-                              <Check size={16} className="ml-auto text-blue-600" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                      <div className="border-t border-slate-100 dark:border-slate-800 p-3">
-                        <p className="text-[10px] text-slate-400 text-center">
-                          Mağaza stok durumunu kontrol etmek için seçin
-                        </p>
-                      </div>
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </div>
-
+          <div className="flex items-center gap-1 sm:gap-2">
             <button 
               className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-700 dark:text-slate-300"
               onClick={() => setIsSearchOpen(true)}
@@ -292,6 +228,70 @@ export default function Layout({
         </div>
       </header>
 
+      {/* --- Mağaza Seçici Bar --- */}
+      <div className="fixed top-20 left-0 right-0 z-40 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="relative">
+            <button 
+              onClick={() => setIsStoreDropdownOpen(!isStoreDropdownOpen)}
+              className="w-full flex items-center justify-center gap-2 py-2 text-white/90 hover:text-white transition-colors"
+            >
+              <MapPin size={14} />
+              <span className="text-xs font-medium">
+                {stores.find(s => s.id === selectedStore)?.name || 'Mağaza Seçin'}
+              </span>
+              <ChevronRight size={14} className={`transform transition-transform ${isStoreDropdownOpen ? 'rotate-90' : ''}`} />
+            </button>
+            
+            <AnimatePresence>
+              {isStoreDropdownOpen && (
+                <>
+                  <motion.div 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    exit={{ opacity: 0 }} 
+                    onClick={() => setIsStoreDropdownOpen(false)} 
+                    className="fixed inset-0 z-[60]" 
+                  />
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }} 
+                    animate={{ opacity: 1, y: 0 }} 
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden z-[70]"
+                  >
+                    <div className="p-2">
+                      <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        Mağaza Seçin
+                      </div>
+                      {stores.map(store => (
+                        <button
+                          key={store.id}
+                          onClick={() => {
+                            setSelectedStore(store.id);
+                            setIsStoreDropdownOpen(false);
+                          }}
+                          className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all ${
+                            selectedStore === store.id 
+                              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' 
+                              : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                          }`}
+                        >
+                          <MapPin size={16} className={selectedStore === store.id ? 'text-blue-600' : 'text-slate-400'} />
+                          <span className="text-sm font-medium">{store.name}</span>
+                          {selectedStore === store.id && (
+                            <Check size={16} className="ml-auto text-blue-600" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+
       {/* --- Navigation Sidebar --- */}
       <AnimatePresence>
         {isNavSidebarOpen && (
@@ -343,7 +343,7 @@ export default function Layout({
       </AnimatePresence>
 
       {/* --- Main Content --- */}
-      <main className="flex-1 pt-20">
+      <main className="flex-1 pt-28">
         {children}
       </main>
 
