@@ -47,6 +47,12 @@ export default function Layout({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [copied, setCopied] = useState(false);
+  const [showThemeTooltip, setShowThemeTooltip] = useState(false);
+
+  const handleThemeToggle = () => {
+    setShowThemeTooltip(true);
+    setTimeout(() => setShowThemeTooltip(false), 2000);
+  };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -55,13 +61,13 @@ export default function Layout({
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
       {/* --- Header --- */}
       <header className="fixed top-0 left-0 right-0 z-50 glass-nav">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button onClick={() => setIsNavSidebarOpen(true)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
-              <Menu size={24} />
+            <button onClick={() => setIsNavSidebarOpen(true)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+              <Menu size={24} className="text-slate-700 dark:text-slate-200" />
             </button>
             <h1 
               onClick={() => onNavigate('home')}
@@ -71,7 +77,7 @@ export default function Layout({
             </h1>
           </div>
 
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-bold uppercase tracking-widest text-slate-500">
+          <nav className="hidden lg:flex items-center gap-6 text-sm font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">
             {[
               { name: 'Ana Sayfa', id: 'home' },
               { name: 'Markalar', id: 'brands' },
@@ -165,80 +171,41 @@ export default function Layout({
             </div>
             
             {/* Geliştirilmiş Dark Mode Toggle */}
-            <button 
-              onClick={() => setIsDarkMode(!isDarkMode)} 
-              className="relative w-14 h-7 rounded-full transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
-              style={{
-                background: isDarkMode 
-                  ? 'linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%)' 
-                  : 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)'
-              }}
-              aria-label={isDarkMode ? 'Açık moda geç' : 'Karanlık moda geç'}
-            >
-              {/* Toggle Circle */}
-              <motion.div 
-                className="absolute top-1 w-5 h-5 rounded-full shadow-lg flex items-center justify-center"
-                animate={{ 
-                  left: isDarkMode ? '2rem' : '0.25rem',
-                  background: isDarkMode 
-                    ? 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)' 
-                    : 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)'
+            <div className="relative">
+              <button 
+                onClick={handleThemeToggle} 
+                className="relative w-14 h-7 rounded-full transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 opacity-60 cursor-pointer"
+                style={{
+                  background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)'
                 }}
-                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                aria-label="Yakında eklenecek"
               >
-                <AnimatePresence mode="wait">
-                  {isDarkMode ? (
-                    <motion.div
-                      key="moon"
-                      initial={{ rotate: -90, scale: 0 }}
-                      animate={{ rotate: 0, scale: 1 }}
-                      exit={{ rotate: 90, scale: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Moon size={12} className="text-slate-700" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="sun"
-                      initial={{ rotate: 90, scale: 0 }}
-                      animate={{ rotate: 0, scale: 1 }}
-                      exit={{ rotate: -90, scale: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Sun size={12} className="text-amber-600" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+                {/* Toggle Circle */}
+                <div 
+                  className="absolute top-1 left-1 w-5 h-5 rounded-full shadow-lg flex items-center justify-center"
+                  style={{
+                    background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)'
+                  }}
+                >
+                  <Sun size={12} className="text-amber-600" />
+                </div>
+              </button>
               
-              {/* Stars for dark mode */}
+              {/* Tooltip */}
               <AnimatePresence>
-                {isDarkMode && (
-                  <>
-                    <motion.span
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0 }}
-                      className="absolute top-1.5 left-1.5 w-1 h-1 bg-white rounded-full"
-                    />
-                    <motion.span
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 0.7, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0 }}
-                      transition={{ delay: 0.1 }}
-                      className="absolute top-3 left-3 w-0.5 h-0.5 bg-white rounded-full"
-                    />
-                    <motion.span
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 0.5, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0 }}
-                      transition={{ delay: 0.2 }}
-                      className="absolute bottom-2 left-2 w-0.5 h-0.5 bg-white rounded-full"
-                    />
-                  </>
+                {showThemeTooltip && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-900 text-white text-xs font-medium rounded-lg whitespace-nowrap z-50"
+                  >
+                    Yakında eklenecek -Baran
+                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45" />
+                  </motion.div>
                 )}
               </AnimatePresence>
-            </button>
+            </div>
             
             <button onClick={() => setIsCartOpen(true)} className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
               <ShoppingBag size={20} className="text-slate-700 dark:text-slate-300" />
@@ -308,8 +275,8 @@ export default function Layout({
       </main>
 
       {/* --- Footer --- */}
-      <footer className="bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900">
-        <div className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-4 gap-12 text-slate-900 dark:text-white">
+      <footer className="bg-white dark:bg-slate-900 border-t border-slate-200/50 dark:border-slate-800/50 transition-colors duration-500">
+        <div className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-4 gap-12 text-slate-800 dark:text-white">
           <div>
             <h4 className="font-display font-bold mb-6">İletişim Bilgileri</h4>
             <ul className="space-y-4 text-sm text-slate-500 dark:text-slate-400">
@@ -354,15 +321,39 @@ export default function Layout({
         </div>
 
         {/* SATIŞ PLATFORMLARIMIZ Bantı */}
-        <div className="bg-slate-100 dark:bg-slate-900 py-6">
+        <div className="bg-slate-100/50 dark:bg-slate-800/50 py-8 transition-colors duration-500">
           <div className="max-w-7xl mx-auto px-4">
-            <h5 className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4">SATIŞ PLATFORMLARIMIZ</h5>
-            <div className="flex flex-wrap justify-center items-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all">
-              <span className="font-bold text-lg">Hepsiburada</span>
-              <span className="font-bold text-lg">Trendyol</span>
-              <span className="font-bold text-lg">N11</span>
-              <span className="font-bold text-lg">Amazon</span>
-              <span className="font-bold text-lg">Çiçeksepeti</span>
+            <h5 className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 mb-6">SATIŞ PLATFORMLARIMIZ</h5>
+            <div className="flex flex-wrap justify-center items-center gap-4">
+              {/* Hepsiburada */}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-orange-400 hover:shadow-lg hover:shadow-orange-500/10 transition-all cursor-pointer group">
+                <div className="w-7 h-7 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white font-black text-xs">H</div>
+                <span className="font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-orange-500 transition-colors">Hepsiburada</span>
+              </div>
+              
+              {/* Trendyol */}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-orange-500 hover:shadow-lg hover:shadow-orange-500/10 transition-all cursor-pointer group">
+                <div className="w-7 h-7 bg-gradient-to-br from-orange-600 to-red-500 rounded-lg flex items-center justify-center text-white font-black text-xs">T</div>
+                <span className="font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-orange-600 transition-colors">Trendyol</span>
+              </div>
+              
+              {/* N11 */}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/10 transition-all cursor-pointer group">
+                <div className="w-7 h-7 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center text-white font-black text-[10px]">N11</div>
+                <span className="font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-purple-600 transition-colors">N11</span>
+              </div>
+              
+              {/* Amazon */}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-500 hover:shadow-lg hover:shadow-amber-500/10 transition-all cursor-pointer group">
+                <div className="w-7 h-7 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center text-amber-400 font-black text-xs">a</div>
+                <span className="font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-amber-600 transition-colors">Amazon</span>
+              </div>
+              
+              {/* Çiçeksepeti */}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-pink-500 hover:shadow-lg hover:shadow-pink-500/10 transition-all cursor-pointer group">
+                <div className="w-7 h-7 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg flex items-center justify-center text-white text-sm">🌸</div>
+                <span className="font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-pink-500 transition-colors">Çiçeksepeti</span>
+              </div>
             </div>
           </div>
         </div>
@@ -386,9 +377,9 @@ export default function Layout({
         </div>
 
         {/* Alt Bilgi */}
-        <div className="bg-white dark:bg-slate-950 py-8 border-t border-slate-100 dark:border-slate-900">
+        <div className="bg-white dark:bg-slate-900 py-8 border-t border-slate-200/50 dark:border-slate-800/50 transition-colors duration-500">
           <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-xs text-slate-400 font-medium">© 2024 GÜZEL TEKNOLOJİ. TÜM HAKLARI SAKLIDIR.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">© 2024 GÜZEL TEKNOLOJİ. TÜM HAKLARI SAKLIDIR.</p>
             <div className="flex gap-4">
               <button className="flex items-center gap-2 px-5 py-2.5 bg-black text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-all shadow-lg">
                 <Smartphone size={16} /> App Store

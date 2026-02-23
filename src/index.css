@@ -14,11 +14,11 @@
   }
   
   body {
-    @apply bg-slate-50 text-slate-900 transition-colors duration-500;
+    @apply bg-slate-50 text-slate-800 transition-colors duration-500;
   }
   
   html.dark body {
-    @apply bg-slate-950 text-slate-100;
+    @apply bg-slate-950 text-slate-200;
   }
   
   html.dark {
@@ -72,19 +72,19 @@ html.dark .moon-icon {
 
 @layer components {
   .btn-primary {
-    @apply bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-blue-700 transition-all duration-300 disabled:opacity-50 shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0;
+    @apply bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-blue-700 transition-all duration-300 disabled:opacity-50 shadow-xl shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0;
   }
   
   .btn-outline {
-    @apply border border-slate-200 px-8 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-slate-50 transition-all duration-300 dark:border-slate-800 dark:hover:bg-slate-900;
+    @apply border border-slate-300 dark:border-slate-700 px-8 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 text-slate-700 dark:text-slate-200;
   }
 
   .glass-nav {
-    @apply bg-white/80 backdrop-blur-xl border-b border-slate-100 dark:bg-slate-950/80 dark:border-slate-900;
+    @apply bg-white/90 backdrop-blur-xl border-b border-slate-200/50 dark:bg-slate-950/90 dark:border-slate-800/50 shadow-sm;
   }
 
   .card {
-    @apply bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500;
+    @apply bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500;
   }
 }
 
@@ -94,7 +94,7 @@ html.dark .moon-icon {
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-slate-100 dark:bg-slate-900;
+  @apply bg-slate-100/50 dark:bg-slate-900/50;
 }
 
 ::-webkit-scrollbar-thumb {

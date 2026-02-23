@@ -75,11 +75,11 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
   }, [currentPage]);
 
   return (
-    <div className="space-y-0 pb-20">
+    <div className="space-y-0 pb-20 bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
       <HeroSlider />
 
       {/* Filter Bar */}
-      <div className="sticky top-20 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-900 py-4">
+      <div className="sticky top-20 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 py-4 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between overflow-x-auto no-scrollbar gap-4">
           <div className="flex items-center gap-2">
             <button 
@@ -94,7 +94,7 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
                 <button 
                   key={item}
                   onClick={() => setIsFilterOpen(true)}
-                  className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-xs font-bold text-slate-500 dark:text-slate-400 transition-all whitespace-nowrap"
+                  className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all whitespace-nowrap"
                 >
                   {item}
                 </button>
@@ -146,8 +146,8 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
           {/* Product Grid */}
           <div className="flex-1">
             <div className="flex justify-between items-center mb-10">
-              <h3 className="text-3xl font-display font-bold tracking-tight text-slate-900 dark:text-white">
-                {selectedCategory} <span className="text-slate-300 dark:text-slate-700 ml-2 text-xl font-normal">({filteredProducts.length})</span>
+              <h3 className="text-3xl font-display font-bold tracking-tight text-slate-800 dark:text-white">
+                {selectedCategory} <span className="text-slate-400 dark:text-slate-600 ml-2 text-xl font-normal">({filteredProducts.length})</span>
               </h3>
             </div>
 
@@ -174,10 +174,10 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
                   <button
                     key={i}
                     onClick={() => setCurrentPage(i + 1)}
-                    className={`w-12 h-12 rounded-2xl font-bold text-sm transition-all ${
+                    className={`w-12 h-12 rounded-2xl font-bold text-sm transition-all duration-300 ${
                       currentPage === i + 1 
-                        ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/20' 
-                        : 'bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-500 hover:border-blue-600'
+                        ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30' 
+                        : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400'
                     }`}
                   >
                     {i + 1}
@@ -188,11 +188,11 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
             
             {filteredProducts.length === 0 && (
               <div className="py-32 text-center">
-                <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Filter size={32} className="text-slate-300" />
+                <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Filter size={32} className="text-slate-400 dark:text-slate-500" />
                 </div>
-                <h4 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Sonuç Bulunamadı</h4>
-                <p className="text-slate-500">Filtrelerinizi değiştirerek tekrar deneyebilirsiniz.</p>
+                <h4 className="text-xl font-bold mb-2 text-slate-800 dark:text-white">Sonuç Bulunamadı</h4>
+                <p className="text-slate-500 dark:text-slate-400">Filtrelerinizi değiştirerek tekrar deneyebilirsiniz.</p>
                 <button 
                   onClick={() => {
                     setSelectedCategory('Tümü');
@@ -219,25 +219,25 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setIsFilterOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
+              className="fixed inset-0 bg-black/30 dark:bg-black/50 backdrop-blur-sm z-[100]"
             />
             <motion.div 
               initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
-              className="fixed top-0 left-0 bottom-0 w-full max-w-sm bg-white dark:bg-slate-950 z-[110] shadow-2xl p-8 overflow-y-auto"
+              className="fixed top-0 left-0 bottom-0 w-full max-w-sm bg-white dark:bg-slate-900 z-[110] shadow-2xl p-8 overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-10">
-                <h2 className="text-2xl font-display font-bold text-slate-900 dark:text-white">Filtrele</h2>
-                <button onClick={() => setIsFilterOpen(false)} className="text-slate-900 dark:text-white"><X size={28} /></button>
+                <h2 className="text-2xl font-display font-bold text-slate-800 dark:text-white">Filtrele</h2>
+                <button onClick={() => setIsFilterOpen(false)} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"><X size={28} /></button>
               </div>
 
               <div className="space-y-10">
                 {/* Categories */}
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Kategoriler</h4>
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-6">Kategoriler</h4>
                   <div className="space-y-2">
                     <button 
                       onClick={() => { setSelectedCategory('Tümü'); setCurrentPage(1); }}
-                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold transition-all ${selectedCategory === 'Tümü' ? 'bg-blue-600 text-white shadow-lg' : 'hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-900 dark:text-white'}`}
+                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold transition-all ${selectedCategory === 'Tümü' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'}`}
                     >
                       Tümü
                     </button>
@@ -245,13 +245,13 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
                       <button 
                         key={cat}
                         onClick={() => { setSelectedCategory(cat); setCurrentPage(1); }}
-                        className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold transition-all flex items-center justify-between ${selectedCategory === cat ? 'bg-blue-600 text-white shadow-lg' : 'hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-900 dark:text-white'}`}
+                        className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold transition-all flex items-center justify-between ${selectedCategory === cat ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'}`}
                       >
                         <div className="flex items-center gap-3">
                           <span className={selectedCategory === cat ? 'text-white' : 'text-blue-600'}>{icon}</span>
                           {cat}
                         </div>
-                        <span className="text-[10px] opacity-50">{PRODUCTS.filter(p => p.category === cat).length}</span>
+                        <span className="text-[10px] opacity-60">{PRODUCTS.filter(p => p.category === cat).length}</span>
                       </button>
                     ))}
                   </div>
@@ -277,13 +277,13 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
 
                 {/* Brands */}
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Markalar</h4>
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-6">Markalar</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {brands.map(brand => (
                       <button 
                         key={brand}
                         onClick={() => toggleBrand(brand)}
-                        className={`px-4 py-3 rounded-2xl text-xs font-bold border transition-all ${selectedBrands.includes(brand) ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-100 dark:border-slate-800 hover:border-blue-600 text-slate-900 dark:text-white'}`}
+                        className={`px-4 py-3 rounded-2xl text-xs font-bold border transition-all ${selectedBrands.includes(brand) ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-blue-500 text-slate-700 dark:text-slate-200'}`}
                       >
                         {brand}
                       </button>
@@ -310,16 +310,16 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
 
                 {/* Stock */}
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Stok Durumu</h4>
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-6">Stok Durumu</h4>
                   <div className="space-y-3">
                     <label className="flex items-center gap-3 cursor-pointer group">
                       <div 
                         onClick={() => { setOnlyInStock(!onlyInStock); setCurrentPage(1); }}
-                        className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all ${onlyInStock ? 'bg-blue-600 border-blue-600' : 'border-slate-200 dark:border-slate-800 group-hover:border-blue-600'}`}
+                        className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all ${onlyInStock ? 'bg-blue-600 border-blue-600 shadow-lg shadow-blue-500/30' : 'border-slate-300 dark:border-slate-600 group-hover:border-blue-500'}`}
                       >
                         {onlyInStock && <Check size={14} className="text-white" />}
                       </div>
-                      <span className="text-sm font-bold text-slate-900 dark:text-white">Sadece Stoktakiler</span>
+                      <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Sadece Stoktakiler</span>
                     </label>
                   </div>
                 </div>

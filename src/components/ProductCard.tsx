@@ -22,7 +22,7 @@ export default function ProductCard({ product, onAddToCart, onQuickView, onNavig
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="group relative bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-100 dark:border-slate-800 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1"
+      className="group relative bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200/50 dark:border-slate-800 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 dark:hover:shadow-blue-500/5 hover:-translate-y-1 hover:border-slate-300 dark:hover:border-slate-700"
     >
       {/* Badges */}
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
@@ -48,11 +48,11 @@ export default function ProductCard({ product, onAddToCart, onQuickView, onNavig
       </div>
       
       {/* Image Container */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950">
         <img 
           src={product.image} 
           alt={product.name} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-95 group-hover:opacity-100"
           referrerPolicy="no-referrer"
         />
         
@@ -115,20 +115,20 @@ export default function ProductCard({ product, onAddToCart, onQuickView, onNavig
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600">{product.brand}</span>
           <div className="flex items-center gap-1">
             <Star size={10} className="text-yellow-400 fill-yellow-400" />
-            <span className="text-[10px] font-bold text-slate-400">{product.rating}</span>
+            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">{product.rating}</span>
           </div>
         </div>
         
         <h3 
           onClick={() => onNavigate(product)}
-          className="text-base font-bold mb-3 text-slate-900 dark:text-white group-hover:text-blue-600 cursor-pointer transition-colors line-clamp-1"
+          className="text-base font-bold mb-3 text-slate-800 dark:text-white group-hover:text-blue-600 cursor-pointer transition-colors line-clamp-1"
         >
           {product.name}
         </h3>
         
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
-            <p className="text-lg font-display font-bold text-slate-900 dark:text-white">
+            <p className="text-lg font-display font-bold text-slate-800 dark:text-white">
               {product.price.toLocaleString('tr-TR')} <span className="text-xs font-normal text-slate-400">TL</span>
             </p>
             {product.oldPrice && (
@@ -138,7 +138,7 @@ export default function ProductCard({ product, onAddToCart, onQuickView, onNavig
             )}
           </div>
           <div className="flex gap-1">
-            <div className="w-2 h-2 rounded-full bg-slate-200 dark:bg-slate-700" />
+            <div className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700" />
             <div className="w-2 h-2 rounded-full bg-blue-600" />
           </div>
         </div>
