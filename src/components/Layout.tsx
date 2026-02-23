@@ -35,19 +35,28 @@ interface LayoutProps {
   isNavSidebarOpen: boolean;
   setIsNavSidebarOpen: (val: boolean) => void;
   onLogout: () => void;
+  selectedStore: string;
+  setSelectedStore: (val: string) => void;
 }
 
 export default function Layout({ 
   children, cart, favorites, comparisonList, cartCount, favCount, compareCount, cartTotal, user, isDarkMode, setIsDarkMode, 
   setIsCartOpen, isCartOpen, isFavOpen, setIsFavOpen, setIsAuthModalOpen, setAuthMode, removeFromCart, removeFromFav, 
-  addToCart, updateQuantity, onNavigate, isNavSidebarOpen, setIsNavSidebarOpen, onLogout
+  addToCart, updateQuantity, onNavigate, isNavSidebarOpen, setIsNavSidebarOpen, onLogout, selectedStore, setSelectedStore
 }: LayoutProps) {
   const [selectedBank, setSelectedBank] = useState<string | null>(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isStoreDropdownOpen, setIsStoreDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [copied, setCopied] = useState(false);
   const [showThemeTooltip, setShowThemeTooltip] = useState(false);
+
+  const stores = [
+    { id: 'all', name: 'Tüm Mağazalar' },
+    { id: 'antalya', name: 'Antalya / Merkez' },
+    { id: 'nevsehir', name: 'Nevşehir / Merkez' }
+  ];
 
   const handleThemeToggle = () => {
     setShowThemeTooltip(true);
@@ -96,6 +105,70 @@ export default function Layout({
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4">
+            {/* Mağaza Seçici */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsStoreDropdownOpen(!isStoreDropdownOpen)}
+                className="hidden sm:flex items-center gap-2 px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-700 dark:text-slate-300 transition-colors"
+              >
+                <MapPin size={18} className="text-blue-600" />
+                <span className="text-sm font-medium max-w-[120px] truncate">
+                  {stores.find(s => s.id === selectedStore)?.name || 'Mağaza Seç'}
+                </span>
+              </button>
+              
+              <AnimatePresence>
+                {isStoreDropdownOpen && (
+                  <>
+                    <motion.div 
+                      initial={{ opacity: 0 }} 
+                      animate={{ opacity: 1 }} 
+                      exit={{ opacity: 0 }} 
+                      onClick={() => setIsStoreDropdownOpen(false)} 
+                      className="fixed inset-0 z-[60]" 
+                    />
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }} 
+                      animate={{ opacity: 1, y: 0, scale: 1 }} 
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      className="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden z-[70]"
+                    >
+                      <div className="p-2">
+                        <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                          Mağaza Seçin
+                        </div>
+                        {stores.map(store => (
+                          <button
+                            key={store.id}
+                            onClick={() => {
+                              setSelectedStore(store.id);
+                              setIsStoreDropdownOpen(false);
+                            }}
+                            className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all ${
+                              selectedStore === store.id 
+                                ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' 
+                                : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                            }`}
+                          >
+                            <MapPin size={16} className={selectedStore === store.id ? 'text-blue-600' : 'text-slate-400'} />
+                            <span className="text-sm font-medium">{store.name}</span>
+                            {selectedStore === store.id && (
+                              <Check size={16} className="ml-auto text-blue-600" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="border-t border-slate-100 dark:border-slate-800 p-3">
+                        <p className="text-[10px] text-slate-400 text-center">
+                          Mağaza stok durumunu kontrol etmek için seçin
+                        </p>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+
             <button 
               className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-700 dark:text-slate-300"
               onClick={() => setIsSearchOpen(true)}

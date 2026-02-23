@@ -44,6 +44,12 @@ export default function App() {
     const saved = localStorage.getItem('gt-favorites');
     return saved ? JSON.parse(saved) : [];
   });
+  
+  // Mağaza Seçimi
+  const [selectedStore, setSelectedStore] = useState(() => {
+    const saved = localStorage.getItem('gt-store');
+    return saved || 'all';
+  });
 
   // --- Effects ---
   useEffect(() => {
@@ -53,6 +59,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('gt-favorites', JSON.stringify(favorites));
   }, [favorites]);
+
+  useEffect(() => {
+    localStorage.setItem('gt-store', selectedStore);
+  }, [selectedStore]);
 
   // Dark Mode Effect - Geliştirilmiş versiyon
   useEffect(() => {
@@ -671,6 +681,8 @@ export default function App() {
       isNavSidebarOpen={isNavSidebarOpen}
       setIsNavSidebarOpen={setIsNavSidebarOpen}
       onLogout={handleLogout}
+      selectedStore={selectedStore}
+      setSelectedStore={setSelectedStore}
     >
       {renderPage()}
 
