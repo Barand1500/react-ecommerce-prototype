@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingBag, CheckCircle, ShieldCheck, Truck, RefreshCcw, Heart, BarChart2, Bell, X, Mail, MapPin, Store, ChevronLeft, ChevronRight, CreditCard, Calculator } from 'lucide-react';
+import { ShoppingBag, CheckCircle, ShieldCheck, Truck, RefreshCcw, Heart, BarChart2, Bell, X, Mail, MapPin, Store, ChevronLeft, ChevronRight, ChevronDown, CreditCard, Calculator } from 'lucide-react';
 import { Product } from '../types';
 import { STORE_AVAILABILITY } from '../constants';
 
@@ -30,6 +30,7 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showInstallments, setShowInstallments] = useState(false);
   const [selectedInstallment, setSelectedInstallment] = useState(6);
+  const [expandedBank, setExpandedBank] = useState<string | null>(null);
   
   const discount = product.oldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : null;
 
@@ -325,57 +326,122 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
         </div>
       </section>
 
-      {/* Taksit Hesaplayıcı - Kompakt */}
+      {/* Taksit Hesaplayıcı - Accordion */}
       <section className="mb-16">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
-              <div className="flex items-center gap-3">
-                <Calculator size={20} className="text-green-600" />
-                <h4 className="font-bold text-slate-900 dark:text-white">Taksit Seçenekleri</h4>
-              </div>
-              <div className="flex items-center gap-1">
-                {[3, 6, 9, 12].map((months) => (
-                  <button
-                    key={months}
-                    onClick={() => setSelectedInstallment(months)}
-                    className={`px-3 py-1.5 rounded-lg font-bold text-xs transition-all ${
-                      selectedInstallment === months
-                        ? 'bg-green-600 text-white'
-                        : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-green-100 dark:hover:bg-green-900/30'
-                    }`}
-                  >
-                    {months}x
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {INSTALLMENT_OPTIONS.map((option) => {
-                const rate = option.rates[selectedInstallment as keyof typeof option.rates];
-                const monthlyPayment = calculateInstallment(selectedInstallment, rate);
-                
-                return (
-                  <div 
-                    key={option.bank}
-                    className="bg-white dark:bg-slate-800 rounded-xl p-3 border border-slate-100 dark:border-slate-700 text-center"
-                  >
-                    <span className="text-lg mb-1 block">{option.logo}</span>
-                    <p className="text-[10px] text-slate-500 mb-1 truncate">{option.bank}</p>
-                    <p className="font-bold text-green-600 text-sm">{monthlyPayment.toLocaleString('tr-TR')} TL</p>
-                    {rate === 0 && (
-                      <span className="text-[9px] text-green-600 font-bold">FAİZSİZ</span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            <p className="text-[10px] text-slate-400 mt-4 text-center">
-              * Taksit oranları değişiklik gösterebilir.
-            </p>
+          <div className="flex items-center gap-3 mb-4">
+            <Calculator size={20} className="text-green-600" />
+            <h4 className="font-bold text-slate-900 dark:text-white">Taksit Seçenekleri</h4>
           </div>
+
+          <div className="space-y-2">
+            {INSTALLMENT_OPTIONS.map((option) => {
+              const isExpanded = expandedBank === option.bank;
+              
+              return (
+                <div 
+                  key={option.bank}
+                  className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden"
+                >
+                  {/* Accordion Header */}
+                  <button
+                    onClick={() => setExpandedBank(isExpanded ? null : option.bank)}
+                    className="w-full flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{option.logo}</span>
+                      <span className="font-bold text-slate-900 dark:text-white">{option.bank}</span>
+                      {option.rates[3] === 0 && (
+                        <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-600 text-[10px] font-bold rounded-full">
+                          3 TAKSİT FAİZSİZ
+                        </span>
+                      )}
+                    </div>
+                    <ChevronDown 
+                      size={20} 
+                      className={`text-slate-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} 
+                    />
+                  </button>
+
+                  {/* Accordion Content */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="p-4 pt-0 border-t border-slate-100 dark:border-slate-800">
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+                            {[3, 6, 9, 12].map((months) => {
+                              const rate = option.rates[months as keyof typeof option.rates];
+                              const monthlyPayment = calculateInstallment(months, rate);
+                              const totalPrice = monthlyPayment * months;
+                              const interestAmount = totalPrice - product.price;
+                              
+                              return (
+                                <div 
+                                  key={months}
+                                  className={`rounded-xl p-4 border-2 transition-all ${
+                                    rate === 0 
+                                      ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700' 
+                                      : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+                                  }`}
+                                >
+                                  <div className="text-center mb-3">
+                                    <span className={`text-2xl font-black ${rate === 0 ? 'text-green-600' : 'text-slate-900 dark:text-white'}`}>
+                                      {months}x
+                                    </span>
+                                    {rate === 0 && (
+                                      <span className="block text-[10px] font-bold text-green-600 mt-1">FAİZSİZ</span>
+                                    )}
+                                  </div>
+                                  
+                                  <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                      <span className="text-slate-500">Aylık:</span>
+                                      <span className="font-bold text-green-600">{monthlyPayment.toLocaleString('tr-TR')} TL</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-slate-500">Toplam:</span>
+                                      <span className="font-medium text-slate-700 dark:text-slate-300">{totalPrice.toLocaleString('tr-TR')} TL</span>
+                                    </div>
+                                    {rate > 0 && (
+                                      <>
+                                        <div className="h-px bg-slate-200 dark:bg-slate-700 my-2" />
+                                        <div className="flex justify-between text-xs">
+                                          <span className="text-slate-400">Faiz:</span>
+                                          <span className="text-orange-500 font-medium">%{rate}</span>
+                                        </div>
+                                        <div className="flex justify-between text-xs">
+                                          <span className="text-slate-400">Fark:</span>
+                                          <span className="text-orange-500 font-medium">+{interestAmount.toLocaleString('tr-TR')} TL</span>
+                                        </div>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          
+                          <p className="text-[10px] text-slate-400 mt-4 text-center">
+                            * {option.bank} kartınızla bu taksit seçeneklerinden yararlanabilirsiniz.
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
+
+          <p className="text-[10px] text-slate-400 mt-4 text-center">
+            * Taksit oranları güncel piyasa koşullarına göre değişiklik gösterebilir.
+          </p>
         </div>
       </section>
 
