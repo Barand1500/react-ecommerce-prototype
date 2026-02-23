@@ -4,9 +4,9 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Menu, X, ShoppingBag, Search, Sun, Moon, 
   Instagram, Twitter, Facebook, Youtube,
-  Phone, Mail, MapPin, ChevronRight,
+  Phone, Mail, MapPin, ChevronRight, ChevronDown, ChevronUp,
   CreditCard, Smartphone, Heart, BarChart2, Trash2, Plus, Minus, Copy, Check, User as UserIcon, LogOut, Settings,
-  MessageCircle
+  MessageCircle, FileText, ArrowLeftRight, Lock, Power, Wallet
 } from 'lucide-react';
 import { CartItem, Product, User } from '../types';
 import { PRODUCTS } from '../constants';
@@ -51,9 +51,10 @@ export default function Layout({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isStoreDropdownOpen, setIsStoreDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');  
   const [copied, setCopied] = useState(false);
   const [showThemeTooltip, setShowThemeTooltip] = useState(false);
+  const [isUserBarOpen, setIsUserBarOpen] = useState(true);
 
   const stores = [
     { id: 'all', name: 'Tüm Mağazalar' },
@@ -99,6 +100,66 @@ export default function Layout({
             >
               GÜZEL TEKNOLOJİ
             </h1>
+            
+            {/* Mağaza Seçici Dropdown */}
+            <div className="relative hidden sm:block">
+              <button 
+                onClick={() => setIsStoreDropdownOpen(!isStoreDropdownOpen)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+              >
+                <MapPin size={14} className="text-blue-600" />
+                <span className="text-xs font-medium text-slate-700 dark:text-slate-300 max-w-[100px] truncate">
+                  {stores.find(s => s.id === selectedStore)?.name || 'Mağaza'}
+                </span>
+                <ChevronDown size={14} className={`text-slate-400 transition-transform ${isStoreDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              <AnimatePresence>
+                {isStoreDropdownOpen && (
+                  <>
+                    <motion.div 
+                      initial={{ opacity: 0 }} 
+                      animate={{ opacity: 1 }} 
+                      exit={{ opacity: 0 }} 
+                      onClick={() => setIsStoreDropdownOpen(false)} 
+                      className="fixed inset-0 z-40" 
+                    />
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10 }} 
+                      animate={{ opacity: 1, y: 0 }} 
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden z-50"
+                    >
+                      <div className="p-2">
+                        <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                          Mağaza Seçin
+                        </div>
+                        {stores.map(store => (
+                          <button
+                            key={store.id}
+                            onClick={() => {
+                              setSelectedStore(store.id);
+                              setIsStoreDropdownOpen(false);
+                            }}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
+                              selectedStore === store.id 
+                                ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' 
+                                : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                            }`}
+                          >
+                            <MapPin size={14} className={selectedStore === store.id ? 'text-blue-600' : 'text-slate-400'} />
+                            <span className="text-sm font-medium">{store.name}</span>
+                            {selectedStore === store.id && (
+                              <Check size={14} className="ml-auto text-blue-600" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           <nav className="hidden lg:flex items-center gap-6 text-sm font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">
@@ -171,7 +232,7 @@ export default function Layout({
                       className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 p-2 z-50"
                     >
                       <button 
-                        onClick={() => { onNavigate('my-account'); setIsUserMenuOpen(false); }}
+                        onClick={() => { onNavigate('profile'); setIsUserMenuOpen(false); }}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-all"
                       >
                         <UserIcon size={18} /> Hesabım
@@ -243,69 +304,98 @@ export default function Layout({
         </div>
       </header>
 
-      {/* --- Mağaza Seçici Bar --- */}
-      <div className="fixed top-20 left-0 right-0 z-40 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="relative">
-            <button 
-              onClick={() => setIsStoreDropdownOpen(!isStoreDropdownOpen)}
-              className="w-full flex items-center justify-center gap-2 py-2 text-white/90 hover:text-white transition-colors"
-            >
-              <MapPin size={14} />
-              <span className="text-xs font-medium">
-                {stores.find(s => s.id === selectedStore)?.name || 'Mağaza Seçin'}
-              </span>
-              <ChevronRight size={14} className={`transform transition-transform ${isStoreDropdownOpen ? 'rotate-90' : ''}`} />
-            </button>
-            
-            <AnimatePresence>
-              {isStoreDropdownOpen && (
-                <>
-                  <motion.div 
-                    initial={{ opacity: 0 }} 
-                    animate={{ opacity: 1 }} 
-                    exit={{ opacity: 0 }} 
-                    onClick={() => setIsStoreDropdownOpen(false)} 
-                    className="fixed inset-0 z-[60]" 
-                  />
-                  <motion.div 
-                    initial={{ opacity: 0, y: -10 }} 
-                    animate={{ opacity: 1, y: 0 }} 
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden z-[70]"
-                  >
-                    <div className="p-2">
-                      <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                        Mağaza Seçin
+      {/* --- Kullanıcı Bilgi Barı (Giriş yapılmışsa) --- */}
+      {user && (
+        <div className="fixed top-20 left-0 right-0 z-30">
+          <AnimatePresence>
+            {isUserBarOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="max-w-7xl mx-auto px-4 py-3">
+                    <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+                      {/* Kullanıcı Bilgileri */}
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-violet-500 flex items-center justify-center text-lg font-bold text-violet-600">
+                          {user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                        </div>
+                        <div className="text-left">
+                          <p className="font-bold text-slate-900 dark:text-white text-sm">{user.name}</p>
+                          <p className="text-xs text-blue-600">{user.email}</p>
+                          <p className="text-xs text-slate-500">530 411 21 50</p>
+                        </div>
                       </div>
-                      {stores.map(store => (
-                        <button
-                          key={store.id}
-                          onClick={() => {
-                            setSelectedStore(store.id);
-                            setIsStoreDropdownOpen(false);
-                          }}
-                          className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all ${
-                            selectedStore === store.id 
-                              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' 
-                              : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
-                          }`}
-                        >
-                          <MapPin size={16} className={selectedStore === store.id ? 'text-blue-600' : 'text-slate-400'} />
-                          <span className="text-sm font-medium">{store.name}</span>
-                          {selectedStore === store.id && (
-                            <Check size={16} className="ml-auto text-blue-600" />
-                          )}
-                        </button>
-                      ))}
+
+                      {/* Hesap Özeti */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-slate-500 font-medium hidden sm:block">Hesap Özeti</span>
+                        <div className="flex items-center gap-1">
+                          <div className="px-3 py-1.5 bg-violet-100 dark:bg-violet-900/30 rounded-lg text-center">
+                            <p className="text-[10px] text-violet-600 font-medium">Borç</p>
+                            <p className="text-xs font-bold text-violet-600">-0,00 ₺</p>
+                          </div>
+                          <div className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-center">
+                            <p className="text-[10px] text-slate-500 font-medium">Alacak</p>
+                            <p className="text-xs font-bold text-slate-700 dark:text-slate-300">0,00 ₺</p>
+                          </div>
+                          <div className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-center">
+                            <p className="text-[10px] text-slate-500 font-medium">Bakiye</p>
+                            <p className="text-xs font-bold text-slate-700 dark:text-slate-300">0,00 ₺ (A)</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Profil Menü İkonları */}
+                      <div className="flex items-center gap-1">
+                        {[
+                          { icon: <UserIcon size={18} />, label: 'Profil', action: () => onNavigate('profile') },
+                          { icon: <Wallet size={18} />, label: 'Hesap', action: () => onNavigate('profile') },
+                          { icon: <MapPin size={18} />, label: 'Adresler', action: () => onNavigate('profile') },
+                          { icon: <FileText size={18} />, label: 'Faturalar', action: () => onNavigate('profile') },
+                          { icon: <ShoppingBag size={18} />, label: 'Siparişler', action: () => onNavigate('profile') },
+                          { icon: <ArrowLeftRight size={18} />, label: 'İadeler', action: () => onNavigate('profile') },
+                          { icon: <Lock size={18} />, label: 'Güvenlik', action: () => onNavigate('profile') },
+                          { icon: <Power size={18} />, label: 'Çıkış', action: onLogout, isLogout: true }
+                        ].map((item, idx) => (
+                          <button
+                            key={idx}
+                            onClick={item.action}
+                            className={`p-2.5 rounded-xl transition-all ${
+                              item.isLogout 
+                                ? 'text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20' 
+                                : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                            }`}
+                            title={item.label}
+                          >
+                            {item.icon}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </motion.div>
-                </>
-              )}
-            </AnimatePresence>
-          </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          
+          {/* Toggle Button */}
+          <button
+            onClick={() => setIsUserBarOpen(!isUserBarOpen)}
+            className="absolute left-1/2 -translate-x-1/2 -bottom-3 z-10 px-3 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full shadow-sm hover:shadow-md transition-all"
+          >
+            {isUserBarOpen ? (
+              <ChevronUp size={16} className="text-slate-500" />
+            ) : (
+              <ChevronDown size={16} className="text-slate-500" />
+            )}
+          </button>
         </div>
-      </div>
+      )}
 
       {/* --- Navigation Sidebar --- */}
       <AnimatePresence>
@@ -358,7 +448,7 @@ export default function Layout({
       </AnimatePresence>
 
       {/* --- Main Content --- */}
-      <main className="flex-1 pt-28">
+      <main className={`flex-1 transition-all duration-300 ${user && isUserBarOpen ? 'pt-44' : 'pt-20'}`}>
         {children}
       </main>
 
