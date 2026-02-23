@@ -100,6 +100,18 @@ export default function App() {
   const favCount = favorites.length;
   const cartTotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
+  // Quick View için önerilen ürünler
+  const suggestedProducts = useMemo(() => {
+    if (!quickViewProduct) return [];
+    // Aynı kategoriden veya markadan ürünler (mevcut ürün hariç)
+    const similar = PRODUCTS.filter(p => 
+      p.id !== quickViewProduct.id && 
+      (p.category === quickViewProduct.category || p.brand === quickViewProduct.brand)
+    );
+    // Rastgele 3 ürün seç
+    return similar.sort(() => 0.5 - Math.random()).slice(0, 3);
+  }, [quickViewProduct]);
+
   // --- Actions ---
   const addToCart = (product: Product) => {
     setCart(prev => {
@@ -826,6 +838,28 @@ export default function App() {
                   <button onClick={() => { addToCart(quickViewProduct); setQuickViewProduct(null); }} className="btn-primary flex-1">Sepete Ekle</button>
                   <button onClick={() => { navigateToProduct(quickViewProduct); setQuickViewProduct(null); }} className="btn-outline flex-1">Detaylar</button>
                 </div>
+
+                {/* Önerilen Ürünler */}
+                {suggestedProducts.length > 0 && (
+                  <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Bu ürünü alanlar bunları da aldı</h4>
+                    <div className="flex gap-3">
+                      {suggestedProducts.map(sp => (
+                        <button
+                          key={sp.id}
+                          onClick={() => {
+                            setQuickViewProduct(sp);
+                          }}
+                          className="flex-1 group/suggest bg-slate-50 dark:bg-slate-900 rounded-xl p-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-left"
+                        >
+                          <img src={sp.image} alt={sp.name} className="w-full aspect-square object-cover rounded-lg mb-2" referrerPolicy="no-referrer" />
+                          <p className="text-[10px] font-bold text-slate-800 dark:text-white line-clamp-1 group-hover/suggest:text-blue-600 transition-colors">{sp.name}</p>
+                          <p className="text-[10px] font-bold text-blue-600">{sp.price.toLocaleString('tr-TR')} TL</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           </>
