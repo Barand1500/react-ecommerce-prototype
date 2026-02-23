@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingBag, CheckCircle, ShieldCheck, Truck, RefreshCcw, Heart, BarChart2, Bell, X, Mail } from 'lucide-react';
+import { ShoppingBag, CheckCircle, ShieldCheck, Truck, RefreshCcw, Heart, BarChart2, Bell, X, Mail, MapPin, Store } from 'lucide-react';
 import { Product } from '../types';
+import { STORE_AVAILABILITY } from '../constants';
 
 interface ProductDetailProps {
   product: Product;
@@ -148,6 +149,59 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
               <RefreshCcw size={24} className="mx-auto text-blue-600" />
               <p className="text-[10px] font-bold uppercase tracking-widest">14 Gün İade</p>
             </div>
+          </div>
+
+          {/* Mağaza Durumu */}
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-2xl p-6 border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center gap-3 mb-4">
+              <Store size={20} className="text-blue-600" />
+              <h4 className="font-bold text-sm uppercase tracking-widest text-blue-600">Mağaza Durumu</h4>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between bg-white dark:bg-slate-900/50 rounded-xl p-4">
+                <div className="flex items-center gap-3">
+                  <MapPin size={18} className="text-slate-400" />
+                  <div>
+                    <p className="font-medium text-sm">Antalya / Merkez</p>
+                    <p className="text-[10px] text-slate-400">Konyaaltı Cad. No: 45</p>
+                  </div>
+                </div>
+                {STORE_AVAILABILITY[product.id]?.antalya ? (
+                  <div className="flex items-center gap-2 text-green-600">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                    <span className="text-xs font-bold">Mevcut</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-red-500">
+                    <div className="w-2 h-2 bg-red-500 rounded-full" />
+                    <span className="text-xs font-bold">Stokta Yok</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center justify-between bg-white dark:bg-slate-900/50 rounded-xl p-4">
+                <div className="flex items-center gap-3">
+                  <MapPin size={18} className="text-slate-400" />
+                  <div>
+                    <p className="font-medium text-sm">Nevşehir / Merkez</p>
+                    <p className="text-[10px] text-slate-400">Atatürk Blv. No: 78</p>
+                  </div>
+                </div>
+                {STORE_AVAILABILITY[product.id]?.nevsehir ? (
+                  <div className="flex items-center gap-2 text-green-600">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                    <span className="text-xs font-bold">Mevcut</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-red-500">
+                    <div className="w-2 h-2 bg-red-500 rounded-full" />
+                    <span className="text-xs font-bold">Stokta Yok</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            <p className="text-[10px] text-slate-400 mt-4 text-center">
+              Mağazadan satın almak için önce rezervasyon yapmanızı öneririz.
+            </p>
           </div>
         </div>
       </div>

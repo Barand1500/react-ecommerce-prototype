@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { X, ShoppingBag, ChevronRight, Phone, Mail, MapPin, Heart, CreditCard, Settings, User as UserIcon, Plus, Home as HomeIcon } from 'lucide-react';
-import { PRODUCTS } from './constants';
+import { PRODUCTS, STORE_AVAILABILITY } from './constants';
 import { Product, CartItem, User } from './types';
 import Layout from './components/Layout';
 import LiveChat from './components/LiveChat';
@@ -792,6 +792,36 @@ export default function App() {
                 <h2 className="text-3xl font-display font-bold">{quickViewProduct.name}</h2>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">{quickViewProduct.price.toLocaleString('tr-TR')} TL</p>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-3">{quickViewProduct.description}</p>
+                
+                {/* Mağaza Stok Durumu */}
+                <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4">
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Mağaza Durumu</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <MapPin size={14} className="text-blue-600" />
+                        <span className="text-sm text-slate-600 dark:text-slate-300">Antalya / Merkez</span>
+                      </div>
+                      {STORE_AVAILABILITY[quickViewProduct.id]?.antalya ? (
+                        <span className="text-xs font-bold text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">Stokta</span>
+                      ) : (
+                        <span className="text-xs font-bold text-red-500 bg-red-50 dark:bg-red-900/30 px-2 py-1 rounded-full">Stokta Yok</span>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <MapPin size={14} className="text-blue-600" />
+                        <span className="text-sm text-slate-600 dark:text-slate-300">Nevşehir / Merkez</span>
+                      </div>
+                      {STORE_AVAILABILITY[quickViewProduct.id]?.nevsehir ? (
+                        <span className="text-xs font-bold text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">Stokta</span>
+                      ) : (
+                        <span className="text-xs font-bold text-red-500 bg-red-50 dark:bg-red-900/30 px-2 py-1 rounded-full">Stokta Yok</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
                 <div className="flex gap-4">
                   <button onClick={() => { addToCart(quickViewProduct); setQuickViewProduct(null); }} className="btn-primary flex-1">Sepete Ekle</button>
                   <button onClick={() => { navigateToProduct(quickViewProduct); setQuickViewProduct(null); }} className="btn-outline flex-1">Detaylar</button>

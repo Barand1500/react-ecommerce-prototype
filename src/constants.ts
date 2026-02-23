@@ -1,5 +1,41 @@
 import { Product, FAQItem } from './types';
 
+// Mağaza stok durumu - Her ürün için hangi mağazalarda mevcut
+export const STORE_AVAILABILITY: Record<number, { antalya: boolean; nevsehir: boolean }> = {
+  1: { antalya: true, nevsehir: true },    // MacBook Pro M3 Max
+  2: { antalya: true, nevsehir: true },    // iPhone 15 Pro Max
+  3: { antalya: true, nevsehir: false },   // Sony WH-1000XM5
+  4: { antalya: false, nevsehir: true },   // Samsung Galaxy Watch 6
+  5: { antalya: true, nevsehir: true },    // Logitech MX Master 3S
+  6: { antalya: true, nevsehir: false },   // Asus ROG Zephyrus G14
+  7: { antalya: true, nevsehir: true },    // Samsung Galaxy S24 Ultra
+  8: { antalya: false, nevsehir: true },   // iPad Pro
+  9: { antalya: true, nevsehir: false },   // AirPods Max
+  10: { antalya: true, nevsehir: true },   // PlayStation 5 Slim
+  11: { antalya: false, nevsehir: true },  // Nintendo Switch OLED
+  12: { antalya: true, nevsehir: false },  // DJI Mini 4 Pro
+  13: { antalya: true, nevsehir: true },   // Apple Watch Ultra 2
+  14: { antalya: false, nevsehir: false }, // Dell XPS 15 (online only)
+  15: { antalya: true, nevsehir: false },  // Sony Alpha a7 IV
+  16: { antalya: true, nevsehir: true },   // Keychron Q1 Pro
+  17: { antalya: false, nevsehir: true },  // Samsung Galaxy Tab S9
+  18: { antalya: true, nevsehir: true },   // Bose QuietComfort Ultra
+  19: { antalya: true, nevsehir: false },  // Razer DeathAdder V3 Pro
+  20: { antalya: false, nevsehir: true },  // Google Pixel 8 Pro
+  21: { antalya: true, nevsehir: true },   // SteelSeries Arctis Nova Pro
+  22: { antalya: true, nevsehir: false },  // MSI GeForce RTX 4090
+  23: { antalya: false, nevsehir: true },  // Garmin Fenix 7X Pro
+  24: { antalya: true, nevsehir: true },   // GoPro HERO12 Black
+  25: { antalya: true, nevsehir: true },   // Marshall Emberton II
+  26: { antalya: false, nevsehir: false }, // ASUS ProArt Display (online only)
+  27: { antalya: true, nevsehir: false },  // Corsair Dominator Titanium
+  28: { antalya: true, nevsehir: true },   // Elgato Stream Deck
+  29: { antalya: false, nevsehir: true },  // WD Black SN850X
+  30: { antalya: true, nevsehir: true },   // Philips Hue
+  31: { antalya: true, nevsehir: false },  // Nothing Phone (2)
+  32: { antalya: true, nevsehir: true },   // Anker 737 Power Bank
+};
+
 export const PRODUCTS: Product[] = [
   {
     id: 1,

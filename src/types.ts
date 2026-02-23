@@ -13,6 +13,10 @@ export interface Product {
   inStock: boolean;
   rating: number;
   badge?: 'En Çok Satan' | 'Trend' | 'İndirim';
+  storeAvailability?: {
+    antalya: boolean;
+    nevsehir: boolean;
+  };
 }
 
 export interface CartItem extends Product {
