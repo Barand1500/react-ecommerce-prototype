@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingBag, CheckCircle, ShieldCheck, Truck, RefreshCcw, Heart, BarChart2, Bell, BellRing, X, Mail, MapPin, Store, ChevronLeft, ChevronRight, ChevronDown, CreditCard, Calculator } from 'lucide-react';
-import { Product } from '../types';
+import { ShoppingBag, CheckCircle, ShieldCheck, Truck, RefreshCcw, Heart, BarChart2, Bell, BellRing, X, Mail, MapPin, Store, ChevronLeft, ChevronRight, ChevronDown, CreditCard, Calculator, Package, AlertCircle } from 'lucide-react';
+import { Product, ProductVariant } from '../types';
 import { STORE_AVAILABILITY } from '../constants';
 
 interface ProductDetailProps {
@@ -37,6 +37,47 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
   // Fiyat Alarmı
   const [showPriceAlarmModal, setShowPriceAlarmModal] = useState(false);
   const [alarmTargetPrice, setAlarmTargetPrice] = useState(Math.round(product.price * 0.9));
+  
+  // Varyant Seçimleri
+  const [selectedColor, setSelectedColor] = useState<ProductVariant | null>(
+    product.variants?.find(v => v.type === 'color' && v.inStock) || product.variants?.find(v => v.type === 'color') || null
+  );
+  const [selectedStorage, setSelectedStorage] = useState<ProductVariant | null>(
+    product.variants?.find(v => v.type === 'storage' && v.inStock) || product.variants?.find(v => v.type === 'storage') || null
+  );
+  const [selectedSize, setSelectedSize] = useState<ProductVariant | null>(
+    product.variants?.find(v => v.type === 'size' && v.inStock) || product.variants?.find(v => v.type === 'size') || null
+  );
+
+  // Varyantları türlerine göre grupla
+  const colorVariants = useMemo(() => product.variants?.filter(v => v.type === 'color') || [], [product.variants]);
+  const storageVariants = useMemo(() => product.variants?.filter(v => v.type === 'storage') || [], [product.variants]);
+  const sizeVariants = useMemo(() => product.variants?.filter(v => v.type === 'size') || [], [product.variants]);
+
+  // Hesaplanmış fiyat (varyant fiyat farkları dahil)
+  const calculatedPrice = useMemo(() => {
+    let price = product.price;
+    if (selectedColor?.priceModifier) price += selectedColor.priceModifier;
+    if (selectedStorage?.priceModifier) price += selectedStorage.priceModifier;
+    if (selectedSize?.priceModifier) price += selectedSize.priceModifier;
+    return price;
+  }, [product.price, selectedColor, selectedStorage, selectedSize]);
+
+  // Seçili varyantların stok durumu
+  const selectedVariantStock = useMemo(() => {
+    // Önce storage veya size seçiliyse onun stoğunu göster
+    if (selectedStorage) return selectedStorage.stockCount;
+    if (selectedSize) return selectedSize.stockCount;
+    if (selectedColor) return selectedColor.stockCount;
+    return product.stockCount || 0;
+  }, [selectedColor, selectedStorage, selectedSize, product.stockCount]);
+
+  const isSelectedVariantInStock = useMemo(() => {
+    if (selectedStorage && !selectedStorage.inStock) return false;
+    if (selectedSize && !selectedSize.inStock) return false;
+    if (selectedColor && !selectedColor.inStock) return false;
+    return product.inStock;
+  }, [selectedColor, selectedStorage, selectedSize, product.inStock]);
   
   const discount = product.oldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : null;
 
@@ -172,11 +213,20 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
             <div className="flex items-center gap-6">
               <div className="flex flex-col">
                 <p className="text-4xl font-display font-bold text-blue-600">
-                  {product.price.toLocaleString('tr-TR')} TL
+                  {calculatedPrice.toLocaleString('tr-TR')} TL
                 </p>
                 {product.oldPrice && (
                   <p className="text-xl text-slate-400 line-through">
                     {product.oldPrice.toLocaleString('tr-TR')} TL
+                  </p>
+                )}
+                {/* Varyant fiyat farkı göster */}
+                {calculatedPrice !== product.price && (
+                  <p className="text-xs text-slate-500 mt-1">
+                    Temel fiyat: {product.price.toLocaleString('tr-TR')} TL
+                    <span className={calculatedPrice > product.price ? 'text-orange-500' : 'text-green-500'}>
+                      {' '}({calculatedPrice > product.price ? '+' : ''}{(calculatedPrice - product.price).toLocaleString('tr-TR')} TL)
+                    </span>
                   </p>
                 )}
                 {/* Fiyat Alarmı Göstergesi */}
@@ -197,6 +247,168 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
 
           <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">{product.description}</p>
 
+          {/* Stok Göstergesi */}
+          {isSelectedVariantInStock && selectedVariantStock > 0 && (
+            <div className={`flex items-center gap-3 p-4 rounded-2xl border ${
+              selectedVariantStock <= 5 
+                ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800'
+                : selectedVariantStock <= 15
+                ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
+                : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+            }`}>
+              <Package size={20} className={
+                selectedVariantStock <= 5 
+                  ? 'text-orange-500' 
+                  : selectedVariantStock <= 15 
+                  ? 'text-yellow-600' 
+                  : 'text-green-500'
+              } />
+              <div>
+                <p className={`text-sm font-bold ${
+                  selectedVariantStock <= 5 
+                    ? 'text-orange-600 dark:text-orange-400' 
+                    : selectedVariantStock <= 15 
+                    ? 'text-yellow-700 dark:text-yellow-400' 
+                    : 'text-green-600 dark:text-green-400'
+                }`}>
+                  {selectedVariantStock <= 5 
+                    ? `Son ${selectedVariantStock} ürün!` 
+                    : selectedVariantStock <= 15 
+                    ? `Sınırlı stok: ${selectedVariantStock} adet` 
+                    : `Stokta: ${selectedVariantStock} adet`}
+                </p>
+                {selectedVariantStock <= 5 && (
+                  <p className="text-xs text-orange-500">Hemen sipariş verin, kaçırmayın!</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Varyant Seçiciler */}
+          {product.variants && product.variants.length > 0 && (
+            <div className="space-y-6">
+              {/* Renk Seçimi */}
+              {colorVariants.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-bold text-xs uppercase tracking-[0.2em] text-slate-400">Renk Seçimi</h4>
+                    {selectedColor && (
+                      <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{selectedColor.name}</span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    {colorVariants.map((variant) => (
+                      <button
+                        key={variant.id}
+                        onClick={() => setSelectedColor(variant)}
+                        disabled={!variant.inStock}
+                        className={`relative w-12 h-12 rounded-xl border-2 transition-all ${
+                          selectedColor?.id === variant.id
+                            ? 'border-blue-500 ring-2 ring-blue-500/30 scale-110'
+                            : variant.inStock
+                            ? 'border-slate-200 dark:border-slate-700 hover:border-slate-400'
+                            : 'border-slate-200 dark:border-slate-700 opacity-40 cursor-not-allowed'
+                        }`}
+                        title={variant.name}
+                      >
+                        <div 
+                          className="absolute inset-1 rounded-lg"
+                          style={{ backgroundColor: variant.colorCode }}
+                        />
+                        {selectedColor?.id === variant.id && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <CheckCircle size={20} className="text-white drop-shadow-lg" />
+                          </div>
+                        )}
+                        {!variant.inStock && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-full h-0.5 bg-red-500 rotate-45 transform" />
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Depolama Seçimi */}
+              {storageVariants.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="font-bold text-xs uppercase tracking-[0.2em] text-slate-400">Depolama</h4>
+                  <div className="flex flex-wrap gap-3">
+                    {storageVariants.map((variant) => (
+                      <button
+                        key={variant.id}
+                        onClick={() => setSelectedStorage(variant)}
+                        disabled={!variant.inStock}
+                        className={`px-5 py-3 rounded-xl border-2 transition-all ${
+                          selectedStorage?.id === variant.id
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                            : variant.inStock
+                            ? 'border-slate-200 dark:border-slate-700 hover:border-slate-400'
+                            : 'border-slate-200 dark:border-slate-700 opacity-40 cursor-not-allowed line-through'
+                        }`}
+                      >
+                        <span className={`font-bold text-sm ${
+                          selectedStorage?.id === variant.id 
+                            ? 'text-blue-600' 
+                            : 'text-slate-700 dark:text-slate-300'
+                        }`}>
+                          {variant.value}
+                        </span>
+                        {variant.priceModifier !== 0 && variant.priceModifier !== undefined && (
+                          <span className={`block text-xs mt-0.5 ${
+                            variant.priceModifier > 0 ? 'text-orange-500' : 'text-green-500'
+                          }`}>
+                            {variant.priceModifier > 0 ? '+' : ''}{variant.priceModifier.toLocaleString('tr-TR')} TL
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Boyut Seçimi */}
+              {sizeVariants.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="font-bold text-xs uppercase tracking-[0.2em] text-slate-400">Boyut</h4>
+                  <div className="flex flex-wrap gap-3">
+                    {sizeVariants.map((variant) => (
+                      <button
+                        key={variant.id}
+                        onClick={() => setSelectedSize(variant)}
+                        disabled={!variant.inStock}
+                        className={`px-5 py-3 rounded-xl border-2 transition-all ${
+                          selectedSize?.id === variant.id
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                            : variant.inStock
+                            ? 'border-slate-200 dark:border-slate-700 hover:border-slate-400'
+                            : 'border-slate-200 dark:border-slate-700 opacity-40 cursor-not-allowed line-through'
+                        }`}
+                      >
+                        <span className={`font-bold text-sm ${
+                          selectedSize?.id === variant.id 
+                            ? 'text-blue-600' 
+                            : 'text-slate-700 dark:text-slate-300'
+                        }`}>
+                          {variant.value}
+                        </span>
+                        {variant.priceModifier !== 0 && variant.priceModifier !== undefined && (
+                          <span className={`block text-xs mt-0.5 ${
+                            variant.priceModifier > 0 ? 'text-orange-500' : 'text-green-500'
+                          }`}>
+                            {variant.priceModifier > 0 ? '+' : ''}{variant.priceModifier.toLocaleString('tr-TR')} TL
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="space-y-4">
             <h4 className="font-bold text-xs uppercase tracking-[0.2em] text-slate-400">Öne Çıkan Özellikler</h4>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -210,7 +422,7 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
           </div>
 
           <div className="pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-4">
-            {product.inStock ? (
+            {isSelectedVariantInStock ? (
               <button 
                 onClick={() => onAddToCart(product)}
                 className="btn-primary flex-1 flex items-center justify-center gap-3"
@@ -254,11 +466,15 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
             </div>
           )}
           
-          {/* Stok Durumu Göstergesi */}
-          {!product.inStock && (
+          {/* Stok Durumu Göstergesi (Stokta Yok) */}
+          {!isSelectedVariantInStock && (
             <div className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800">
               <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-red-600 dark:text-red-400">Bu ürün şu anda stokta yok</span>
+              <span className="text-sm font-medium text-red-600 dark:text-red-400">
+                {product.variants && product.variants.length > 0 
+                  ? 'Seçili varyant şu anda stokta yok' 
+                  : 'Bu ürün şu anda stokta yok'}
+              </span>
             </div>
           )}
 

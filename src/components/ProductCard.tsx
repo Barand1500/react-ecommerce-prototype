@@ -74,6 +74,18 @@ export default function ProductCard({ product, onAddToCart, onQuickView, onNavig
             -%{discount} İndirim
           </div>
         )}
+        {/* Düşük Stok Uyarısı */}
+        {product.inStock && product.stockCount && product.stockCount <= 10 && (
+          <div className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full shadow-lg ${
+            product.stockCount <= 3 
+              ? 'bg-red-500 text-white animate-pulse' 
+              : product.stockCount <= 5 
+              ? 'bg-orange-500 text-white' 
+              : 'bg-yellow-500 text-white'
+          }`}>
+            {product.stockCount <= 3 ? `Son ${product.stockCount}!` : `Son ${product.stockCount} adet`}
+          </div>
+        )}
         {!product.inStock && (
           <div className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-400 text-[10px] font-bold uppercase tracking-widest rounded-full">
             Tükendi

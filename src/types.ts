@@ -1,3 +1,14 @@
+export interface ProductVariant {
+  id: string;
+  name: string;
+  type: 'color' | 'size' | 'storage';
+  value: string;
+  colorCode?: string; // renk için hex kodu
+  priceModifier?: number; // fiyat farkı
+  inStock: boolean;
+  stockCount: number;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -12,16 +23,19 @@ export interface Product {
   specs: Record<string, string>;
   color: string;
   inStock: boolean;
+  stockCount?: number; // Stok sayısı
   rating: number;
   badge?: 'En Çok Satan' | 'Trend' | 'İndirim';
   storeAvailability?: {
     antalya: boolean;
     nevsehir: boolean;
   };
+  variants?: ProductVariant[]; // Ürün varyantları
 }
 
 export interface CartItem extends Product {
   quantity: number;
+  selectedVariant?: ProductVariant; // Seçilen varyant
 }
 
 export interface SavedCart {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { X, ShoppingBag, ChevronRight, Phone, Mail, MapPin, Heart, CreditCard, Settings, User as UserIcon, Plus, Home as HomeIcon } from 'lucide-react';
+import { X, ShoppingBag, ChevronRight, Phone, Mail, MapPin, Heart, CreditCard, Settings, User as UserIcon, Plus, Home as HomeIcon, AlertTriangle, CheckCircle2, Info, XCircle } from 'lucide-react';
 import { PRODUCTS, STORE_AVAILABILITY } from './constants';
 import { Product, CartItem, User } from './types';
 import Layout from './components/Layout';
@@ -63,6 +63,20 @@ export default function App() {
     const saved = localStorage.getItem('gt-store');
     return saved || 'all';
   });
+
+  // Toast Bildirimleri
+  const [toast, setToast] = useState<{
+    show: boolean;
+    type: 'success' | 'error' | 'warning' | 'info';
+    title: string;
+    message: string;
+  }>({ show: false, type: 'info', title: '', message: '' });
+
+  // Toast gösterme fonksiyonu
+  const showToast = (type: 'success' | 'error' | 'warning' | 'info', title: string, message: string) => {
+    setToast({ show: true, type, title, message });
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 4000);
+  };
 
   // Fiyat Alarmları
   const [priceAlarms, setPriceAlarms] = useState<{
@@ -172,11 +186,15 @@ export default function App() {
   const toggleComparison = (product: Product) => {
     setComparisonList(prev => {
       const exists = prev.find(p => p.id === product.id);
-      if (exists) return prev.filter(p => p.id !== product.id);
+      if (exists) {
+        showToast('info', 'Kaldırıldı', `${product.name} karşılaştırma listesinden çıkarıldı.`);
+        return prev.filter(p => p.id !== product.id);
+      }
       if (prev.length >= 4) {
-        alert("En fazla 4 ürünü karşılaştırabilirsiniz.");
+        showToast('warning', 'Limit Aşıldı!', 'En fazla 4 ürünü aynı anda karşılaştırabilirsiniz. Lütfen önce bir ürünü listeden çıkarın.');
         return prev;
       }
+      showToast('success', 'Karşılaştırmaya Eklendi', `${product.name} karşılaştırma listesine eklendi.`);
       return [...prev, product];
     });
   };
@@ -1072,6 +1090,92 @@ export default function App() {
               </div>
             </motion.div>
           </>
+        )}
+      </AnimatePresence>
+
+      {/* Toast Bildirimleri */}
+      <AnimatePresence>
+        {toast.show && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: -50, x: '-50%' }}
+            className="fixed top-6 left-1/2 z-[500] w-full max-w-md px-4"
+          >
+            <div className={`relative p-4 rounded-2xl shadow-2xl border backdrop-blur-md flex items-start gap-4 ${
+              toast.type === 'success' 
+                ? 'bg-green-50/95 dark:bg-green-900/90 border-green-200 dark:border-green-800' 
+                : toast.type === 'error'
+                ? 'bg-red-50/95 dark:bg-red-900/90 border-red-200 dark:border-red-800'
+                : toast.type === 'warning'
+                ? 'bg-orange-50/95 dark:bg-orange-900/90 border-orange-200 dark:border-orange-800'
+                : 'bg-blue-50/95 dark:bg-blue-900/90 border-blue-200 dark:border-blue-800'
+            }`}>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                toast.type === 'success' 
+                  ? 'bg-green-500 text-white' 
+                  : toast.type === 'error'
+                  ? 'bg-red-500 text-white'
+                  : toast.type === 'warning'
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-blue-500 text-white'
+              }`}>
+                {toast.type === 'success' && <CheckCircle2 size={20} />}
+                {toast.type === 'error' && <XCircle size={20} />}
+                {toast.type === 'warning' && <AlertTriangle size={20} />}
+                {toast.type === 'info' && <Info size={20} />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className={`font-bold text-sm ${
+                  toast.type === 'success' 
+                    ? 'text-green-800 dark:text-green-200' 
+                    : toast.type === 'error'
+                    ? 'text-red-800 dark:text-red-200'
+                    : toast.type === 'warning'
+                    ? 'text-orange-800 dark:text-orange-200'
+                    : 'text-blue-800 dark:text-blue-200'
+                }`}>{toast.title}</h4>
+                <p className={`text-xs mt-0.5 ${
+                  toast.type === 'success' 
+                    ? 'text-green-600 dark:text-green-300' 
+                    : toast.type === 'error'
+                    ? 'text-red-600 dark:text-red-300'
+                    : toast.type === 'warning'
+                    ? 'text-orange-600 dark:text-orange-300'
+                    : 'text-blue-600 dark:text-blue-300'
+                }`}>{toast.message}</p>
+              </div>
+              <button 
+                onClick={() => setToast(prev => ({ ...prev, show: false }))}
+                className={`p-1.5 rounded-lg transition-colors ${
+                  toast.type === 'success' 
+                    ? 'hover:bg-green-200 dark:hover:bg-green-800 text-green-600' 
+                    : toast.type === 'error'
+                    ? 'hover:bg-red-200 dark:hover:bg-red-800 text-red-600'
+                    : toast.type === 'warning'
+                    ? 'hover:bg-orange-200 dark:hover:bg-orange-800 text-orange-600'
+                    : 'hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-600'
+                }`}
+              >
+                <X size={16} />
+              </button>
+              {/* Progress bar */}
+              <motion.div
+                initial={{ width: '100%' }}
+                animate={{ width: '0%' }}
+                transition={{ duration: 4, ease: 'linear' }}
+                className={`absolute bottom-0 left-0 h-1 rounded-bl-2xl ${
+                  toast.type === 'success' 
+                    ? 'bg-green-500' 
+                    : toast.type === 'error'
+                    ? 'bg-red-500'
+                    : toast.type === 'warning'
+                    ? 'bg-orange-500'
+                    : 'bg-blue-500'
+                }`}
+              />
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 

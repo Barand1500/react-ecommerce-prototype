@@ -60,8 +60,16 @@ export const PRODUCTS: Product[] = [
     },
     color: "Uzay Grisi",
     inStock: true,
+    stockCount: 12,
     rating: 5,
-    badge: 'En Çok Satan'
+    badge: 'En Çok Satan',
+    variants: [
+      { id: 'mbp-silver', name: 'Gümüş', type: 'color', value: 'Gümüş', colorCode: '#C0C0C0', priceModifier: 0, inStock: true, stockCount: 8 },
+      { id: 'mbp-spacegray', name: 'Uzay Grisi', type: 'color', value: 'Uzay Grisi', colorCode: '#4A4A4A', priceModifier: 0, inStock: true, stockCount: 12 },
+      { id: 'mbp-512gb', name: '512GB', type: 'storage', value: '512GB', priceModifier: -15000, inStock: true, stockCount: 5 },
+      { id: 'mbp-1tb', name: '1TB', type: 'storage', value: '1TB', priceModifier: 0, inStock: true, stockCount: 12 },
+      { id: 'mbp-2tb', name: '2TB', type: 'storage', value: '2TB', priceModifier: 20000, inStock: false, stockCount: 0 }
+    ]
   },
   {
     id: 2,
@@ -81,8 +89,18 @@ export const PRODUCTS: Product[] = [
     },
     color: "Naturel Titanyum",
     inStock: true,
+    stockCount: 25,
     rating: 4.9,
-    badge: 'Trend'
+    badge: 'Trend',
+    variants: [
+      { id: 'ip15-natural', name: 'Naturel Titanyum', type: 'color', value: 'Naturel', colorCode: '#B8A99A', priceModifier: 0, inStock: true, stockCount: 25 },
+      { id: 'ip15-blue', name: 'Mavi Titanyum', type: 'color', value: 'Mavi', colorCode: '#4A5568', priceModifier: 0, inStock: true, stockCount: 18 },
+      { id: 'ip15-black', name: 'Siyah Titanyum', type: 'color', value: 'Siyah', colorCode: '#1A1A1A', priceModifier: 0, inStock: true, stockCount: 30 },
+      { id: 'ip15-white', name: 'Beyaz Titanyum', type: 'color', value: 'Beyaz', colorCode: '#F5F5F5', priceModifier: 0, inStock: false, stockCount: 0 },
+      { id: 'ip15-256', name: '256GB', type: 'storage', value: '256GB', priceModifier: 0, inStock: true, stockCount: 25 },
+      { id: 'ip15-512', name: '512GB', type: 'storage', value: '512GB', priceModifier: 8000, inStock: true, stockCount: 15 },
+      { id: 'ip15-1tb', name: '1TB', type: 'storage', value: '1TB', priceModifier: 20000, inStock: true, stockCount: 8 }
+    ]
   },
   {
     id: 3,
@@ -102,8 +120,14 @@ export const PRODUCTS: Product[] = [
     },
     color: "Siyah",
     inStock: true,
+    stockCount: 45,
     rating: 4.8,
-    badge: 'İndirim'
+    badge: 'İndirim',
+    variants: [
+      { id: 'sony-black', name: 'Siyah', type: 'color', value: 'Siyah', colorCode: '#1A1A1A', priceModifier: 0, inStock: true, stockCount: 45 },
+      { id: 'sony-silver', name: 'Gümüş', type: 'color', value: 'Gümüş', colorCode: '#E8E8E8', priceModifier: 0, inStock: true, stockCount: 22 },
+      { id: 'sony-blue', name: 'Gece Mavisi', type: 'color', value: 'Mavi', colorCode: '#1E3A5F', priceModifier: 500, inStock: true, stockCount: 8 }
+    ]
   },
   {
     id: 4,
@@ -122,7 +146,14 @@ export const PRODUCTS: Product[] = [
     },
     color: "Gümüş",
     inStock: false,
-    rating: 4.5
+    stockCount: 0,
+    rating: 4.5,
+    variants: [
+      { id: 'gw6-silver', name: 'Gümüş', type: 'color', value: 'Gümüş', colorCode: '#C0C0C0', priceModifier: 0, inStock: false, stockCount: 0 },
+      { id: 'gw6-black', name: 'Siyah', type: 'color', value: 'Siyah', colorCode: '#1A1A1A', priceModifier: 0, inStock: false, stockCount: 0 },
+      { id: 'gw6-43mm', name: '43mm', type: 'size', value: '43mm', priceModifier: -500, inStock: false, stockCount: 0 },
+      { id: 'gw6-47mm', name: '47mm', type: 'size', value: '47mm', priceModifier: 0, inStock: false, stockCount: 0 }
+    ]
   },
   {
     id: 5,
@@ -141,7 +172,13 @@ export const PRODUCTS: Product[] = [
     },
     color: "Grafit",
     inStock: true,
-    rating: 4.7
+    stockCount: 67,
+    rating: 4.7,
+    variants: [
+      { id: 'mx-graphite', name: 'Grafit', type: 'color', value: 'Grafit', colorCode: '#4A4A4A', priceModifier: 0, inStock: true, stockCount: 67 },
+      { id: 'mx-white', name: 'Soluk Gri', type: 'color', value: 'Soluk Gri', colorCode: '#E8E8E8', priceModifier: 0, inStock: true, stockCount: 34 },
+      { id: 'mx-pink', name: 'Pembe', type: 'color', value: 'Pembe', colorCode: '#FFB6C1', priceModifier: 200, inStock: true, stockCount: 12 }
+    ]
   },
   {
     id: 6,
@@ -161,8 +198,13 @@ export const PRODUCTS: Product[] = [
     },
     color: "Beyaz",
     inStock: true,
+    stockCount: 8,
     rating: 4.9,
-    badge: 'İndirim'
+    badge: 'İndirim',
+    variants: [
+      { id: 'rog-white', name: 'Ay Işığı Beyaz', type: 'color', value: 'Beyaz', colorCode: '#FFFAF0', priceModifier: 0, inStock: true, stockCount: 8 },
+      { id: 'rog-gray', name: 'Eclipse Gri', type: 'color', value: 'Gri', colorCode: '#4A4A4A', priceModifier: 0, inStock: true, stockCount: 5 }
+    ]
   },
   {
     id: 7,
@@ -181,8 +223,18 @@ export const PRODUCTS: Product[] = [
     },
     color: "Titanyum Siyah",
     inStock: true,
+    stockCount: 35,
     rating: 4.9,
-    badge: 'Trend'
+    badge: 'Trend',
+    variants: [
+      { id: 's24-black', name: 'Titanyum Siyah', type: 'color', value: 'Siyah', colorCode: '#1A1A1A', priceModifier: 0, inStock: true, stockCount: 35 },
+      { id: 's24-gray', name: 'Titanyum Gri', type: 'color', value: 'Gri', colorCode: '#808080', priceModifier: 0, inStock: true, stockCount: 20 },
+      { id: 's24-violet', name: 'Titanyum Mor', type: 'color', value: 'Mor', colorCode: '#8B008B', priceModifier: 0, inStock: true, stockCount: 15 },
+      { id: 's24-yellow', name: 'Titanyum Sarı', type: 'color', value: 'Sarı', colorCode: '#FFD700', priceModifier: 0, inStock: false, stockCount: 0 },
+      { id: 's24-256', name: '256GB', type: 'storage', value: '256GB', priceModifier: 0, inStock: true, stockCount: 35 },
+      { id: 's24-512', name: '512GB', type: 'storage', value: '512GB', priceModifier: 6000, inStock: true, stockCount: 18 },
+      { id: 's24-1tb', name: '1TB', type: 'storage', value: '1TB', priceModifier: 15000, inStock: true, stockCount: 5 }
+    ]
   },
   {
     id: 8,
@@ -201,7 +253,16 @@ export const PRODUCTS: Product[] = [
     },
     color: "Gümüş",
     inStock: true,
-    rating: 4.8
+    stockCount: 18,
+    rating: 4.8,
+    variants: [
+      { id: 'ipad-silver', name: 'Gümüş', type: 'color', value: 'Gümüş', colorCode: '#C0C0C0', priceModifier: 0, inStock: true, stockCount: 18 },
+      { id: 'ipad-space', name: 'Uzay Grisi', type: 'color', value: 'Uzay Grisi', colorCode: '#4A4A4A', priceModifier: 0, inStock: true, stockCount: 12 },
+      { id: 'ipad-128', name: '128GB', type: 'storage', value: '128GB', priceModifier: -8000, inStock: true, stockCount: 10 },
+      { id: 'ipad-256', name: '256GB', type: 'storage', value: '256GB', priceModifier: 0, inStock: true, stockCount: 18 },
+      { id: 'ipad-512', name: '512GB', type: 'storage', value: '512GB', priceModifier: 8000, inStock: true, stockCount: 6 },
+      { id: 'ipad-1tb', name: '1TB', type: 'storage', value: '1TB', priceModifier: 20000, inStock: false, stockCount: 0 }
+    ]
   },
   {
     id: 9,
@@ -220,7 +281,15 @@ export const PRODUCTS: Product[] = [
     },
     color: "Gök Mavisi",
     inStock: true,
-    rating: 4.7
+    stockCount: 7,
+    rating: 4.7,
+    variants: [
+      { id: 'apm-blue', name: 'Gök Mavisi', type: 'color', value: 'Mavi', colorCode: '#87CEEB', priceModifier: 0, inStock: true, stockCount: 7 },
+      { id: 'apm-silver', name: 'Gümüş', type: 'color', value: 'Gümüş', colorCode: '#C0C0C0', priceModifier: 0, inStock: true, stockCount: 5 },
+      { id: 'apm-space', name: 'Uzay Grisi', type: 'color', value: 'Uzay Grisi', colorCode: '#4A4A4A', priceModifier: 0, inStock: true, stockCount: 9 },
+      { id: 'apm-green', name: 'Yeşil', type: 'color', value: 'Yeşil', colorCode: '#228B22', priceModifier: 0, inStock: false, stockCount: 0 },
+      { id: 'apm-pink', name: 'Pembe', type: 'color', value: 'Pembe', colorCode: '#FFB6C1', priceModifier: 0, inStock: false, stockCount: 0 }
+    ]
   },
   {
     id: 10,
