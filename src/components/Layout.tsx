@@ -6,7 +6,7 @@ import {
   Instagram, Twitter, Facebook, Youtube,
   Phone, Mail, MapPin, ChevronRight, ChevronDown, ChevronUp,
   CreditCard, Smartphone, Heart, BarChart2, Trash2, Plus, Minus, Copy, Check, User as UserIcon, LogOut, Settings,
-  MessageCircle, FileText, ArrowLeftRight, Lock, Power, Wallet
+  MessageCircle, FileText, ArrowLeftRight, Lock, Power, Wallet, Bookmark
 } from 'lucide-react';
 import { CartItem, Product, User } from '../types';
 import { PRODUCTS } from '../constants';
@@ -40,12 +40,13 @@ interface LayoutProps {
   selectedStore: string;
   setSelectedStore: (val: string) => void;
   onNavigateToProduct: (p: Product) => void;
+  onSaveCart: (name: string) => void;
 }
 
 export default function Layout({ 
   children, cart, favorites, comparisonList, cartCount, favCount, compareCount, cartTotal, user, isDarkMode, setIsDarkMode, 
   setIsCartOpen, isCartOpen, isFavOpen, setIsFavOpen, setIsAuthModalOpen, setAuthMode, removeFromCart, removeFromFav, 
-  addToCart, updateQuantity, onNavigate, isNavSidebarOpen, setIsNavSidebarOpen, onLogout, selectedStore, setSelectedStore, onNavigateToProduct
+  addToCart, updateQuantity, onNavigate, isNavSidebarOpen, setIsNavSidebarOpen, onLogout, selectedStore, setSelectedStore, onNavigateToProduct, onSaveCart
 }: LayoutProps) {
   const [selectedBank, setSelectedBank] = useState<string | null>(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -53,8 +54,9 @@ export default function Layout({
   const [isStoreDropdownOpen, setIsStoreDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');  
   const [copied, setCopied] = useState(false);
-  const [showThemeTooltip, setShowThemeTooltip] = useState(false);
-  const [isUserBarOpen, setIsUserBarOpen] = useState(true);
+  const [isUserBarOpen, setIsUserBarOpen] = useState(false);
+  const [isSaveCartModalOpen, setIsSaveCartModalOpen] = useState(false);
+  const [saveCartName, setSaveCartName] = useState('');
 
   const stores = [
     { id: 'all', name: 'Tüm Mağazalar' },
@@ -75,8 +77,7 @@ export default function Layout({
   }, [searchQuery]);
 
   const handleThemeToggle = () => {
-    setShowThemeTooltip(true);
-    setTimeout(() => setShowThemeTooltip(false), 2000);
+    setIsDarkMode(!isDarkMode);
   };
 
   const copyToClipboard = (text: string) => {
@@ -259,37 +260,31 @@ export default function Layout({
             <div className="relative">
               <button 
                 onClick={handleThemeToggle} 
-                className="relative w-14 h-7 rounded-full transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 opacity-60 cursor-pointer"
-                style={{
-                  background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)'
-                }}
-                aria-label="Yakında eklenecek"
+                className={`relative w-14 h-7 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 cursor-pointer ${
+                  isDarkMode 
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600' 
+                    : 'bg-gradient-to-r from-amber-400 to-orange-400'
+                }`}
+                aria-label={isDarkMode ? 'Gündüz moduna geç' : 'Gece moduna geç'}
               >
                 {/* Toggle Circle */}
-                <div 
-                  className="absolute top-1 left-1 w-5 h-5 rounded-full shadow-lg flex items-center justify-center"
-                  style={{
-                    background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)'
-                  }}
+                <motion.div 
+                  initial={false}
+                  animate={{ x: isDarkMode ? 28 : 0 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  className={`absolute top-1 left-1 w-5 h-5 rounded-full shadow-lg flex items-center justify-center ${
+                    isDarkMode 
+                      ? 'bg-slate-900' 
+                      : 'bg-white'
+                  }`}
                 >
-                  <Sun size={12} className="text-amber-600" />
-                </div>
+                  {isDarkMode ? (
+                    <Moon size={12} className="text-indigo-300" />
+                  ) : (
+                    <Sun size={12} className="text-amber-500" />
+                  )}
+                </motion.div>
               </button>
-              
-              {/* Tooltip */}
-              <AnimatePresence>
-                {showThemeTooltip && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-slate-900 text-white text-xs font-medium rounded-lg whitespace-nowrap z-50"
-                  >
-                    Yakında eklenecek -Baran
-                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
             
             <button onClick={() => setIsCartOpen(true)} className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
@@ -307,6 +302,23 @@ export default function Layout({
       {/* --- Kullanıcı Bilgi Barı (Giriş yapılmışsa) --- */}
       {user && (
         <div className="fixed top-20 left-0 right-0 z-30">
+          {/* Kapalı Hali - Sadece İsim */}
+          {!isUserBarOpen && (
+            <button
+              onClick={() => setIsUserBarOpen(true)}
+              className="w-full bg-violet-600 hover:bg-violet-700 transition-colors py-2"
+            >
+              <div className="max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-bold text-white">
+                  {user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                </div>
+                <span className="text-sm font-medium text-white">{user.name}</span>
+                <ChevronDown size={16} className="text-white/70" />
+              </div>
+            </button>
+          )}
+
+          {/* Açık Hali - Tüm Detaylar */}
           <AnimatePresence>
             {isUserBarOpen && (
               <motion.div
@@ -378,22 +390,19 @@ export default function Layout({
                       </div>
                     </div>
                   </div>
+                  
+                  {/* Kapatma Butonu */}
+                  <button
+                    onClick={() => setIsUserBarOpen(false)}
+                    className="w-full py-1.5 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-1 border-t border-slate-100 dark:border-slate-700"
+                  >
+                    <ChevronUp size={14} className="text-slate-400" />
+                    <span className="text-[10px] font-medium text-slate-400">Kapat</span>
+                  </button>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-          
-          {/* Toggle Button */}
-          <button
-            onClick={() => setIsUserBarOpen(!isUserBarOpen)}
-            className="absolute left-1/2 -translate-x-1/2 -bottom-3 z-10 px-3 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full shadow-sm hover:shadow-md transition-all"
-          >
-            {isUserBarOpen ? (
-              <ChevronUp size={16} className="text-slate-500" />
-            ) : (
-              <ChevronDown size={16} className="text-slate-500" />
-            )}
-          </button>
         </div>
       )}
 
@@ -715,8 +724,8 @@ export default function Layout({
                 )}
               </div>
               {cart.length > 0 && (
-                <div className="p-6 border-t border-slate-100 dark:border-slate-900">
-                  <div className="flex justify-between font-bold mb-4 text-slate-900 dark:text-white">
+                <div className="p-6 border-t border-slate-100 dark:border-slate-900 space-y-3">
+                  <div className="flex justify-between font-bold text-slate-900 dark:text-white">
                     <span>Toplam</span>
                     <span>{cartTotal.toLocaleString('tr-TR')} TL</span>
                   </div>
@@ -729,8 +738,92 @@ export default function Layout({
                   >
                     Ödemeye Geç
                   </button>
+                  {user && (
+                    <button 
+                      onClick={() => setIsSaveCartModalOpen(true)}
+                      className="w-full py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Bookmark size={16} /> Sepeti Kaydet
+                    </button>
+                  )}
                 </div>
               )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* --- Save Cart Modal --- */}
+      <AnimatePresence>
+        {isSaveCartModalOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsSaveCartModalOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-md z-[200]"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+              animate={{ opacity: 1, scale: 1, y: 0 }} 
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-white dark:bg-slate-900 z-[210] shadow-2xl rounded-2xl p-6 border border-slate-100 dark:border-slate-800"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Sepeti Kaydet</h3>
+                <button onClick={() => setIsSaveCartModalOpen(false)} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                  <X size={20} className="text-slate-500" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-medium text-slate-500 mb-1.5 block">Sepet Adı</label>
+                  <input
+                    type="text"
+                    value={saveCartName}
+                    onChange={(e) => setSaveCartName(e.target.value)}
+                    placeholder="Örn: Ofis Alışverişim"
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    autoFocus
+                  />
+                </div>
+                
+                <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-3">
+                  <p className="text-xs text-slate-500 mb-2">{cart.length} ürün kaydedilecek</p>
+                  <div className="flex -space-x-2">
+                    {cart.slice(0, 5).map((item, idx) => (
+                      <img key={idx} src={item.image} alt="" className="w-8 h-8 rounded-lg border-2 border-white dark:border-slate-800 object-cover" />
+                    ))}
+                    {cart.length > 5 && (
+                      <div className="w-8 h-8 rounded-lg border-2 border-white dark:border-slate-800 bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                        +{cart.length - 5}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="flex gap-2 pt-2">
+                  <button 
+                    onClick={() => setIsSaveCartModalOpen(false)}
+                    className="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    İptal
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if (saveCartName.trim()) {
+                        onSaveCart(saveCartName.trim());
+                        setSaveCartName('');
+                        setIsSaveCartModalOpen(false);
+                      }
+                    }}
+                    disabled={!saveCartName.trim()}
+                    className="flex-1 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Kaydet
+                  </button>
+                </div>
+              </div>
             </motion.div>
           </>
         )}

@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { ShoppingBag, Eye, Star, Heart, BarChart2, Bell } from 'lucide-react';
+import { ShoppingBag, Eye, Star, Heart, BarChart2, Bell, MapPin } from 'lucide-react';
 import { Product } from '../types';
 
 interface ProductCardProps {
@@ -12,9 +12,10 @@ interface ProductCardProps {
   onToggleCompare: (p: Product) => void;
   isFavorite: boolean;
   isComparing: boolean;
+  otherStoreName?: string; // Başka mağazada ise hangi mağazada olduğu
 }
 
-export default function ProductCard({ product, onAddToCart, onQuickView, onNavigate, onToggleFav, onToggleCompare, isFavorite, isComparing }: ProductCardProps) {
+export default function ProductCard({ product, onAddToCart, onQuickView, onNavigate, onToggleFav, onToggleCompare, isFavorite, isComparing, otherStoreName }: ProductCardProps) {
   const discount = product.oldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : null;
 
   return (
@@ -22,10 +23,22 @@ export default function ProductCard({ product, onAddToCart, onQuickView, onNavig
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="group relative bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200/50 dark:border-slate-800 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 dark:hover:shadow-blue-500/5 hover:-translate-y-1 hover:border-slate-300 dark:hover:border-slate-700"
+      className={`group relative bg-white dark:bg-slate-900 rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 dark:hover:shadow-blue-500/5 hover:-translate-y-1 ${
+        otherStoreName 
+          ? 'border-2 border-red-400 dark:border-red-500' 
+          : 'border border-slate-200/50 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+      }`}
     >
+      {/* Diğer Mağaza Etiketi */}
+      {otherStoreName && (
+        <div className="absolute top-0 left-0 right-0 z-20 bg-red-500 text-white text-center py-1.5 px-3 text-xs font-bold flex items-center justify-center gap-1.5">
+          <MapPin size={12} />
+          {otherStoreName}'da mevcut
+        </div>
+      )}
+
       {/* Badges */}
-      <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
+      <div className={`absolute left-4 z-10 flex flex-col gap-2 ${otherStoreName ? 'top-12' : 'top-4'}`}>
         {product.badge && (
           <div className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full shadow-lg ${
             product.badge === 'En Çok Satan' ? 'bg-orange-500 text-white' :

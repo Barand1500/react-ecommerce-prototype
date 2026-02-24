@@ -47,6 +47,17 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
   
+  // Kayıtlı Sepetler
+  const [savedCarts, setSavedCarts] = useState<{
+    id: number;
+    name: string;
+    createdAt: string;
+    items: { name: string; image: string; quantity: number; price: number; productId: number; }[];
+  }[]>(() => {
+    const saved = localStorage.getItem('gt-saved-carts');
+    return saved ? JSON.parse(saved) : [];
+  });
+  
   // Mağaza Seçimi
   const [selectedStore, setSelectedStore] = useState(() => {
     const saved = localStorage.getItem('gt-store');
@@ -65,6 +76,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('gt-store', selectedStore);
   }, [selectedStore]);
+
+  useEffect(() => {
+    localStorage.setItem('gt-saved-carts', JSON.stringify(savedCarts));
+  }, [savedCarts]);
 
   // Dark Mode Effect - Geliştirilmiş versiyon
   useEffect(() => {
@@ -152,6 +167,56 @@ export default function App() {
   const removeFromCart = (id: number) => setCart(prev => prev.filter(item => item.id !== id));
   const removeFromFav = (id: number) => setFavorites(prev => prev.filter(p => p.id !== id));
   
+  // Sepet Kaydetme
+  const saveCart = (name: string) => {
+    if (cart.length === 0) return;
+    
+    const now = new Date();
+    const formattedDate = `${now.getDate().toString().padStart(2, '0')}.${(now.getMonth() + 1).toString().padStart(2, '0')}.${now.getFullYear()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    
+    const newSavedCart = {
+      id: Date.now(),
+      name,
+      createdAt: formattedDate,
+      items: cart.map(item => ({
+        name: item.name,
+        image: item.image,
+        quantity: item.quantity,
+        price: item.price,
+        productId: item.id
+      }))
+    };
+    
+    setSavedCarts(prev => [newSavedCart, ...prev]);
+  };
+  
+  // Kayıtlı Sepeti Yükle
+  const loadCart = (savedCartId: number) => {
+    const savedCart = savedCarts.find(c => c.id === savedCartId);
+    if (!savedCart) return;
+    
+    // Kayıtlı sepetteki ürünleri mevcut ürünlerden bul ve sepete ekle
+    savedCart.items.forEach(item => {
+      const product = PRODUCTS.find(p => p.id === item.productId);
+      if (product) {
+        setCart(prev => {
+          const existing = prev.find(p => p.id === product.id);
+          if (existing) {
+            return prev.map(p => p.id === product.id ? { ...p, quantity: p.quantity + item.quantity } : p);
+          }
+          return [...prev, { ...product, quantity: item.quantity }];
+        });
+      }
+    });
+    
+    setIsCartOpen(true);
+  };
+  
+  // Kayıtlı Sepeti Sil
+  const deleteSavedCart = (cartId: number) => {
+    setSavedCarts(prev => prev.filter(c => c.id !== cartId));
+  };
+  
   const handleLogin = (email: string, name: string) => {
     setUser({ id: Math.random().toString(36).substr(2, 9), name, email });
     setIsAuthModalOpen(false);
@@ -185,6 +250,7 @@ export default function App() {
             onToggleCompare={toggleComparison}
             favorites={favorites}
             comparisonList={comparisonList}
+            selectedStore={selectedStore}
           />
         );
       case 'product-detail':
@@ -206,6 +272,7 @@ export default function App() {
             onToggleCompare={toggleComparison}
             favorites={favorites}
             comparisonList={comparisonList}
+            selectedStore={selectedStore}
           />
         );
       case 'comparison':
@@ -339,7 +406,14 @@ export default function App() {
         return <FAQ />;
       case 'profile':
         return user ? (
-          <Profile user={user} onNavigate={setCurrentPage} onLogout={handleLogout} />
+          <Profile 
+            user={user} 
+            onNavigate={setCurrentPage} 
+            onLogout={handleLogout} 
+            savedCarts={savedCarts}
+            onLoadCart={loadCart}
+            onDeleteSavedCart={deleteSavedCart}
+          />
         ) : (
           <div className="h-[60vh] flex flex-col items-center justify-center space-y-6">
             <p className="text-xl text-slate-500">Bu sayfayı görüntülemek için giriş yapmalısınız.</p>
@@ -762,6 +836,7 @@ export default function App() {
       selectedStore={selectedStore}
       setSelectedStore={setSelectedStore}
       onNavigateToProduct={navigateToProduct}
+      onSaveCart={saveCart}
     >
       {renderPage()}
 

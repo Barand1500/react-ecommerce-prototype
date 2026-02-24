@@ -24,6 +24,19 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
+export interface SavedCart {
+  id: number;
+  name: string;
+  createdAt: string;
+  items: {
+    name: string;
+    image: string;
+    quantity: number;
+    price: number;
+    productId: number;
+  }[];
+}
+
 export interface FAQItem {
   question: string;
   answer: string;

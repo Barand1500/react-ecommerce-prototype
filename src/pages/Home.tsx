@@ -14,6 +14,7 @@ interface HomeProps {
   onToggleCompare: (p: Product) => void;
   favorites: Product[];
   comparisonList: Product[];
+  selectedStore: string;
 }
 
 const CATEGORY_ICONS = {
@@ -26,7 +27,7 @@ const CATEGORY_ICONS = {
 
 const ITEMS_PER_PAGE = 8;
 
-export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, onToggleFav, onToggleCompare, favorites, comparisonList }: HomeProps) {
+export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, onToggleFav, onToggleCompare, favorites, comparisonList, selectedStore }: HomeProps) {
   const [selectedCategory, setSelectedCategory] = useState('Tümü');
   const [priceRange, setPriceRange] = useState(150000);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -50,6 +51,34 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
     setCurrentPage(1);
   };
 
+  // Ürünün seçili mağazada olup olmadığını kontrol et
+  const isInSelectedStore = (product: Product): boolean => {
+    if (selectedStore === 'all') return true;
+    if (!product.storeAvailability) return true; // storeAvailability yoksa her yerde var say
+    if (selectedStore === 'nevsehir') return product.storeAvailability.nevsehir;
+    if (selectedStore === 'antalya') return product.storeAvailability.antalya;
+    return true;
+  };
+
+  // Ürünün diğer mağazada olup olmadığını kontrol et
+  const getOtherStoreName = (product: Product): string | undefined => {
+    if (selectedStore === 'all' || !product.storeAvailability) return undefined;
+    
+    if (selectedStore === 'nevsehir') {
+      // Nevşehir seçili ama ürün Nevşehir'de yok, Antalya'da var mı?
+      if (!product.storeAvailability.nevsehir && product.storeAvailability.antalya) {
+        return 'Antalya';
+      }
+    }
+    if (selectedStore === 'antalya') {
+      // Antalya seçili ama ürün Antalya'da yok, Nevşehir'de var mı?
+      if (!product.storeAvailability.antalya && product.storeAvailability.nevsehir) {
+        return 'Nevşehir';
+      }
+    }
+    return undefined;
+  };
+
   const filteredProducts = useMemo(() => {
     let result = PRODUCTS.filter(p => {
       const matchesCategory = selectedCategory === 'Tümü' || p.category === selectedCategory;
@@ -60,12 +89,23 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
       return matchesCategory && matchesPrice && matchesBrand && matchesColor && matchesStock;
     });
 
+    // Önce seçili mağazadaki ürünleri, sonra diğer mağazadaki ürünleri sırala
+    if (selectedStore !== 'all') {
+      result.sort((a, b) => {
+        const aInStore = isInSelectedStore(a);
+        const bInStore = isInSelectedStore(b);
+        if (aInStore && !bInStore) return -1;
+        if (!aInStore && bInStore) return 1;
+        return 0;
+      });
+    }
+
     if (sortBy === 'Fiyat (Artan)') result.sort((a, b) => a.price - b.price);
     if (sortBy === 'Fiyat (Azalan)') result.sort((a, b) => b.price - a.price);
     if (sortBy === 'Puan (Azalan)') result.sort((a, b) => b.rating - a.rating);
 
     return result;
-  }, [selectedCategory, priceRange, selectedBrands, selectedColors, onlyInStock, sortBy]);
+  }, [selectedCategory, priceRange, selectedBrands, selectedColors, onlyInStock, sortBy, selectedStore]);
 
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
   const paginatedProducts = filteredProducts.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
@@ -163,6 +203,7 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
                   onToggleCompare={onToggleCompare}
                   isFavorite={favorites.some(p => p.id === product.id)}
                   isComparing={comparisonList.some(p => p.id === product.id)}
+                  otherStoreName={getOtherStoreName(product)}
                 />
               ))}
             </div>
@@ -219,71 +260,54 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setIsFilterOpen(false)}
-              className="fixed inset-0 bg-black/30 dark:bg-black/50 backdrop-blur-sm z-[100]"
+              className="fixed inset-0 bg-black/20 dark:bg-black/40 z-[100]"
             />
             <motion.div 
               initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
-              className="fixed top-0 left-0 bottom-0 w-full max-w-sm bg-white dark:bg-slate-900 z-[110] shadow-2xl p-8 overflow-y-auto"
+              transition={{ type: 'tween', duration: 0.25 }}
+              className="fixed top-0 left-0 bottom-0 w-80 bg-white dark:bg-slate-900 z-[110] shadow-xl flex flex-col"
             >
-              <div className="flex justify-between items-center mb-10">
-                <h2 className="text-2xl font-display font-bold text-slate-800 dark:text-white">Filtrele</h2>
-                <button onClick={() => setIsFilterOpen(false)} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"><X size={28} /></button>
+              {/* Header */}
+              <div className="flex justify-between items-center px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+                <h2 className="text-base font-semibold text-slate-800 dark:text-white">Filtrele</h2>
+                <button onClick={() => setIsFilterOpen(false)} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                  <X size={20} className="text-slate-500" />
+                </button>
               </div>
 
-              <div className="space-y-10">
+              {/* Content */}
+              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
                 {/* Categories */}
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-6">Kategoriler</h4>
-                  <div className="space-y-2">
+                  <h4 className="text-xs font-medium text-slate-400 mb-2">Kategori</h4>
+                  <div className="flex flex-wrap gap-1.5">
                     <button 
                       onClick={() => { setSelectedCategory('Tümü'); setCurrentPage(1); }}
-                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold transition-all ${selectedCategory === 'Tümü' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'}`}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${selectedCategory === 'Tümü' ? 'bg-slate-800 dark:bg-white text-white dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                     >
                       Tümü
                     </button>
-                    {Object.entries(CATEGORY_ICONS).map(([cat, icon]) => (
+                    {Object.entries(CATEGORY_ICONS).map(([cat]) => (
                       <button 
                         key={cat}
                         onClick={() => { setSelectedCategory(cat); setCurrentPage(1); }}
-                        className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold transition-all flex items-center justify-between ${selectedCategory === cat ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'}`}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${selectedCategory === cat ? 'bg-slate-800 dark:bg-white text-white dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                       >
-                        <div className="flex items-center gap-3">
-                          <span className={selectedCategory === cat ? 'text-white' : 'text-blue-600'}>{icon}</span>
-                          {cat}
-                        </div>
-                        <span className="text-[10px] opacity-60">{PRODUCTS.filter(p => p.category === cat).length}</span>
+                        {cat}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Price Range */}
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Fiyat Aralığı</h4>
-                  <input 
-                    type="range" 
-                    min="0" 
-                    max="150000" 
-                    step="5000"
-                    value={priceRange}
-                    onChange={(e) => { setPriceRange(Number(e.target.value)); setCurrentPage(1); }}
-                    className="w-full accent-blue-600"
-                  />
-                  <div className="flex justify-between text-xs font-bold mt-4">
-                    <span className="text-slate-400">0 TL</span>
-                    <span className="text-blue-600">{priceRange.toLocaleString()} TL</span>
-                  </div>
-                </div>
-
                 {/* Brands */}
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-6">Markalar</h4>
-                  <div className="grid grid-cols-2 gap-2">
+                  <h4 className="text-xs font-medium text-slate-400 mb-2">Marka</h4>
+                  <div className="flex flex-wrap gap-1.5">
                     {brands.map(brand => (
                       <button 
                         key={brand}
                         onClick={() => toggleBrand(brand)}
-                        className={`px-4 py-3 rounded-2xl text-xs font-bold border transition-all ${selectedBrands.includes(brand) ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-blue-500 text-slate-700 dark:text-slate-200'}`}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${selectedBrands.includes(brand) ? 'bg-slate-800 dark:bg-white text-white dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                       >
                         {brand}
                       </button>
@@ -291,44 +315,88 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
                   </div>
                 </div>
 
-                {/* Colors */}
+                {/* Price Range */}
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Renkler</h4>
-                  <div className="flex flex-wrap gap-3">
-                    {colors.map(color => (
-                      <button 
-                        key={color}
-                        onClick={() => toggleColor(color)}
-                        className={`w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center ${selectedColors.includes(color) ? 'border-blue-600 scale-110' : 'border-transparent'}`}
-                        title={color}
-                      >
-                        <div className="w-7 h-7 rounded-full shadow-inner" style={{ backgroundColor: color === 'Beyaz' ? '#fff' : color === 'Siyah' ? '#000' : color === 'Uzay Grisi' ? '#4a4a4a' : color === 'Naturel Titanyum' ? '#bebebe' : color === 'Gümüş' ? '#c0c0c0' : color === 'Grafit' ? '#383838' : color === 'Titanyum Siyah' ? '#1a1a1a' : color === 'Neon' ? '#ff3e00' : color === 'Gök Mavisi' ? '#70b0ff' : color === 'Gri' ? '#808080' : '#ccc' }} />
-                      </button>
-                    ))}
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="text-xs font-medium text-slate-400">Fiyat</h4>
+                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{priceRange.toLocaleString()} ₺</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="150000" 
+                    step="5000"
+                    value={priceRange}
+                    onChange={(e) => { setPriceRange(Number(e.target.value)); setCurrentPage(1); }}
+                    className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer accent-slate-800 dark:accent-white"
+                  />
+                  <div className="flex justify-between text-[10px] text-slate-400 mt-1">
+                    <span>0 ₺</span>
+                    <span>150.000 ₺</span>
                   </div>
                 </div>
 
-                {/* Stock */}
+                {/* Colors - Compact */}
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-6">Stok Durumu</h4>
-                  <div className="space-y-3">
-                    <label className="flex items-center gap-3 cursor-pointer group">
-                      <div 
-                        onClick={() => { setOnlyInStock(!onlyInStock); setCurrentPage(1); }}
-                        className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all ${onlyInStock ? 'bg-blue-600 border-blue-600 shadow-lg shadow-blue-500/30' : 'border-slate-300 dark:border-slate-600 group-hover:border-blue-500'}`}
-                      >
-                        {onlyInStock && <Check size={14} className="text-white" />}
-                      </div>
-                      <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Sadece Stoktakiler</span>
-                    </label>
+                  <h4 className="text-xs font-medium text-slate-400 mb-2">Renk</h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {colors.map(color => {
+                      const colorMap: Record<string, string> = {
+                        'Beyaz': '#ffffff', 'Siyah': '#1a1a1a', 'Uzay Grisi': '#4a4a4a', 
+                        'Naturel Titanyum': '#bebebe', 'Gümüş': '#c0c0c0', 'Grafit': '#383838',
+                        'Titanyum Siyah': '#1a1a1a', 'Neon': '#ff3e00', 'Gök Mavisi': '#70b0ff', 'Gri': '#808080'
+                      };
+                      const bgColor = colorMap[color] || '#ccc';
+                      const isSelected = selectedColors.includes(color);
+                      return (
+                        <button 
+                          key={color}
+                          onClick={() => toggleColor(color)}
+                          className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-medium transition-all ${isSelected ? 'bg-slate-800 dark:bg-white text-white dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                        >
+                          <span 
+                            className="w-3 h-3 rounded-full border border-slate-200 dark:border-slate-600 flex-shrink-0" 
+                            style={{ backgroundColor: bgColor }}
+                          />
+                          {color}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
+                {/* Stock Toggle */}
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-xs font-medium text-slate-600 dark:text-slate-300">Sadece Stoktakiler</span>
+                  <button 
+                    onClick={() => { setOnlyInStock(!onlyInStock); setCurrentPage(1); }}
+                    className={`w-10 h-5 rounded-full transition-all relative ${onlyInStock ? 'bg-slate-800 dark:bg-white' : 'bg-slate-200 dark:bg-slate-700'}`}
+                  >
+                    <div className={`w-4 h-4 rounded-full bg-white dark:bg-slate-900 shadow absolute top-0.5 transition-all ${onlyInStock ? 'left-5' : 'left-0.5'}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="px-5 py-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
                 <button 
                   onClick={() => setIsFilterOpen(false)}
-                  className="btn-primary w-full mt-8"
+                  className="w-full py-2.5 bg-slate-800 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-700 dark:hover:bg-slate-100 transition-colors"
                 >
-                  Sonuçları Göster
+                  Uygula
+                </button>
+                <button 
+                  onClick={() => { 
+                    setSelectedCategory('Tümü'); 
+                    setSelectedBrands([]); 
+                    setSelectedColors([]); 
+                    setPriceRange(150000); 
+                    setOnlyInStock(false);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full py-2 text-xs font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+                >
+                  Filtreleri Temizle
                 </button>
               </div>
             </motion.div>

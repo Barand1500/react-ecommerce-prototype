@@ -1,4 +1,4 @@
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   User, Share2, MapPin, FileText, ShoppingBag, ShoppingCart, 
@@ -8,14 +8,18 @@ import {
   Edit3, Trash2, X, Star, Briefcase, Hash, MapPinned, Package, Truck,
   CheckCircle2, Clock, XCircle, Eye, ChevronRight, Filter, AlertTriangle,
   ArrowRight, Tag, RotateCcw, RefreshCw, MessageSquare, FileQuestion,
-  EyeOff, KeyRound, AlertCircle
+  EyeOff, KeyRound, AlertCircle, Info
 } from 'lucide-react';
-import { User as UserType } from '../types';
+import { User as UserType, SavedCart } from '../types';
+import { PRODUCTS } from '../constants';
 
 interface ProfileProps {
   user: UserType;
   onNavigate: (page: string) => void;
   onLogout: () => void;
+  savedCarts: SavedCart[];
+  onLoadCart: (cartId: number) => void;
+  onDeleteSavedCart: (cartId: number) => void;
 }
 
 const PROFILE_MENU_ITEMS = [
@@ -85,7 +89,7 @@ const PROFILE_MENU_ITEMS = [
   }
 ];
 
-export default function Profile({ user, onNavigate, onLogout }: ProfileProps) {
+export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoadCart, onDeleteSavedCart }: ProfileProps) {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [profileData, setProfileData] = useState({
     name: user.name,
@@ -253,48 +257,6 @@ export default function Profile({ user, onNavigate, onLogout }: ProfileProps) {
   // Kayıtlı Sepetlerim State'leri
   const [savedCartsSearch, setSavedCartsSearch] = useState('');
   const [selectedCart, setSelectedCart] = useState<number | null>(null);
-  const [savedCarts, setSavedCarts] = useState<{
-    id: number;
-    name: string;
-    createdAt: string;
-    items: { 
-      name: string; 
-      image: string; 
-      quantity: number; 
-      savedPrice: number; 
-      currentPrice: number;
-      inStock: boolean;
-    }[];
-  }[]>([
-    {
-      id: 1,
-      name: 'Ofis Alışverişim',
-      createdAt: '23.02.2026 14:04',
-      items: [
-        { name: 'PLUS Silver Kağıt Para Sayma Makinesi (TL/EURO)', image: 'https://picsum.photos/seed/para1/100', quantity: 1, savedPrice: 4354.17, currentPrice: 4398.50, inStock: true },
-        { name: 'PRT-110 Para Sayma Makinesi (10 Para Birimi)', image: 'https://picsum.photos/seed/para2/100', quantity: 1, savedPrice: 17697.41, currentPrice: 17850.00, inStock: true }
-      ]
-    },
-    {
-      id: 2,
-      name: 'Teknoloji Listesi',
-      createdAt: '20.02.2026 10:30',
-      items: [
-        { name: 'iPhone 15 Pro Max 256GB', image: 'https://picsum.photos/seed/iphone15/100', quantity: 1, savedPrice: 74999, currentPrice: 74999, inStock: true },
-        { name: 'Apple Watch Series 9', image: 'https://picsum.photos/seed/watch9/100', quantity: 1, savedPrice: 18999, currentPrice: 17499, inStock: true },
-        { name: 'AirPods Pro 2', image: 'https://picsum.photos/seed/airpods2/100', quantity: 2, savedPrice: 8999, currentPrice: 8999, inStock: false }
-      ]
-    },
-    {
-      id: 3,
-      name: 'Ev Elektronikleri',
-      createdAt: '15.02.2026 16:45',
-      items: [
-        { name: 'Samsung 65" QLED 4K TV', image: 'https://picsum.photos/seed/tv/100', quantity: 1, savedPrice: 54999, currentPrice: 52999, inStock: true },
-        { name: 'Soundbar Q990C', image: 'https://picsum.photos/seed/soundbar/100', quantity: 1, savedPrice: 32999, currentPrice: 34999, inStock: true }
-      ]
-    }
-  ]);
 
   // İade/Değişim Talepleri State'leri
   const [returnsSearch, setReturnsSearch] = useState('');
@@ -1970,15 +1932,12 @@ export default function Profile({ user, onNavigate, onLogout }: ProfileProps) {
 
     const selectedCartData = savedCarts.find(c => c.id === selectedCart);
 
-    const calculateTotals = (items: typeof savedCarts[0]['items']) => {
-      const savedTotal = items.reduce((sum, item) => sum + (item.savedPrice * item.quantity), 0);
-      const currentTotal = items.filter(i => i.inStock).reduce((sum, item) => sum + (item.currentPrice * item.quantity), 0);
-      const difference = currentTotal - savedTotal;
-      return { savedTotal, currentTotal, difference };
+    const calculateCartTotal = (items: typeof savedCarts[0]['items']) => {
+      return items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     };
 
     const handleDeleteCart = (cartId: number) => {
-      setSavedCarts(savedCarts.filter(c => c.id !== cartId));
+      onDeleteSavedCart(cartId);
       setSelectedCart(null);
     };
 
@@ -2023,12 +1982,25 @@ export default function Profile({ user, onNavigate, onLogout }: ProfileProps) {
                 <ShoppingCart size={32} className="text-cyan-500" />
               </div>
               <h3 className="font-bold text-slate-900 dark:text-white mb-2">Kayıtlı Sepet Yok</h3>
-              <p className="text-slate-500 text-sm">Henüz kaydedilmiş sepetiniz bulunmuyor</p>
+              <p className="text-slate-500 text-sm">Henüz kaydedilmiş sepetiniz bulunmuyor.</p>
+              <p className="text-slate-400 text-xs mt-2">Sepetinize ürün ekleyip "Sepeti Kaydet" butonuna tıklayarak sepetinizi kaydedebilirsiniz.</p>
             </div>
           ) : (
             filteredCarts.map((cart, index) => {
-              const { savedTotal, currentTotal, difference } = calculateTotals(cart.items);
-              const outOfStockCount = cart.items.filter(i => !i.inStock).length;
+              const savedTotal = calculateCartTotal(cart.items);
+              
+              // Güncel fiyatları hesapla
+              const currentTotal = cart.items.reduce((sum, item) => {
+                const currentProduct = PRODUCTS.find(p => p.id === item.productId);
+                const currentPrice = currentProduct?.price ?? item.price;
+                return sum + (currentPrice * item.quantity);
+              }, 0);
+              
+              const priceDiff = currentTotal - savedTotal;
+              const outOfStockCount = cart.items.filter(item => {
+                const product = PRODUCTS.find(p => p.id === item.productId);
+                return !product || !product.inStock;
+              }).length;
               
               return (
                 <motion.div
@@ -2036,62 +2008,104 @@ export default function Profile({ user, onNavigate, onLogout }: ProfileProps) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden hover:shadow-lg hover:border-cyan-200 dark:hover:border-cyan-500/30 transition-all cursor-pointer group"
+                  className={`relative bg-white dark:bg-slate-900 rounded-3xl border overflow-hidden hover:shadow-lg transition-all cursor-pointer group ${
+                    outOfStockCount > 0 
+                      ? 'border-amber-200 dark:border-amber-500/30 hover:border-amber-300 dark:hover:border-amber-500/50' 
+                      : priceDiff !== 0 
+                        ? 'border-slate-200 dark:border-slate-700 hover:border-cyan-200 dark:hover:border-cyan-500/30'
+                        : 'border-slate-100 dark:border-slate-800 hover:border-cyan-200 dark:hover:border-cyan-500/30'
+                  }`}
                   onClick={() => setSelectedCart(cart.id)}
                 >
+                  {/* Fiyat Değişimi Badge */}
+                  {priceDiff !== 0 && (
+                    <div className={`absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                      priceDiff > 0 
+                        ? 'bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400' 
+                        : 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
+                    }`}>
+                      {priceDiff > 0 
+                        ? <TrendingUp size={12} />
+                        : <TrendingDown size={12} />
+                      }
+                      {priceDiff > 0 ? '+' : ''}{priceDiff.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺
+                    </div>
+                  )}
+
+                  {/* Stokta Yok Badge */}
+                  {outOfStockCount > 0 && (
+                    <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-medium">
+                      <AlertTriangle size={12} />
+                      {outOfStockCount} stokta yok
+                    </div>
+                  )}
+
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white text-lg">{cart.name}</h3>
+                      <div className="flex-1 pr-16">
+                        <h3 className="font-bold text-slate-900 dark:text-white text-lg truncate">{cart.name}</h3>
                         <p className="text-sm text-slate-500">{cart.createdAt}</p>
-                      </div>
-                      <div className="p-2 bg-cyan-50 dark:bg-cyan-500/10 rounded-xl group-hover:bg-cyan-100 dark:group-hover:bg-cyan-500/20 transition-colors">
-                        <Eye size={20} className="text-cyan-500" />
                       </div>
                     </div>
 
                     {/* Ürün Thumbnailleri */}
                     <div className="flex items-center gap-2 mb-4">
                       <div className="flex -space-x-3">
-                        {cart.items.slice(0, 3).map((item, idx) => (
-                          <img 
-                            key={idx}
-                            src={item.image} 
-                            alt={item.name}
-                            className="w-10 h-10 rounded-lg border-2 border-white dark:border-slate-900 object-cover"
-                          />
-                        ))}
-                        {cart.items.length > 3 && (
+                        {cart.items.slice(0, 4).map((item, idx) => {
+                          const product = PRODUCTS.find(p => p.id === item.productId);
+                          const isOutOfStock = !product || !product.inStock;
+                          return (
+                            <div key={idx} className="relative">
+                              <img 
+                                src={item.image} 
+                                alt={item.name}
+                                className={`w-10 h-10 rounded-lg border-2 border-white dark:border-slate-900 object-cover ${isOutOfStock ? 'opacity-50 grayscale' : ''}`}
+                              />
+                              {isOutOfStock && (
+                                <div className="absolute inset-0 bg-black/30 rounded-lg flex items-center justify-center border-2 border-white dark:border-slate-900">
+                                  <XCircle size={14} className="text-white" />
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                        {cart.items.length > 4 && (
                           <div className="w-10 h-10 rounded-lg border-2 border-white dark:border-slate-900 bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-medium text-slate-600 dark:text-slate-400">
-                            +{cart.items.length - 3}
+                            +{cart.items.length - 4}
                           </div>
                         )}
                       </div>
-                      <span className="text-sm text-slate-500 ml-2">{cart.items.length} Ürün</span>
+                      <span className="text-sm text-slate-500 ml-2">
+                        {cart.items.length} Ürün, {cart.items.reduce((sum, i) => sum + i.quantity, 0)} Adet
+                      </span>
                     </div>
 
-                    {/* Fiyat ve Durum */}
+                    {/* Fiyat */}
                     <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
                       <div>
-                        <p className="text-xs text-slate-500">Toplam</p>
-                        <p className="font-bold text-slate-900 dark:text-white">
-                          {currentTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
+                        <p className="text-xs text-slate-500">
+                          {priceDiff !== 0 ? 'Kaydedilen / Güncel' : 'Toplam'}
                         </p>
+                        {priceDiff !== 0 ? (
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-slate-400 line-through">
+                              {savedTotal.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺
+                            </span>
+                            <span className={`font-bold ${priceDiff > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
+                              {currentTotal.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺
+                            </span>
+                          </div>
+                        ) : (
+                          <p className="font-bold text-slate-900 dark:text-white">
+                            {savedTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
+                          </p>
+                        )}
                       </div>
-                      {difference !== 0 && (
-                        <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                          difference > 0 
-                            ? 'bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400' 
-                            : 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
-                        }`}>
-                          {difference > 0 ? '+' : ''}{difference.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
-                        </span>
-                      )}
-                      {outOfStockCount > 0 && (
-                        <span className="text-xs font-medium px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400">
-                          {outOfStockCount} stokta yok
-                        </span>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <div className="p-2 bg-cyan-50 dark:bg-cyan-500/10 rounded-xl group-hover:bg-cyan-100 dark:group-hover:bg-cyan-500/20 transition-colors">
+                          <Eye size={18} className="text-cyan-500" />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -2102,155 +2116,258 @@ export default function Profile({ user, onNavigate, onLogout }: ProfileProps) {
 
         {/* Sepet Detay Modal */}
         <AnimatePresence>
-          {selectedCart && selectedCartData && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setSelectedCart(null)}
-                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
-              />
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[90vh]"
-              >
-                {/* Modal Header */}
-                <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
-                  <div>
-                    <h2 className="text-xl font-bold text-slate-900 dark:text-white">{selectedCartData.name}</h2>
-                    <p className="text-sm text-slate-500">{selectedCartData.createdAt}</p>
-                  </div>
-                  <button
-                    onClick={() => setSelectedCart(null)}
-                    className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
-                  >
-                    <X size={20} className="text-slate-500" />
-                  </button>
-                </div>
+          {selectedCart && selectedCartData && (() => {
+            // Fiyat karşılaştırması hesapla
+            const itemsWithCurrentPrices = selectedCartData.items.map(item => {
+              const currentProduct = PRODUCTS.find(p => p.id === item.productId);
+              const currentPrice = currentProduct?.price ?? item.price;
+              const inStock = currentProduct ? currentProduct.inStock : false;
+              return {
+                ...item,
+                savedPrice: item.price,
+                currentPrice,
+                inStock,
+                priceDiff: currentPrice - item.price
+              };
+            });
 
-                {/* Stok Uyarısı */}
-                {selectedCartData.items.some(i => !i.inStock) && (
-                  <div className="mx-6 mt-4 p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 rounded-xl flex items-start gap-3">
-                    <AlertTriangle size={20} className="text-amber-500 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-amber-700 dark:text-amber-300">
-                      Stokta bulunmayan ürünler eklenmeyecek, stok miktarından fazla talep edilen ürünler ise mevcut stok kadar eklenecektir.
-                    </p>
-                  </div>
-                )}
+            const savedTotal = itemsWithCurrentPrices.reduce((sum, i) => sum + (i.savedPrice * i.quantity), 0);
+            const currentTotal = itemsWithCurrentPrices.reduce((sum, i) => sum + (i.currentPrice * i.quantity), 0);
+            const totalDiff = currentTotal - savedTotal;
+            const outOfStockItems = itemsWithCurrentPrices.filter(i => !i.inStock);
+            const priceChangedItems = itemsWithCurrentPrices.filter(i => i.priceDiff !== 0);
 
-                {/* Modal Content - Ürün Listesi */}
-                <div className="p-6 space-y-4 overflow-y-auto flex-1">
-                  {selectedCartData.items.map((item, idx) => (
-                    <div 
-                      key={idx} 
-                      className={`flex items-center gap-4 p-4 rounded-xl ${
-                        item.inStock 
-                          ? 'bg-slate-50 dark:bg-slate-800' 
-                          : 'bg-red-50 dark:bg-red-500/10 opacity-75'
-                      }`}
-                    >
-                      <div className="relative">
-                        <img 
-                          src={item.image} 
-                          alt={item.name}
-                          className={`w-16 h-16 rounded-xl object-cover ${!item.inStock ? 'grayscale' : ''}`}
-                        />
-                        {!item.inStock && (
-                          <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
-                            <XCircle size={20} className="text-white" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className={`font-medium truncate ${item.inStock ? 'text-slate-900 dark:text-white' : 'text-slate-500 line-through'}`}>
-                          {item.name}
+            return (
+              <>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setSelectedCart(null)}
+                  className="fixed inset-0 bg-black/60 backdrop-blur-md z-50"
+                />
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-3xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[90vh]"
+                >
+                  {/* Modal Header */}
+                  <div className="relative px-6 pt-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                          <ShoppingCart size={20} className="text-cyan-500" />
+                          {selectedCartData.name}
+                        </h2>
+                        <p className="text-sm text-slate-500 mt-1">
+                          Kaydedilme: {selectedCartData.createdAt} • {selectedCartData.items.length} Ürün, {selectedCartData.items.reduce((sum, i) => sum + i.quantity, 0)} Adet
                         </p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-sm text-slate-500 line-through">
-                            {item.savedPrice.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
-                          </span>
-                          <span className="text-sm">x {item.quantity}</span>
-                        </div>
-                        {!item.inStock && (
-                          <span className="text-xs text-red-500 font-medium">Stokta yok</span>
-                        )}
                       </div>
-                      <div className="text-right">
+                      <button
+                        onClick={() => setSelectedCart(null)}
+                        className="p-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                      >
+                        <X size={20} className="text-slate-500" />
+                      </button>
+                    </div>
+
+                    {/* Stok Uyarısı */}
+                    {outOfStockItems.length > 0 && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-4 p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200/50 dark:border-amber-500/20 rounded-xl flex items-start gap-3"
+                      >
+                        <AlertTriangle size={18} className="text-amber-500 flex-shrink-0 mt-0.5" />
+                        <p className="text-sm text-amber-700 dark:text-amber-300">
+                          <span className="font-medium">{outOfStockItems.length} ürün</span> stokta bulunmuyor. Bu ürünler sepete eklenmeyecektir.
+                        </p>
+                      </motion.div>
+                    )}
+                  </div>
+
+                  {/* Modal Content - Ürün Listesi */}
+                  <div className="p-6 space-y-3 overflow-y-auto flex-1">
+                    {itemsWithCurrentPrices.map((item, idx) => (
+                      <motion.div 
+                        key={idx}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.03 }}
+                        className={`relative flex items-center gap-4 p-4 rounded-2xl border transition-all ${
+                          !item.inStock 
+                            ? 'bg-red-50/50 dark:bg-red-500/5 border-red-200 dark:border-red-500/20' 
+                            : item.priceDiff !== 0 
+                              ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700' 
+                              : 'bg-slate-50 dark:bg-slate-800/50 border-transparent'
+                        }`}
+                      >
+                        {/* Ürün Görseli */}
+                        <div className="relative flex-shrink-0">
+                          <img 
+                            src={item.image} 
+                            alt={item.name}
+                            className={`w-16 h-16 rounded-xl object-cover ${!item.inStock ? 'opacity-50 grayscale' : ''}`}
+                          />
+                          {!item.inStock && (
+                            <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center">
+                              <XCircle size={20} className="text-white" />
+                            </div>
+                          )}
+                          {item.inStock && item.priceDiff !== 0 && (
+                            <div className={`absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center ${
+                              item.priceDiff > 0 
+                                ? 'bg-red-500' 
+                                : 'bg-emerald-500'
+                            }`}>
+                              {item.priceDiff > 0 
+                                ? <TrendingUp size={12} className="text-white" />
+                                : <TrendingDown size={12} className="text-white" />
+                              }
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Ürün Bilgileri */}
+                        <div className="flex-1 min-w-0">
+                          <p className={`font-medium text-sm truncate ${
+                            !item.inStock 
+                              ? 'text-slate-400 line-through' 
+                              : 'text-slate-900 dark:text-white'
+                          }`}>
+                            {item.name}
+                          </p>
+                          <div className="flex items-center gap-2 mt-1 flex-wrap">
+                            <span className="text-xs text-slate-500">
+                              {item.savedPrice.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺ x {item.quantity}
+                            </span>
+                            {!item.inStock && (
+                              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400">
+                                Stokta Yok
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Fiyat Bilgileri */}
+                        <div className="text-right flex-shrink-0">
+                          {item.priceDiff !== 0 ? (
+                            <>
+                              <p className="text-xs text-slate-400 line-through">
+                                {(item.savedPrice * item.quantity).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
+                              </p>
+                              <p className={`font-bold ${
+                                item.priceDiff > 0 
+                                  ? 'text-red-500' 
+                                  : 'text-emerald-500'
+                              }`}>
+                                {(item.currentPrice * item.quantity).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
+                              </p>
+                              <span className={`text-xs font-medium ${
+                                item.priceDiff > 0 
+                                  ? 'text-red-400' 
+                                  : 'text-emerald-400'
+                              }`}>
+                                {item.priceDiff > 0 ? '+' : ''}{(item.priceDiff * item.quantity).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
+                              </span>
+                            </>
+                          ) : (
+                            <p className="font-bold text-slate-900 dark:text-white">
+                              {(item.currentPrice * item.quantity).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
+                            </p>
+                          )}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Fiyat Özeti */}
+                  <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 space-y-4">
+                    {/* Kaydedilen vs Güncel Tutar */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <p className="text-xs text-slate-500 mb-1">Kaydedilen Tutar</p>
+                        <p className="font-bold text-slate-900 dark:text-white">
+                          {savedTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
+                        </p>
+                      </div>
+                      <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <p className="text-xs text-slate-500 mb-1">Güncel Tutar</p>
                         <p className={`font-bold ${
-                          item.currentPrice > item.savedPrice 
+                          totalDiff > 0 
                             ? 'text-red-500' 
-                            : item.currentPrice < item.savedPrice 
+                            : totalDiff < 0 
                               ? 'text-emerald-500' 
                               : 'text-slate-900 dark:text-white'
                         }`}>
-                          {item.currentPrice.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
+                          {currentTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
                         </p>
-                        {item.currentPrice !== item.savedPrice && (
-                          <span className={`text-xs ${item.currentPrice > item.savedPrice ? 'text-red-400' : 'text-emerald-400'}`}>
-                            {item.currentPrice > item.savedPrice ? '↑' : '↓'} {Math.abs(item.currentPrice - item.savedPrice).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
-                          </span>
-                        )}
                       </div>
                     </div>
-                  ))}
 
-                  {/* Fiyat Özeti */}
-                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">Kaydedilen Tutar:</span>
-                      <span className="text-slate-600 dark:text-slate-400">
-                        {calculateTotals(selectedCartData.items).savedTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-400 font-medium">Güncel Toplam:</span>
-                      <span className="font-bold text-slate-900 dark:text-white text-lg">
-                        {calculateTotals(selectedCartData.items).currentTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
-                      </span>
-                    </div>
-                    
-                    {/* Fiyat Değişim Uyarısı */}
-                    {calculateTotals(selectedCartData.items).difference !== 0 && (
-                      <div className={`p-3 rounded-xl ${
-                        calculateTotals(selectedCartData.items).difference > 0 
-                          ? 'bg-red-50 dark:bg-red-500/10' 
-                          : 'bg-emerald-50 dark:bg-emerald-500/10'
-                      }`}>
-                        <p className={`text-sm font-medium ${
-                          calculateTotals(selectedCartData.items).difference > 0 
-                            ? 'text-red-600 dark:text-red-400' 
-                            : 'text-emerald-600 dark:text-emerald-400'
+                    {/* Fiyat Değişimi Bildirimi */}
+                    {totalDiff !== 0 && (
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className={`p-3 rounded-xl flex items-center gap-3 ${
+                          totalDiff > 0 
+                            ? 'bg-red-50 dark:bg-red-500/10 border border-red-200/50 dark:border-red-500/20' 
+                            : 'bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/50 dark:border-emerald-500/20'
+                        }`}
+                      >
+                        <div className={`p-2 rounded-lg ${
+                          totalDiff > 0 
+                            ? 'bg-red-100 dark:bg-red-500/20' 
+                            : 'bg-emerald-100 dark:bg-emerald-500/20'
                         }`}>
-                          {calculateTotals(selectedCartData.items).difference > 0 
-                            ? `Toplam tutar, ${Math.abs(calculateTotals(selectedCartData.items).difference).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺ tutarında artmış!`
-                            : `Toplam tutar, ${Math.abs(calculateTotals(selectedCartData.items).difference).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺ tutarında azalmış!`
+                          {totalDiff > 0 
+                            ? <TrendingUp size={18} className="text-red-500" />
+                            : <TrendingDown size={18} className="text-emerald-500" />
                           }
-                        </p>
-                      </div>
+                        </div>
+                        <div>
+                          <p className={`text-sm font-medium ${
+                            totalDiff > 0 
+                              ? 'text-red-700 dark:text-red-400' 
+                              : 'text-emerald-700 dark:text-emerald-400'
+                          }`}>
+                            Toplam tutar {Math.abs(totalDiff).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺ 
+                            {totalDiff > 0 ? 'artmış' : 'azalmış'}!
+                          </p>
+                          <p className="text-xs text-slate-500 mt-0.5">
+                            {priceChangedItems.length} üründe fiyat değişikliği
+                          </p>
+                        </div>
+                      </motion.div>
                     )}
                   </div>
-                </div>
 
-                {/* Modal Footer */}
-                <div className="flex gap-3 p-6 border-t border-slate-100 dark:border-slate-800">
-                  <button 
-                    onClick={() => handleDeleteCart(selectedCartData.id)}
-                    className="flex items-center justify-center gap-2 px-6 py-3 bg-red-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-red-500/25 hover:shadow-xl transition-all"
-                  >
-                    <Trash2 size={18} />
-                    Sil
-                  </button>
-                  <button className="flex-1 flex items-center justify-center gap-2 py-3 bg-cyan-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-cyan-500/25 hover:shadow-xl transition-all">
-                    <ArrowRight size={18} />
-                    Sepete Aktar
-                  </button>
-                </div>
-              </motion.div>
-            </>
-          )}
+                  {/* Modal Footer */}
+                  <div className="flex gap-3 p-6 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+                    <button 
+                      onClick={() => handleDeleteCart(selectedCartData.id)}
+                      className="flex items-center justify-center gap-2 px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-500/10 text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 rounded-xl font-semibold text-sm transition-all group"
+                    >
+                      <Trash2 size={18} className="group-hover:scale-110 transition-transform" />
+                      Sil
+                    </button>
+                    <button 
+                      onClick={() => {
+                        onLoadCart(selectedCartData.id);
+                        setSelectedCart(null);
+                      }}
+                      className="flex-1 flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/30 transition-all"
+                    >
+                      <ArrowRight size={18} />
+                      Sepete Aktar
+                    </button>
+                  </div>
+                </motion.div>
+              </>
+            );
+          })()}
         </AnimatePresence>
       </motion.div>
     );
