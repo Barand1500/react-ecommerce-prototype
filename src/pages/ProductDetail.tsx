@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingBag, CheckCircle, ShieldCheck, Truck, RefreshCcw, Heart, BarChart2, Bell, X, Mail, MapPin, Store, ChevronLeft, ChevronRight, ChevronDown, CreditCard, Calculator } from 'lucide-react';
+import { ShoppingBag, CheckCircle, ShieldCheck, Truck, RefreshCcw, Heart, BarChart2, Bell, BellRing, X, Mail, MapPin, Store, ChevronLeft, ChevronRight, ChevronDown, CreditCard, Calculator } from 'lucide-react';
 import { Product } from '../types';
 import { STORE_AVAILABILITY } from '../constants';
 
@@ -11,6 +11,10 @@ interface ProductDetailProps {
   onToggleCompare: (p: Product) => void;
   isFavorite: boolean;
   isComparing: boolean;
+  // Fiyat Alarmı
+  priceAlarm?: { targetPrice: number } | null;
+  onSetPriceAlarm?: (product: Product, targetPrice: number) => void;
+  onRemovePriceAlarm?: (productId: number) => void;
 }
 
 // Taksit Seçenekleri - Farklı bankalarda farklı faizsiz taksit seçenekleri
@@ -23,13 +27,16 @@ const INSTALLMENT_OPTIONS = [
   { bank: 'QNB Finansbank', logo: '🟣', rates: { 3: 0, 6: 1.55, 9: 1.85, 12: 2.05 } },   // 3 taksit faizsiz
 ];
 
-export default function ProductDetail({ product, onAddToCart, onToggleFav, onToggleCompare, isFavorite, isComparing }: ProductDetailProps) {
+export default function ProductDetail({ product, onAddToCart, onToggleFav, onToggleCompare, isFavorite, isComparing, priceAlarm, onSetPriceAlarm, onRemovePriceAlarm }: ProductDetailProps) {
   const [isNotifyModalOpen, setIsNotifyModalOpen] = useState(false);
   const [notifyEmail, setNotifyEmail] = useState('');
   const [isNotifySubmitted, setIsNotifySubmitted] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showInstallments, setShowInstallments] = useState(false);
   const [expandedBank, setExpandedBank] = useState<string | null>(null);
+  // Fiyat Alarmı
+  const [showPriceAlarmModal, setShowPriceAlarmModal] = useState(false);
+  const [alarmTargetPrice, setAlarmTargetPrice] = useState(Math.round(product.price * 0.9));
   
   const discount = product.oldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : null;
 
@@ -172,6 +179,13 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                     {product.oldPrice.toLocaleString('tr-TR')} TL
                   </p>
                 )}
+                {/* Fiyat Alarmı Göstergesi */}
+                {priceAlarm && (
+                  <p className="text-sm text-green-600 dark:text-green-400 font-bold flex items-center gap-1.5 mt-2">
+                    <BellRing size={14} />
+                    Alarm kuruldu: {priceAlarm.targetPrice.toLocaleString('tr-TR')} TL
+                  </p>
+                )}
               </div>
               {discount && (
                 <div className="px-4 py-2 bg-red-500 text-white text-sm font-bold rounded-2xl">
@@ -218,6 +232,27 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
               <BarChart2 size={20} /> {isComparing ? 'Listeden Kaldır' : 'Karşılaştır'}
             </button>
           </div>
+
+          {/* Fiyat Alarmı Butonu */}
+          {onSetPriceAlarm && (
+            <div className="flex gap-4">
+              {priceAlarm ? (
+                <button 
+                  onClick={() => onRemovePriceAlarm && onRemovePriceAlarm(product.id)}
+                  className="flex-1 flex items-center justify-center gap-3 bg-green-500 text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-green-600 transition-all shadow-xl shadow-green-500/20"
+                >
+                  <BellRing size={20} /> Alarm Aktif: {priceAlarm.targetPrice.toLocaleString('tr-TR')} TL (Kaldır)
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setShowPriceAlarmModal(true)}
+                  className="flex-1 flex items-center justify-center gap-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-8 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                >
+                  <Bell size={20} /> Fiyat Düşünce Haber Ver
+                </button>
+              )}
+            </div>
+          )}
           
           {/* Stok Durumu Göstergesi */}
           {!product.inStock && (
@@ -514,6 +549,103 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                   </p>
                 </div>
               )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Fiyat Alarmı Modalı */}
+      <AnimatePresence>
+        {showPriceAlarmModal && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-md z-300"
+              onClick={() => setShowPriceAlarmModal(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-slate-900 z-310 shadow-2xl rounded-3xl overflow-hidden"
+            >
+              <div className="p-8 space-y-6">
+                <button
+                  onClick={() => setShowPriceAlarmModal(false)}
+                  className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+                
+                <div className="text-center space-y-2">
+                  <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Bell size={32} className="text-green-600" />
+                  </div>
+                  <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white">Fiyat Alarmı Kur</h3>
+                  <p className="text-slate-500 text-sm">Fiyat belirlediğiniz seviyeye düşünce bildirim alın</p>
+                </div>
+                
+                <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl">
+                  <img src={product.image} alt={product.name} className="w-16 h-16 rounded-xl object-cover" referrerPolicy="no-referrer" />
+                  <div>
+                    <p className="font-bold text-slate-900 dark:text-white line-clamp-1">{product.name}</p>
+                    <p className="text-sm text-blue-600 font-bold">Şu anki fiyat: {product.price.toLocaleString('tr-TR')} TL</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 block">
+                      Hedef Fiyat (TL)
+                    </label>
+                    <input
+                      type="number"
+                      value={alarmTargetPrice}
+                      onChange={(e) => setAlarmTargetPrice(Number(e.target.value))}
+                      max={product.price - 1}
+                      min={1}
+                      className="w-full p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white font-bold text-xl focus:ring-2 focus:ring-green-500 outline-none"
+                    />
+                  </div>
+                  
+                  {/* Hızlı Seçim Butonları */}
+                  <div className="grid grid-cols-4 gap-2">
+                    {[5, 10, 15, 20].map((percent) => (
+                      <button
+                        key={percent}
+                        onClick={() => setAlarmTargetPrice(Math.round(product.price * (1 - percent / 100)))}
+                        className={`py-3 rounded-xl text-sm font-bold transition-all ${
+                          alarmTargetPrice === Math.round(product.price * (1 - percent / 100))
+                            ? 'bg-green-500 text-white'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        }`}
+                      >
+                        -%{percent}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <p className="text-xs text-slate-500">
+                    Fiyat <span className="font-bold text-green-600">{alarmTargetPrice.toLocaleString('tr-TR')} TL</span>'ye düşünce bildirim alacaksınız
+                  </p>
+                </div>
+                
+                <button
+                  onClick={() => {
+                    if (onSetPriceAlarm && alarmTargetPrice < product.price) {
+                      onSetPriceAlarm(product, alarmTargetPrice);
+                      setShowPriceAlarmModal(false);
+                    }
+                  }}
+                  disabled={alarmTargetPrice >= product.price}
+                  className="w-full py-4 bg-green-500 text-white rounded-2xl font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Bell size={18} />
+                  Fiyat Alarmı Kur
+                </button>
+              </div>
             </motion.div>
           </>
         )}

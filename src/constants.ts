@@ -34,6 +34,9 @@ export const STORE_AVAILABILITY: Record<number, { antalya: boolean; nevsehir: bo
   30: { antalya: true, nevsehir: true },   // Philips Hue
   31: { antalya: true, nevsehir: false },  // Nothing Phone (2)
   32: { antalya: true, nevsehir: true },   // Anker 737 Power Bank
+  33: { antalya: true, nevsehir: true },   // USB-C Kablo
+  34: { antalya: true, nevsehir: true },   // Xiaomi Mi Band 8
+  35: { antalya: true, nevsehir: true },   // JBL Go 3
 };
 
 export const PRODUCTS: Product[] = [
@@ -564,6 +567,52 @@ export const PRODUCTS: Product[] = [
     inStock: true,
     rating: 4.9,
     badge: 'En Çok Satan'
+  },
+  {
+    id: 33,
+    name: "USB-C Şarj Kablosu 2m",
+    brand: "Anker",
+    category: "Aksesuar",
+    price: 99.99,
+    oldPrice: 149.99,
+    image: "https://picsum.photos/seed/usbcable/800/800",
+    description: "Dayanıklı örgü kaplama, hızlı şarj destekli USB-C kablosu.",
+    features: ["60W Hızlı Şarj", "Örgü Kaplama", "2 Metre Uzunluk", "10.000+ Bükülme Testi"],
+    specs: { "Uzunluk": "2 metre", "Güç": "60W", "Veri Hızı": "480 Mbps", "Garanti": "18 ay" },
+    color: "Siyah",
+    inStock: true,
+    rating: 4.7
+  },
+  {
+    id: 34,
+    name: "Xiaomi Mi Band 8",
+    brand: "Xiaomi",
+    category: "Giyilebilir",
+    price: 499.99,
+    oldPrice: 699.99,
+    image: "https://picsum.photos/seed/miband8/800/800",
+    description: "150'den fazla egzersiz modu, 16 gün pil ömrü ve şık tasarım.",
+    features: ["AMOLED Ekran", "5ATM Su Dayanıklılık", "Uyku Takibi", "SpO2 Ölçümü"],
+    specs: { "Ekran": "1.62 inç AMOLED", "Pil": "16 gün", "Ağırlık": "27g", "Sensörler": "PPG, İvmeölçer" },
+    color: "Siyah",
+    inStock: true,
+    rating: 4.6,
+    badge: 'Trend'
+  },
+  {
+    id: 35,
+    name: "JBL Go 3 Bluetooth Hoparlör",
+    brand: "JBL",
+    category: "Ses",
+    price: 999.99,
+    oldPrice: 1299.99,
+    image: "https://picsum.photos/seed/jblgo3/800/800",
+    description: "Kompakt boyutta güçlü JBL ses kalitesi, suya dayanıklı tasarım.",
+    features: ["IP67 Su/Toz Geçirmez", "5 Saat Pil", "Bluetooth 5.1", "JBL Pro Sound"],
+    specs: { "Çıkış Gücü": "4.2W", "Frekans": "110Hz - 20kHz", "Pil": "5 saat", "Ağırlık": "209g" },
+    color: "Mavi",
+    inStock: true,
+    rating: 4.8
   }
 ];
 

@@ -64,6 +64,19 @@ export default function App() {
     return saved || 'all';
   });
 
+  // Fiyat Alarmları
+  const [priceAlarms, setPriceAlarms] = useState<{
+    productId: number;
+    productName: string;
+    productImage: string;
+    currentPrice: number;
+    targetPrice: number;
+    createdAt: string;
+  }[]>(() => {
+    const saved = localStorage.getItem('gt-price-alarms');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   // --- Effects ---
   useEffect(() => {
     localStorage.setItem('gt-cart', JSON.stringify(cart));
@@ -80,6 +93,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('gt-saved-carts', JSON.stringify(savedCarts));
   }, [savedCarts]);
+
+  useEffect(() => {
+    localStorage.setItem('gt-price-alarms', JSON.stringify(priceAlarms));
+  }, [priceAlarms]);
 
   // Dark Mode Effect - Geliştirilmiş versiyon
   useEffect(() => {
@@ -217,6 +234,47 @@ export default function App() {
     setSavedCarts(prev => prev.filter(c => c.id !== cartId));
   };
   
+  // Fiyat Alarmı Ekle
+  const addPriceAlarm = (product: Product, targetPrice: number) => {
+    if (targetPrice >= product.price) {
+      alert('Hedef fiyat mevcut fiyattan düşük olmalıdır.');
+      return;
+    }
+    
+    const existing = priceAlarms.find(a => a.productId === product.id);
+    if (existing) {
+      // Güncelle
+      setPriceAlarms(prev => prev.map(a => 
+        a.productId === product.id 
+          ? { ...a, targetPrice, currentPrice: product.price } 
+          : a
+      ));
+    } else {
+      // Yeni ekle
+      const now = new Date();
+      const formattedDate = `${now.getDate().toString().padStart(2, '0')}.${(now.getMonth() + 1).toString().padStart(2, '0')}.${now.getFullYear()}`;
+      
+      setPriceAlarms(prev => [...prev, {
+        productId: product.id,
+        productName: product.name,
+        productImage: product.image,
+        currentPrice: product.price,
+        targetPrice,
+        createdAt: formattedDate
+      }]);
+    }
+  };
+  
+  // Fiyat Alarmı Sil
+  const removePriceAlarm = (productId: number) => {
+    setPriceAlarms(prev => prev.filter(a => a.productId !== productId));
+  };
+  
+  // Ürün için alarm var mı kontrol et
+  const getPriceAlarm = (productId: number) => {
+    return priceAlarms.find(a => a.productId === productId);
+  };
+  
   const handleLogin = (email: string, name: string) => {
     setUser({ id: Math.random().toString(36).substr(2, 9), name, email });
     setIsAuthModalOpen(false);
@@ -251,6 +309,9 @@ export default function App() {
             favorites={favorites}
             comparisonList={comparisonList}
             selectedStore={selectedStore}
+            getPriceAlarm={getPriceAlarm}
+            onSetPriceAlarm={addPriceAlarm}
+            onRemovePriceAlarm={removePriceAlarm}
           />
         );
       case 'product-detail':
@@ -262,6 +323,9 @@ export default function App() {
             onToggleCompare={toggleComparison}
             isFavorite={favorites.some(p => p.id === selectedProduct.id)}
             isComparing={comparisonList.some(p => p.id === selectedProduct.id)}
+            priceAlarm={getPriceAlarm(selectedProduct.id)}
+            onSetPriceAlarm={addPriceAlarm}
+            onRemovePriceAlarm={removePriceAlarm}
           />
         ) : (
           <Home 
@@ -273,6 +337,9 @@ export default function App() {
             favorites={favorites}
             comparisonList={comparisonList}
             selectedStore={selectedStore}
+            getPriceAlarm={getPriceAlarm}
+            onSetPriceAlarm={addPriceAlarm}
+            onRemovePriceAlarm={removePriceAlarm}
           />
         );
       case 'comparison':

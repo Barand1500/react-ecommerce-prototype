@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Filter, ChevronDown, Smartphone, Laptop, Headphones, Watch, MousePointer2, Check, X } from 'lucide-react';
-import { PRODUCTS } from '../constants';
+import { PRODUCTS, STORE_AVAILABILITY } from '../constants';
 import { Product } from '../types';
 import ProductCard from '../components/ProductCard';
 import HeroSlider from '../components/HeroSlider';
@@ -15,6 +15,10 @@ interface HomeProps {
   favorites: Product[];
   comparisonList: Product[];
   selectedStore: string;
+  // Fiyat Alarmı
+  getPriceAlarm?: (productId: number) => { targetPrice: number } | undefined;
+  onSetPriceAlarm?: (product: Product, targetPrice: number) => void;
+  onRemovePriceAlarm?: (productId: number) => void;
 }
 
 const CATEGORY_ICONS = {
@@ -27,7 +31,7 @@ const CATEGORY_ICONS = {
 
 const ITEMS_PER_PAGE = 8;
 
-export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, onToggleFav, onToggleCompare, favorites, comparisonList, selectedStore }: HomeProps) {
+export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, onToggleFav, onToggleCompare, favorites, comparisonList, selectedStore, getPriceAlarm, onSetPriceAlarm, onRemovePriceAlarm }: HomeProps) {
   const [selectedCategory, setSelectedCategory] = useState('Tümü');
   const [priceRange, setPriceRange] = useState(150000);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -51,32 +55,47 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
     setCurrentPage(1);
   };
 
-  // Ürünün seçili mağazada olup olmadığını kontrol et
-  const isInSelectedStore = (product: Product): boolean => {
-    if (selectedStore === 'all') return true;
-    if (!product.storeAvailability) return true; // storeAvailability yoksa her yerde var say
-    if (selectedStore === 'nevsehir') return product.storeAvailability.nevsehir;
-    if (selectedStore === 'antalya') return product.storeAvailability.antalya;
-    return true;
-  };
-
-  // Ürünün diğer mağazada olup olmadığını kontrol et
-  const getOtherStoreName = (product: Product): string | undefined => {
-    if (selectedStore === 'all' || !product.storeAvailability) return undefined;
+  // Ürünün stok durumunu belirle: 'inStore' | 'otherStore' | 'outOfStock'
+  const getProductStockStatus = (product: Product): 'inStore' | 'otherStore' | 'outOfStock' => {
+    const availability = STORE_AVAILABILITY[product.id];
     
     if (selectedStore === 'nevsehir') {
-      // Nevşehir seçili ama ürün Nevşehir'de yok, Antalya'da var mı?
-      if (!product.storeAvailability.nevsehir && product.storeAvailability.antalya) {
-        return 'Antalya';
+      if (availability?.nevsehir) return 'inStore';
+      if (availability?.antalya) return 'otherStore';
+      return 'outOfStock';
+    }
+    if (selectedStore === 'antalya') {
+      if (availability?.antalya) return 'inStore';
+      if (availability?.nevsehir) return 'otherStore';
+      return 'outOfStock';
+    }
+    // 'all' seçili - genel stok durumuna bak
+    if (availability?.nevsehir || availability?.antalya) return 'inStore';
+    return 'outOfStock';
+  };
+
+  // Ürünün diğer mağazada olup olmadığını ve stok durumunu kontrol et
+  const getOtherStoreInfo = (product: Product): { storeName?: string; isOutOfStock?: boolean } => {
+    if (selectedStore === 'all') return {};
+    const availability = STORE_AVAILABILITY[product.id];
+    
+    if (selectedStore === 'nevsehir') {
+      if (!availability?.nevsehir && availability?.antalya) {
+        return { storeName: 'Antalya' };
+      }
+      if (!availability?.nevsehir && !availability?.antalya) {
+        return { isOutOfStock: true };
       }
     }
     if (selectedStore === 'antalya') {
-      // Antalya seçili ama ürün Antalya'da yok, Nevşehir'de var mı?
-      if (!product.storeAvailability.antalya && product.storeAvailability.nevsehir) {
-        return 'Nevşehir';
+      if (!availability?.antalya && availability?.nevsehir) {
+        return { storeName: 'Nevşehir' };
+      }
+      if (!availability?.antalya && !availability?.nevsehir) {
+        return { isOutOfStock: true };
       }
     }
-    return undefined;
+    return {};
   };
 
   const filteredProducts = useMemo(() => {
@@ -89,20 +108,36 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
       return matchesCategory && matchesPrice && matchesBrand && matchesColor && matchesStock;
     });
 
-    // Önce seçili mağazadaki ürünleri, sonra diğer mağazadaki ürünleri sırala
-    if (selectedStore !== 'all') {
+    // "Tümü" seçiliyken rastgele sıralama
+    if (selectedStore === 'all') {
+      // Sabit bir seed ile rastgele sıralama (her render'da aynı kalması için)
+      result = [...result].sort(() => Math.random() - 0.5);
+      
+      // Sonra fiyat/puan sıralaması uygula (varsa)
+      if (sortBy === 'Fiyat (Artan)') result.sort((a, b) => a.price - b.price);
+      else if (sortBy === 'Fiyat (Azalan)') result.sort((a, b) => b.price - a.price);
+      else if (sortBy === 'Puan (Azalan)') result.sort((a, b) => b.rating - a.rating);
+    } else {
+      // Mağaza seçiliyken: Seçili mağazada stokta > Diğer mağazada stokta > Stokta yok
       result.sort((a, b) => {
-        const aInStore = isInSelectedStore(a);
-        const bInStore = isInSelectedStore(b);
-        if (aInStore && !bInStore) return -1;
-        if (!aInStore && bInStore) return 1;
+        const aStatus = getProductStockStatus(a);
+        const bStatus = getProductStockStatus(b);
+        
+        // Öncelik sırası: inStore (0) > otherStore (1) > outOfStock (2)
+        const priorityMap = { 'inStore': 0, 'otherStore': 1, 'outOfStock': 2 };
+        const aPriority = priorityMap[aStatus];
+        const bPriority = priorityMap[bStatus];
+        
+        if (aPriority !== bPriority) return aPriority - bPriority;
+        
+        // Aynı öncelik grubundaysalar, seçilen sıralama kriterine göre
+        if (sortBy === 'Fiyat (Artan)') return a.price - b.price;
+        if (sortBy === 'Fiyat (Azalan)') return b.price - a.price;
+        if (sortBy === 'Puan (Azalan)') return b.rating - a.rating;
+        
         return 0;
       });
     }
-
-    if (sortBy === 'Fiyat (Artan)') result.sort((a, b) => a.price - b.price);
-    if (sortBy === 'Fiyat (Azalan)') result.sort((a, b) => b.price - a.price);
-    if (sortBy === 'Puan (Azalan)') result.sort((a, b) => b.rating - a.rating);
 
     return result;
   }, [selectedCategory, priceRange, selectedBrands, selectedColors, onlyInStock, sortBy, selectedStore]);
@@ -192,20 +227,27 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {paginatedProducts.map(product => (
-                <ProductCard 
-                  key={product.id} 
-                  product={product} 
-                  onAddToCart={onAddToCart}
-                  onQuickView={onQuickView}
-                  onNavigate={onNavigateToProduct}
-                  onToggleFav={onToggleFav}
-                  onToggleCompare={onToggleCompare}
-                  isFavorite={favorites.some(p => p.id === product.id)}
-                  isComparing={comparisonList.some(p => p.id === product.id)}
-                  otherStoreName={getOtherStoreName(product)}
-                />
-              ))}
+              {paginatedProducts.map(product => {
+                const storeInfo = getOtherStoreInfo(product);
+                return (
+                  <ProductCard 
+                    key={product.id} 
+                    product={product} 
+                    onAddToCart={onAddToCart}
+                    onQuickView={onQuickView}
+                    onNavigate={onNavigateToProduct}
+                    onToggleFav={onToggleFav}
+                    onToggleCompare={onToggleCompare}
+                    isFavorite={favorites.some(p => p.id === product.id)}
+                    isComparing={comparisonList.some(p => p.id === product.id)}
+                    otherStoreName={storeInfo.storeName}
+                    isOutOfStockEverywhere={storeInfo.isOutOfStock}
+                    priceAlarm={getPriceAlarm ? getPriceAlarm(product.id) : null}
+                    onSetPriceAlarm={onSetPriceAlarm}
+                    onRemovePriceAlarm={onRemovePriceAlarm}
+                  />
+                );
+              })}
             </div>
 
             {/* Pagination */}
