@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { CreditCard, Truck, ShieldCheck, ChevronRight, Smartphone, MapPin, Lock, Tag, CheckCircle2, XCircle, FileText, Building2 } from 'lucide-react';
+import { CreditCard, Truck, ShieldCheck, ChevronRight, Smartphone, MapPin, Lock, Tag, CheckCircle2, XCircle, FileText, Building2, Gift, Store, Banknote, Receipt, Package } from 'lucide-react';
 import { CartItem } from '../types';
 
 // Kupon kodları
@@ -42,6 +42,18 @@ const BANK_BINS: Record<string, { name: string; logo: string; color: string; ins
   '604256': { name: 'Denizbank', logo: '🌊', color: '#0369A1', installments: [2, 3, 6] },
 };
 
+// Mağazalar
+const STORES = [
+  { id: 'antalya', name: 'Antalya Mağazası', address: 'Konyaaltı Cad. No:123, Antalya', hours: '10:00 - 22:00' },
+  { id: 'nevsehir', name: 'Nevşehir Mağazası', address: 'Göreme Yolu No:45, Nevşehir', hours: '09:00 - 21:00' },
+];
+
+// Ekstra ücretler
+const EXTRA_FEES = {
+  cashOnDelivery: 14.99, // Kapıda ödeme ücreti
+  giftWrap: 29.99, // Hediye paketi ücreti
+};
+
 interface CheckoutProps {
   cart: CartItem[];
   total: number;
@@ -64,6 +76,19 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
   const [couponError, setCouponError] = useState<string | null>(null);
   const [orderNote, setOrderNote] = useState('');
   const [selectedInstallment, setSelectedInstallment] = useState(1);
+  
+  // Yeni özellik state'leri
+  const [deliveryType, setDeliveryType] = useState<'address' | 'store'>('address');
+  const [selectedStore, setSelectedStore] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash'>('card');
+  const [giftWrap, setGiftWrap] = useState(false);
+  const [giftNote, setGiftNote] = useState('');
+  const [invoiceType, setInvoiceType] = useState<'individual' | 'corporate'>('individual');
+  const [companyInfo, setCompanyInfo] = useState({
+    name: '',
+    taxOffice: '',
+    taxNumber: ''
+  });
 
   // Banka tanıma
   const detectedBank = useMemo(() => {
@@ -77,12 +102,20 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
 
   // Kargo ücreti hesaplama
   const shippingCost = useMemo(() => {
+    // Mağazadan teslim al seçiliyse kargo ücretsiz
+    if (deliveryType === 'store') return 0;
     if (!city) return 0;
     const normalizedCity = city.toLowerCase().trim();
     // 1500 TL üzeri siparişlerde kargo ücretsiz
     if (total >= 1500) return 0;
     return SHIPPING_COSTS[normalizedCity] ?? SHIPPING_COSTS['default'];
-  }, [city, total]);
+  }, [city, total, deliveryType]);
+
+  // Kapıda ödeme ücreti
+  const cashOnDeliveryFee = paymentMethod === 'cash' ? EXTRA_FEES.cashOnDelivery : 0;
+  
+  // Hediye paketi ücreti
+  const giftWrapFee = giftWrap ? EXTRA_FEES.giftWrap : 0;
 
   // Kupon indirimi hesaplama
   const couponDiscount = useMemo(() => {
@@ -132,7 +165,7 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
   };
 
   // Final toplam
-  const finalTotal = total - couponDiscount + shippingCost;
+  const finalTotal = total - couponDiscount + shippingCost + cashOnDeliveryFee + giftWrapFee;
 
   const formatCardNumber = (val: string) => {
     const v = val.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -179,9 +212,91 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
               >
                 <div className="space-y-2">
                   <h2 className="text-4xl font-display font-bold text-slate-900 dark:text-white">Teslimat Bilgileri</h2>
-                  <p className="text-slate-500">Siparişinizin size ulaşması için adres bilgilerinizi girin.</p>
+                  <p className="text-slate-500">Siparişinizin size ulaşması için bilgilerinizi girin.</p>
                 </div>
+
+                {/* Teslimat Türü Seçimi */}
+                <div className="space-y-4">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Teslimat Türü</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button
+                      onClick={() => setDeliveryType('address')}
+                      className={`p-6 rounded-3xl border-2 transition-all text-left flex items-start gap-4 ${
+                        deliveryType === 'address'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                          : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                        deliveryType === 'address' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                      }`}>
+                        <Truck size={24} />
+                      </div>
+                      <div>
+                        <p className="font-bold text-slate-900 dark:text-white">Adrese Teslim</p>
+                        <p className="text-xs text-slate-500 mt-1">Siparişiniz adresinize teslim edilir</p>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setDeliveryType('store')}
+                      className={`p-6 rounded-3xl border-2 transition-all text-left flex items-start gap-4 ${
+                        deliveryType === 'store'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                          : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                        deliveryType === 'store' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                      }`}>
+                        <Store size={24} />
+                      </div>
+                      <div>
+                        <p className="font-bold text-slate-900 dark:text-white">Mağazadan Teslim Al</p>
+                        <p className="text-xs text-slate-500 mt-1">Kargo ücretsiz! Mağazadan kendiniz alın</p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Mağaza Seçimi (Mağazadan teslim al seçiliyse) */}
+                <AnimatePresence>
+                  {deliveryType === 'store' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-4 overflow-hidden"
+                    >
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Mağaza Seçin</label>
+                      <div className="grid grid-cols-1 gap-4">
+                        {STORES.map(store => (
+                          <button
+                            key={store.id}
+                            onClick={() => setSelectedStore(store.id)}
+                            className={`p-6 rounded-3xl border-2 transition-all text-left ${
+                              selectedStore === store.id
+                                ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                                : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                            }`}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p className="font-bold text-slate-900 dark:text-white">{store.name}</p>
+                                <p className="text-sm text-slate-500 mt-1">{store.address}</p>
+                                <p className="text-xs text-slate-400 mt-2">🕐 Çalışma Saatleri: {store.hours}</p>
+                              </div>
+                              {selectedStore === store.id && (
+                                <CheckCircle2 size={24} className="text-green-500" />
+                              )}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 
+                {/* Ad Soyad */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Ad</label>
@@ -192,39 +307,176 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                     <input type="text" className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" placeholder="Doe" />
                   </div>
                 </div>
-                
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Teslimat Adresi</label>
-                  <div className="relative">
-                    <MapPin className="absolute left-4 top-4 text-slate-400" size={20} />
-                    <textarea rows={4} className="w-full p-4 pl-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white resize-none" placeholder="Mahalle, sokak, bina no, daire..."></textarea>
+
+                {/* Adres Bilgileri (Sadece adrese teslimde) */}
+                <AnimatePresence>
+                  {deliveryType === 'address' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-6 overflow-hidden"
+                    >
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Teslimat Adresi</label>
+                        <div className="relative">
+                          <MapPin className="absolute left-4 top-4 text-slate-400" size={20} />
+                          <textarea rows={4} className="w-full p-4 pl-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white resize-none" placeholder="Mahalle, sokak, bina no, daire..."></textarea>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Şehir</label>
+                          <input 
+                            type="text" 
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" 
+                            placeholder="İstanbul" 
+                          />
+                          {city && (
+                            <p className="text-xs text-slate-500 ml-1">
+                              {shippingCost === 0 
+                                ? total >= 1500 
+                                  ? '🎉 1500 TL üzeri siparişlerde kargo ücretsiz!' 
+                                  : '✅ Bu şehre kargo ücretsiz'
+                                : `📦 Kargo ücreti: ${shippingCost.toFixed(2)} TL`}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Telefon</label>
+                          <input type="tel" className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" placeholder="05XX XXX XX XX" />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Fatura Türü Seçimi */}
+                <div className="space-y-4">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-2">
+                    <Receipt size={14} />
+                    Fatura Türü
+                  </label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      onClick={() => setInvoiceType('individual')}
+                      className={`p-4 rounded-2xl border-2 transition-all ${
+                        invoiceType === 'individual'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                          : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <p className="font-bold text-slate-900 dark:text-white">Bireysel</p>
+                      <p className="text-xs text-slate-500">Kişisel fatura</p>
+                    </button>
+                    <button
+                      onClick={() => setInvoiceType('corporate')}
+                      className={`p-4 rounded-2xl border-2 transition-all ${
+                        invoiceType === 'corporate'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                          : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <p className="font-bold text-slate-900 dark:text-white">Kurumsal</p>
+                      <p className="text-xs text-slate-500">Şirket faturası</p>
+                    </button>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Şehir</label>
-                    <input 
-                      type="text" 
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" 
-                      placeholder="İstanbul" 
-                    />
-                    {city && (
-                      <p className="text-xs text-slate-500 ml-1">
-                        {shippingCost === 0 
-                          ? total >= 1500 
-                            ? '🎉 1500 TL üzeri siparişlerde kargo ücretsiz!' 
-                            : '✅ Bu şehre kargo ücretsiz'
-                          : `📦 Kargo ücreti: ${shippingCost.toFixed(2)} TL`}
-                      </p>
+                {/* Kurumsal Fatura Bilgileri */}
+                <AnimatePresence>
+                  {invoiceType === 'corporate' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-4 overflow-hidden p-6 bg-slate-50 dark:bg-slate-900/50 rounded-3xl border border-slate-100 dark:border-slate-800"
+                    >
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Şirket Adı</label>
+                        <input 
+                          type="text"
+                          value={companyInfo.name}
+                          onChange={(e) => setCompanyInfo({...companyInfo, name: e.target.value})}
+                          className="w-full p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" 
+                          placeholder="Örnek Teknoloji A.Ş." 
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Vergi Dairesi</label>
+                          <input 
+                            type="text"
+                            value={companyInfo.taxOffice}
+                            onChange={(e) => setCompanyInfo({...companyInfo, taxOffice: e.target.value})}
+                            className="w-full p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" 
+                            placeholder="Kadıköy" 
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Vergi Numarası</label>
+                          <input 
+                            type="text"
+                            value={companyInfo.taxNumber}
+                            onChange={(e) => setCompanyInfo({...companyInfo, taxNumber: e.target.value})}
+                            className="w-full p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" 
+                            placeholder="1234567890" 
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Hediye Paketi Seçeneği */}
+                <div className="space-y-4">
+                  <button
+                    onClick={() => setGiftWrap(!giftWrap)}
+                    className={`w-full p-6 rounded-3xl border-2 transition-all text-left flex items-start gap-4 ${
+                      giftWrap
+                        ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
+                        : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                    }`}
+                  >
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                      giftWrap ? 'bg-pink-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                    }`}>
+                      <Gift size={24} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-bold text-slate-900 dark:text-white">Hediye Paketi</p>
+                          <p className="text-xs text-slate-500 mt-1">Özel hediye paketi ve kurdele ile gönderilsin</p>
+                        </div>
+                        <span className="text-sm font-bold text-pink-600">+{EXTRA_FEES.giftWrap} TL</span>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Hediye Notu */}
+                  <AnimatePresence>
+                    {giftWrap && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <textarea 
+                          rows={2}
+                          value={giftNote}
+                          onChange={(e) => setGiftNote(e.target.value)}
+                          className="w-full p-4 bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800 rounded-2xl focus:ring-2 focus:ring-pink-500 outline-none transition-all text-slate-900 dark:text-white resize-none" 
+                          placeholder="Hediye kartına yazılacak not (opsiyonel)..."
+                          maxLength={200}
+                        />
+                      </motion.div>
                     )}
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Telefon</label>
-                    <input type="tel" className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" placeholder="05XX XXX XX XX" />
-                  </div>
+                  </AnimatePresence>
                 </div>
 
                 {/* Sipariş Notu */}
@@ -238,7 +490,7 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                     value={orderNote}
                     onChange={(e) => setOrderNote(e.target.value)}
                     className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white resize-none" 
-                    placeholder="Kurye için özel talimatlar, hediye paketi isteği vb..."
+                    placeholder="Kurye için özel talimatlar vb..."
                     maxLength={500}
                   />
                   <p className="text-xs text-slate-400 ml-1">{orderNote.length}/500 karakter</p>
@@ -261,6 +513,101 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                   <p className="text-slate-500">Güvenli ödeme altyapımız ile işleminizi tamamlayın.</p>
                 </div>
 
+                {/* Ödeme Yöntemi Seçimi */}
+                <div className="space-y-4">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Ödeme Tercihi</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button
+                      onClick={() => setPaymentMethod('card')}
+                      className={`p-6 rounded-3xl border-2 transition-all text-left flex items-start gap-4 ${
+                        paymentMethod === 'card'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                          : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                        paymentMethod === 'card' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                      }`}>
+                        <CreditCard size={24} />
+                      </div>
+                      <div>
+                        <p className="font-bold text-slate-900 dark:text-white">Kredi / Banka Kartı</p>
+                        <p className="text-xs text-slate-500 mt-1">Taksit imkanı ile ödeyin</p>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setPaymentMethod('cash')}
+                      className={`p-6 rounded-3xl border-2 transition-all text-left flex items-start gap-4 ${
+                        paymentMethod === 'cash'
+                          ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                          : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                        paymentMethod === 'cash' ? 'bg-green-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                      }`}>
+                        <Banknote size={24} />
+                      </div>
+                      <div>
+                        <p className="font-bold text-slate-900 dark:text-white">Kapıda Ödeme</p>
+                        <p className="text-xs text-slate-500 mt-1">Nakit veya kart ile kapıda +{EXTRA_FEES.cashOnDelivery} TL</p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Kapıda Ödeme Bilgisi */}
+                <AnimatePresence>
+                  {paymentMethod === 'cash' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="p-6 rounded-3xl bg-green-50 dark:bg-green-900/20 border-2 border-green-500 space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center">
+                            <Banknote size={20} />
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-900 dark:text-white">Kapıda Ödeme Seçildi</p>
+                            <p className="text-xs text-slate-500">Siparişiniz teslim anında ödeme yapılacaktır</p>
+                          </div>
+                        </div>
+                        <div className="space-y-2 pt-2">
+                          <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                            <CheckCircle2 size={16} className="text-green-500" />
+                            <span>Nakit veya kredi kartı ile ödeme yapabilirsiniz</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                            <CheckCircle2 size={16} className="text-green-500" />
+                            <span>POS cihazı ile güvenli işlem</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                            <Package size={16} className="text-green-500" />
+                            <span>Ürünü kontrol ettikten sonra ödeme</span>
+                          </div>
+                        </div>
+                        <div className="pt-2 border-t border-green-200 dark:border-green-800">
+                          <p className="text-sm text-green-700 dark:text-green-400 font-medium">
+                            +{EXTRA_FEES.cashOnDelivery} TL kapıda ödeme hizmet bedeli eklenecektir
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Kredi Kartı Formu */}
+                <AnimatePresence>
+                  {paymentMethod === 'card' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-10 overflow-hidden"
+                    >
                 {/* Interactive Card Visual */}
                 <div className="relative w-full max-w-[400px] h-[240px] mx-auto perspective-1000 group">
                   <motion.div 
@@ -426,6 +773,9 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                     </motion.div>
                   )}
                 </AnimatePresence>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 <div className="flex gap-4">
                   <button onClick={() => setStep(1)} className="btn-outline flex-1 py-5">Geri Dön</button>
@@ -545,15 +895,40 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                 </div>
               )}
               
-              {/* Kargo */}
+              {/* Teslimat Türü */}
               <div className="flex justify-between text-sm">
-                <span className="text-slate-500">Kargo</span>
+                <span className="text-slate-500 flex items-center gap-1">
+                  {deliveryType === 'store' ? <Store size={14} /> : <Truck size={14} />}
+                  {deliveryType === 'store' ? 'Mağazadan Teslim' : 'Kargo'}
+                </span>
                 {shippingCost === 0 ? (
                   <span className="text-green-500 font-bold uppercase tracking-widest text-[10px]">Ücretsiz</span>
                 ) : (
                   <span className="font-bold text-slate-900 dark:text-white">{shippingCost.toFixed(2)} TL</span>
                 )}
               </div>
+
+              {/* Hediye Paketi */}
+              {giftWrap && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-pink-600 dark:text-pink-400 flex items-center gap-1">
+                    <Gift size={14} />
+                    Hediye Paketi
+                  </span>
+                  <span className="text-pink-600 dark:text-pink-400 font-bold">+{EXTRA_FEES.giftWrap.toFixed(2)} TL</span>
+                </div>
+              )}
+
+              {/* Kapıda Ödeme Ücreti */}
+              {paymentMethod === 'cash' && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-orange-600 dark:text-orange-400 flex items-center gap-1">
+                    <Banknote size={14} />
+                    Kapıda Ödeme
+                  </span>
+                  <span className="text-orange-600 dark:text-orange-400 font-bold">+{EXTRA_FEES.cashOnDelivery.toFixed(2)} TL</span>
+                </div>
+              )}
               
               <div className="flex justify-between items-end pt-4 border-t border-slate-100 dark:border-slate-800">
                 <span className="text-lg font-display font-bold text-slate-900 dark:text-white">Toplam</span>
