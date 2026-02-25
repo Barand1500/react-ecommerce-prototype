@@ -19,7 +19,7 @@ export interface Product {
   image: string;
   images?: string[]; // Çoklu görsel desteği
   description: string;
-  features: string[];
+  features?: string[]; // Opsiyonel - admin panelinden eklenebilir
   specs: Record<string, string>;
   color: string;
   inStock: boolean;

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingBag, CheckCircle, ShieldCheck, Truck, RefreshCcw, Heart, BarChart2, Bell, BellRing, X, Mail, MapPin, Store, ChevronLeft, ChevronRight, ChevronDown, CreditCard, Calculator, Package, AlertCircle } from 'lucide-react';
+import { ShoppingBag, CheckCircle, ShieldCheck, Truck, RefreshCcw, Heart, BarChart2, Bell, BellRing, X, Mail, MapPin, Store, ChevronLeft, ChevronRight, ChevronDown, CreditCard, Calculator, Package, AlertCircle, Sparkles } from 'lucide-react';
 import { Product, ProductVariant } from '../types';
 import { STORE_AVAILABILITY } from '../constants';
 
@@ -409,17 +409,35 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
             </div>
           )}
 
-          <div className="space-y-4">
-            <h4 className="font-bold text-xs uppercase tracking-[0.2em] text-slate-400">Öne Çıkan Özellikler</h4>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {product.features.map((f, i) => (
-                <li key={i} className="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
-                  <div className="w-2 h-2 rounded-full bg-blue-600" />
-                  <span className="text-sm font-medium">{f}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Öne Çıkan Özellikler - Sadece features varsa göster */}
+          {product.features && product.features.length > 0 ? (
+            <div className="space-y-4">
+              <h4 className="font-bold text-xs uppercase tracking-[0.2em] text-slate-400">Öne Çıkan Özellikler</h4>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {product.features.map((f, i) => (
+                  <li key={i} className="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+                    <div className="w-2 h-2 rounded-full bg-blue-600" />
+                    <span className="text-sm font-medium">{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div className="relative overflow-hidden rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+                  <Sparkles className="text-slate-400 dark:text-slate-500" size={24} />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Öne çıkan özellikler yakında eklenecek</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Detaylı bilgi için teknik özelliklere göz atın</p>
+                </div>
+              </div>
+              {/* Dekoratif elementler */}
+              <div className="absolute -right-4 -bottom-4 w-24 h-24 rounded-full bg-slate-200/50 dark:bg-slate-700/30" />
+              <div className="absolute right-8 bottom-8 w-8 h-8 rounded-full bg-slate-200/80 dark:bg-slate-700/50" />
+            </div>
+          )}
 
           <div className="pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-4">
             {isSelectedVariantInStock ? (

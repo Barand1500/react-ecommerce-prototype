@@ -163,7 +163,6 @@ export const PRODUCTS: Product[] = [
     price: 3999,
     image: "https://picsum.photos/seed/mxmaster/800/800",
     description: "Hız, hassasiyet ve sessizlik için tasarlanmış ikonik mouse.",
-    features: ["8K DPI Sensör", "MagSpeed Kaydırma", "Sessiz Tıklama", "Ergonomik Tasarım"],
     specs: {
       "Sensör": "Darkfield yüksek hassasiyet",
       "Buton Sayısı": "7",
@@ -602,7 +601,6 @@ export const PRODUCTS: Product[] = [
     price: 3999,
     image: "https://picsum.photos/seed/hue/800/800",
     description: "Evinizin atmosferini tek dokunuşla değiştirin.",
-    features: ["16 Milyon Renk", "Sesle Kontrol", "Hue Bridge Dahil", "Zamanlama Özelliği"],
     specs: { "Lamba Sayısı": "3", "Duy": "E27", "Ömür": "25.000 Saat", "Güç": "9W" },
     color: "Beyaz",
     inStock: true,
@@ -646,7 +644,6 @@ export const PRODUCTS: Product[] = [
     oldPrice: 149.99,
     image: "https://picsum.photos/seed/usbcable/800/800",
     description: "Dayanıklı örgü kaplama, hızlı şarj destekli USB-C kablosu.",
-    features: ["60W Hızlı Şarj", "Örgü Kaplama", "2 Metre Uzunluk", "10.000+ Bükülme Testi"],
     specs: { "Uzunluk": "2 metre", "Güç": "60W", "Veri Hızı": "480 Mbps", "Garanti": "18 ay" },
     color: "Siyah",
     inStock: true,
