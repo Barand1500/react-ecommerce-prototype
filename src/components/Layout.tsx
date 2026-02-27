@@ -6,10 +6,67 @@ import {
   Instagram, Twitter, Facebook, Youtube,
   Phone, Mail, MapPin, ChevronRight, ChevronDown, ChevronUp,
   CreditCard, Smartphone, Heart, BarChart2, Trash2, Plus, Minus, Copy, Check, User as UserIcon, LogOut, Settings,
-  MessageCircle, FileText, ArrowLeftRight, Lock, Power, Wallet, Bookmark
+  MessageCircle, FileText, ArrowLeftRight, Lock, Power, Wallet, Bookmark,
+  Laptop, Headphones, Watch, Mouse, Monitor, Cpu, HardDrive, Gamepad2, Camera, Speaker
 } from 'lucide-react';
 import { CartItem, Product, User } from '../types';
 import { PRODUCTS } from '../constants';
+
+// Kategoriler ve alt kategoriler
+const MENU_CATEGORIES = [
+  {
+    id: 'bilgisayar',
+    name: 'Bilgisayar',
+    icon: Laptop,
+    subCategories: [
+      { id: 'laptop', name: 'Laptop & Notebook', icon: Laptop },
+      { id: 'masaustu', name: 'Masaüstü Bilgisayar', icon: Monitor },
+      { id: 'ekran-karti', name: 'Ekran Kartları', icon: Cpu },
+      { id: 'depolama', name: 'Depolama Çözümleri', icon: HardDrive },
+      { id: 'monitor', name: 'Monitörler', icon: Monitor },
+    ]
+  },
+  {
+    id: 'telefon',
+    name: 'Telefon',
+    icon: Smartphone,
+    subCategories: [
+      { id: 'akilli-telefon', name: 'Akıllı Telefonlar', icon: Smartphone },
+      { id: 'tablet', name: 'Tabletler', icon: Smartphone },
+      { id: 'telefon-aksesuar', name: 'Telefon Aksesuarları', icon: Smartphone },
+    ]
+  },
+  {
+    id: 'ses',
+    name: 'Ses & Müzik',
+    icon: Headphones,
+    subCategories: [
+      { id: 'kulaklik', name: 'Kulaklıklar', icon: Headphones },
+      { id: 'hoparlor', name: 'Hoparlörler', icon: Speaker },
+      { id: 'mikrofon', name: 'Mikrofonlar', icon: Headphones },
+    ]
+  },
+  {
+    id: 'giyilebilir',
+    name: 'Giyilebilir Teknoloji',
+    icon: Watch,
+    subCategories: [
+      { id: 'akilli-saat', name: 'Akıllı Saatler', icon: Watch },
+      { id: 'fitness', name: 'Fitness Trackerlar', icon: Watch },
+    ]
+  },
+  {
+    id: 'aksesuar',
+    name: 'Aksesuar',
+    icon: Mouse,
+    subCategories: [
+      { id: 'klavye-mouse', name: 'Klavye & Mouse', icon: Mouse },
+      { id: 'gaming', name: 'Gaming Aksesuarları', icon: Gamepad2 },
+      { id: 'kamera', name: 'Kamera & Fotoğraf', icon: Camera },
+      { id: 'kablo-adaptör', name: 'Kablo & Adaptörler', icon: CreditCard },
+    ]
+  },
+];
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -57,6 +114,7 @@ export default function Layout({
   const [isUserBarOpen, setIsUserBarOpen] = useState(false);
   const [isSaveCartModalOpen, setIsSaveCartModalOpen] = useState(false);
   const [saveCartName, setSaveCartName] = useState('');
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
 
   const stores = [
     { id: 'all', name: 'Tüm Mağazalar' },
@@ -417,38 +475,115 @@ export default function Layout({
             />
             <motion.div 
               initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
-              className="fixed top-0 left-0 bottom-0 w-80 bg-white dark:bg-slate-950 z-[110] shadow-2xl p-8 flex flex-col"
+              className="fixed top-0 left-0 bottom-0 w-[340px] bg-white dark:bg-slate-950 z-[110] shadow-2xl flex flex-col overflow-hidden"
             >
-              <div className="flex justify-between items-center mb-12">
-                <h2 className="text-2xl font-display font-bold text-blue-600">MENÜ</h2>
-                <button onClick={() => setIsNavSidebarOpen(false)} className="text-slate-900 dark:text-white"><X size={28} /></button>
+              {/* Header */}
+              <div className="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800">
+                <h2 className="text-xl font-display font-bold text-blue-600">MENÜ</h2>
+                <button onClick={() => setIsNavSidebarOpen(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors text-slate-900 dark:text-white">
+                  <X size={24} />
+                </button>
               </div>
-              <nav className="space-y-6">
-                {[
-                  { name: 'Ana Sayfa', id: 'home' },
-                  { name: 'Markalar', id: 'brands' },
-                  { name: 'Hakkımızda', id: 'hakkimizda' },
-                  { name: 'İletişim', id: 'iletisim' },
-                  { name: 'SSS', id: 'faq' },
-                  { name: '404 Sayfası', id: '404' }
-                ].map((item) => (
-                  <button 
-                    key={item.id}
-                    onClick={() => {
-                      onNavigate(item.id);
-                      setIsNavSidebarOpen(false);
-                    }}
-                    className="w-full text-left text-2xl font-display font-bold text-slate-900 dark:text-white hover:text-blue-600 transition-colors flex justify-between items-center group"
-                  >
-                    {item.name} <ChevronRight size={24} className="text-slate-200 group-hover:text-blue-600 transition-colors" />
-                  </button>
-                ))}
-              </nav>
-              <div className="mt-auto pt-8 border-t border-slate-100 dark:border-slate-900">
-                <div className="flex gap-4">
-                  <Instagram size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer" />
-                  <Twitter size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer" />
-                  <Facebook size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer" />
+              
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto custom-scrollbar">
+                {/* Kategoriler Bölümü */}
+                <div className="p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4 px-2">Kategoriler</p>
+                  <div className="space-y-1">
+                    {MENU_CATEGORIES.map((category) => {
+                      const IconComponent = category.icon;
+                      const isOpen = openCategory === category.id;
+                      return (
+                        <div key={category.id}>
+                          {/* Ana Kategori */}
+                          <button
+                            onClick={() => setOpenCategory(isOpen ? null : category.id)}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                              isOpen 
+                                ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600' 
+                                : 'hover:bg-slate-50 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300'
+                            }`}
+                          >
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                              isOpen 
+                                ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-600' 
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                            }`}>
+                              <IconComponent size={20} />
+                            </div>
+                            <span className="flex-1 text-left font-semibold">{category.name}</span>
+                            <ChevronDown 
+                              size={18} 
+                              className={`text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+                            />
+                          </button>
+                          
+                          {/* Alt Kategoriler */}
+                          <AnimatePresence>
+                            {isOpen && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="overflow-hidden"
+                              >
+                                <div className="pl-6 pr-2 py-2 space-y-1">
+                                  {category.subCategories.map((sub) => {
+                                    const SubIcon = sub.icon;
+                                    return (
+                                      <button
+                                        key={sub.id}
+                                        onClick={() => {
+                                          onNavigate('home');
+                                          setIsNavSidebarOpen(false);
+                                        }}
+                                        className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition-all group"
+                                      >
+                                        <SubIcon size={16} className="text-slate-400 group-hover:text-blue-500" />
+                                        <span className="flex-1 text-left">{sub.name}</span>
+                                        <ChevronRight size={14} className="text-slate-300 group-hover:text-blue-500 transition-colors" />
+                                      </button>
+                                    );
+                                  })}
+                                  {/* Tümünü Gör */}
+                                  <button
+                                    onClick={() => {
+                                      onNavigate('home');
+                                      setIsNavSidebarOpen(false);
+                                    }}
+                                    className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all mt-2"
+                                  >
+                                    Tüm {category.name} Ürünleri
+                                    <ChevronRight size={14} />
+                                  </button>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-3">
+                    <a href="#" className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all shadow-sm">
+                      <Instagram size={18} />
+                    </a>
+                    <a href="#" className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all shadow-sm">
+                      <Twitter size={18} />
+                    </a>
+                    <a href="#" className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all shadow-sm">
+                      <Facebook size={18} />
+                    </a>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-medium">© 2026 Güzel Teknoloji</span>
                 </div>
               </div>
             </motion.div>
