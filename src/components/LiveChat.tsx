@@ -112,7 +112,7 @@ export default function LiveChat() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-[500] w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-full shadow-2xl shadow-blue-500/40 flex items-center justify-center hover:shadow-blue-500/60 transition-shadow"
+            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[500] w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-full shadow-2xl shadow-blue-500/40 flex items-center justify-center hover:shadow-blue-500/60 transition-shadow"
           >
             <MessageCircle size={28} />
             {/* Notification dot */}
@@ -130,20 +130,20 @@ export default function LiveChat() {
               opacity: 1, 
               y: 0, 
               scale: 1,
-              height: isMinimized ? 'auto' : '500px'
+              height: isMinimized ? 'auto' : 'min(500px, calc(100vh - 6rem))'
             }}
             exit={{ opacity: 0, y: 100, scale: 0.8 }}
-            className="fixed bottom-6 right-6 z-[500] w-96 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 flex flex-col"
+            className="fixed bottom-3 right-3 sm:bottom-6 sm:right-6 z-[500] w-[calc(100vw-1.5rem)] sm:w-96 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 flex flex-col"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                  <Bot size={20} className="text-white" />
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-3 sm:p-4 flex items-center justify-between">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                  <Bot size={18} className="text-white sm:hidden" /><Bot size={20} className="text-white hidden sm:block" />
                 </div>
                 <div>
-                  <h3 className="text-white font-bold">Güzel Asistan</h3>
-                  <p className="text-blue-200 text-xs">Çevrimiçi</p>
+                  <h3 className="text-white font-bold text-sm sm:text-base">Güzel Asistan</h3>
+                  <p className="text-blue-200 text-[10px] sm:text-xs">Çevrimiçi</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -235,7 +235,7 @@ export default function LiveChat() {
                 )}
 
                 {/* Input */}
-                <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+                <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
                     <input
                       type="text"
@@ -243,14 +243,14 @@ export default function LiveChat() {
                       onChange={(e) => setInputValue(e.target.value)}
                       onKeyPress={handleKeyPress}
                       placeholder="Mesajınızı yazın..."
-                      className="flex-1 px-4 py-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white placeholder-slate-400"
+                      className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white placeholder-slate-400"
                     />
                     <button
                       onClick={() => handleSend()}
                       disabled={!inputValue.trim()}
-                      className="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                     >
-                      <Send size={18} />
+                      <Send size={16} className="sm:hidden" /><Send size={18} className="hidden sm:block" />
                     </button>
                   </div>
                 </div>

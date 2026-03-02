@@ -54,9 +54,9 @@ export default function Brands() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-24">
-      <div className="text-center space-y-6 mb-20">
-        <h1 className="text-6xl font-display font-bold text-slate-900 dark:text-white tracking-tight">
+    <div className="max-w-7xl mx-auto px-4 py-12 sm:py-16 md:py-24">
+      <div className="text-center space-y-4 sm:space-y-6 mb-10 sm:mb-14 md:mb-20">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-bold text-slate-900 dark:text-white tracking-tight">
           Tüm <span className="text-blue-600">Markalar</span>
         </h1>
         <p className="text-slate-500 max-w-xl mx-auto text-lg">
@@ -75,7 +75,7 @@ export default function Brands() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
         {filteredBrands.map((brand, i) => {
           const config = getBrandConfig(brand.name);
           const BrandIcon = config?.icon;
@@ -86,7 +86,7 @@ export default function Brands() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="group p-8 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl text-center space-y-5 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-slate-200 dark:hover:border-slate-700 transition-all cursor-pointer"
+              className="group p-4 sm:p-6 md:p-8 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl sm:rounded-3xl text-center space-y-3 sm:space-y-5 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-slate-200 dark:hover:border-slate-700 transition-all cursor-pointer"
             >
               {/* Logo */}
               <div className="h-16 flex items-center justify-center transition-transform group-hover:scale-110">

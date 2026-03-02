@@ -154,17 +154,17 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
       <HeroSlider />
 
       {/* Filter Bar */}
-      <div className="sticky top-20 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 py-4 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between overflow-x-auto no-scrollbar gap-4">
-          <div className="flex items-center gap-2">
+      <div className="sticky top-20 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 py-3 md:py-4 shadow-sm">
+        <div className="max-w-7xl mx-auto px-3 md:px-4 flex items-center justify-between gap-2 md:gap-4">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
             <button 
               onClick={() => setIsFilterOpen(true)}
-              className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-full text-xs font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
+              className="flex items-center gap-1.5 md:gap-2 px-3 md:px-6 py-2 md:py-2.5 bg-blue-600 text-white rounded-full text-[11px] md:text-xs font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 shrink-0"
             >
-              <Filter size={16} /> Filtrele
+              <Filter size={14} className="md:w-4 md:h-4" /> <span className="hidden xs:inline">Filtrele</span>
             </button>
-            <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-2" />
-            <div className="flex items-center gap-2">
+            <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-1 md:mx-2 hidden sm:block" />
+            <div className="hidden md:flex items-center gap-2 overflow-x-auto no-scrollbar">
               {['Kategoriler', 'Fiyat', 'Renk', 'Puan', 'Stok'].map(item => (
                 <button 
                   key={item}
@@ -176,13 +176,13 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
               ))}
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4 shrink-0">
             <div className="relative">
               <button 
                 onClick={() => setIsSortOpen(!isSortOpen)}
-                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-xs font-bold transition-all text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700"
+                className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-[11px] md:text-xs font-bold transition-all text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700"
               >
-                Sırala: {sortBy} <ChevronDown size={14} className={`transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
+                <span className="hidden sm:inline">Sırala:</span> <span className="max-w-[60px] sm:max-w-none truncate">{sortBy}</span> <ChevronDown size={14} className={`transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
               </button>
               <AnimatePresence>
                 {isSortOpen && (
@@ -216,17 +216,17 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
         </div>
       </div>
 
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="flex flex-col gap-12">
+      <section className="max-w-7xl mx-auto px-3 md:px-4 py-8 md:py-16">
+        <div className="flex flex-col gap-8 md:gap-12">
           {/* Product Grid */}
           <div className="flex-1">
-            <div className="flex justify-between items-center mb-10">
-              <h3 className="text-3xl font-display font-bold tracking-tight text-slate-800 dark:text-white">
-                {selectedCategory} <span className="text-slate-400 dark:text-slate-600 ml-2 text-xl font-normal">({filteredProducts.length})</span>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6 md:mb-10">
+              <h3 className="text-xl md:text-3xl font-display font-bold tracking-tight text-slate-800 dark:text-white">
+                {selectedCategory} <span className="text-slate-400 dark:text-slate-600 ml-2 text-sm md:text-xl font-normal">({filteredProducts.length})</span>
               </h3>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
               {paginatedProducts.map(product => {
                 const storeInfo = getOtherStoreInfo(product);
                 return (
@@ -252,12 +252,12 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-20 flex justify-center items-center gap-2">
+              <div className="mt-10 md:mt-20 flex justify-center items-center gap-1.5 md:gap-2 flex-wrap">
                 {Array.from({ length: totalPages }).map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setCurrentPage(i + 1)}
-                    className={`w-12 h-12 rounded-2xl font-bold text-sm transition-all duration-300 ${
+                    className={`w-9 h-9 md:w-12 md:h-12 rounded-xl md:rounded-2xl font-bold text-xs md:text-sm transition-all duration-300 ${
                       currentPage === i + 1 
                         ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30' 
                         : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400'
@@ -307,7 +307,7 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
             <motion.div 
               initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
               transition={{ type: 'tween', duration: 0.25 }}
-              className="fixed top-0 left-0 bottom-0 w-80 bg-white dark:bg-slate-900 z-[110] shadow-xl flex flex-col"
+              className="fixed top-0 left-0 bottom-0 w-full sm:w-80 bg-white dark:bg-slate-900 z-[110] shadow-xl flex flex-col"
             >
               {/* Header */}
               <div className="flex justify-between items-center px-5 py-4 border-b border-slate-100 dark:border-slate-800">

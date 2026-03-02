@@ -116,16 +116,16 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      <div className="flex flex-col lg:flex-row gap-16 mb-24">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-12">
+      <div className="flex flex-col lg:flex-row gap-6 sm:gap-10 lg:gap-16 mb-12 sm:mb-24">
         {/* Görsel Galerisi */}
         <div className="flex-1">
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {/* Ana Görsel */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="aspect-square bg-slate-50 dark:bg-slate-900 rounded-[3rem] overflow-hidden border border-slate-100 dark:border-slate-800 relative group"
+              className="aspect-square bg-slate-50 dark:bg-slate-900 rounded-2xl sm:rounded-[3rem] overflow-hidden border border-slate-100 dark:border-slate-800 relative group"
             >
               <AnimatePresence mode="wait">
                 <motion.img 
@@ -142,18 +142,18 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
               </AnimatePresence>
               
               {product.badge && (
-                <div className="absolute top-8 left-8 px-4 py-2 bg-blue-600 text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-xl">
+                <div className="absolute top-3 sm:top-8 left-3 sm:left-8 px-2.5 sm:px-4 py-1 sm:py-2 bg-blue-600 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest rounded-full shadow-xl">
                   {product.badge}
                 </div>
               )}
               
               <button 
                 onClick={() => onToggleFav(product)}
-                className={`absolute top-8 right-8 p-4 rounded-full shadow-xl transition-all ${
+                className={`absolute top-3 sm:top-8 right-3 sm:right-8 p-2.5 sm:p-4 rounded-full shadow-xl transition-all ${
                   isFavorite ? 'bg-red-500 text-white' : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-slate-400 hover:text-red-500'
                 }`}
               >
-                <Heart size={24} fill={isFavorite ? "currentColor" : "none"} />
+                <Heart size={18} className="sm:w-6 sm:h-6" fill={isFavorite ? "currentColor" : "none"} />
               </button>
 
               {/* Navigation Arrows */}
@@ -161,32 +161,32 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                 <>
                   <button 
                     onClick={prevImage}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-slate-800"
+                    className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2 sm:p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-full shadow-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-slate-800"
                   >
-                    <ChevronLeft size={24} className="text-slate-700 dark:text-slate-300" />
+                    <ChevronLeft size={20} className="sm:w-6 sm:h-6 text-slate-700 dark:text-slate-300" />
                   </button>
                   <button 
                     onClick={nextImage}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-slate-800"
+                    className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2 sm:p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-full shadow-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-slate-800"
                   >
-                    <ChevronRight size={24} className="text-slate-700 dark:text-slate-300" />
+                    <ChevronRight size={20} className="sm:w-6 sm:h-6 text-slate-700 dark:text-slate-300" />
                   </button>
                 </>
               )}
 
               {/* Image Counter */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/50 backdrop-blur-md rounded-full text-white text-xs font-bold">
+              <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-1.5 sm:py-2 bg-black/50 backdrop-blur-md rounded-full text-white text-[10px] sm:text-xs font-bold">
                 {currentImageIndex + 1} / {productImages.length}
               </div>
             </motion.div>
 
             {/* Thumbnail Gallery */}
-            <div className="flex gap-3 overflow-x-auto pb-2">
+            <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-2 no-scrollbar">
               {productImages.map((img, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
-                  className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
+                  className={`flex-shrink-0 w-14 h-14 sm:w-20 sm:h-20 rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all ${
                     currentImageIndex === index 
                       ? 'border-blue-600 ring-2 ring-blue-600/30' 
                       : 'border-slate-200 dark:border-slate-700 hover:border-blue-400'
@@ -205,24 +205,24 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
         </div>
 
         {/* Bilgiler */}
-        <div className="flex-1 flex flex-col justify-center space-y-8">
+        <div className="flex-1 flex flex-col justify-center space-y-4 sm:space-y-8">
           <div>
-            <span className="text-sm font-bold uppercase tracking-[0.4em] text-blue-600 mb-4 block">{product.brand}</span>
-            <h1 className="text-5xl font-display font-bold mb-6 leading-tight">{product.name}</h1>
+            <span className="text-xs sm:text-sm font-bold uppercase tracking-[0.3em] sm:tracking-[0.4em] text-blue-600 mb-2 sm:mb-4 block">{product.brand}</span>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-display font-bold mb-3 sm:mb-6 leading-tight">{product.name}</h1>
             
-            <div className="flex items-center gap-6">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-6">
               <div className="flex flex-col">
-                <p className="text-4xl font-display font-bold text-blue-600">
+                <p className="text-2xl sm:text-4xl font-display font-bold text-blue-600">
                   {calculatedPrice.toLocaleString('tr-TR')} TL
                 </p>
                 {product.oldPrice && (
-                  <p className="text-xl text-slate-400 line-through">
+                  <p className="text-base sm:text-xl text-slate-400 line-through">
                     {product.oldPrice.toLocaleString('tr-TR')} TL
                   </p>
                 )}
                 {/* Varyant fiyat farkı göster */}
                 {calculatedPrice !== product.price && (
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-[10px] sm:text-xs text-slate-500 mt-1">
                     Temel fiyat: {product.price.toLocaleString('tr-TR')} TL
                     <span className={calculatedPrice > product.price ? 'text-orange-500' : 'text-green-500'}>
                       {' '}({calculatedPrice > product.price ? '+' : ''}{(calculatedPrice - product.price).toLocaleString('tr-TR')} TL)
@@ -231,21 +231,21 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                 )}
                 {/* Fiyat Alarmı Göstergesi */}
                 {priceAlarm && (
-                  <p className="text-sm text-green-600 dark:text-green-400 font-bold flex items-center gap-1.5 mt-2">
-                    <BellRing size={14} />
+                  <p className="text-xs sm:text-sm text-green-600 dark:text-green-400 font-bold flex items-center gap-1.5 mt-2">
+                    <BellRing size={12} className="sm:w-[14px] sm:h-[14px]" />
                     Alarm kuruldu: {priceAlarm.targetPrice.toLocaleString('tr-TR')} TL
                   </p>
                 )}
               </div>
               {discount && (
-                <div className="px-4 py-2 bg-red-500 text-white text-sm font-bold rounded-2xl">
+                <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-red-500 text-white text-xs sm:text-sm font-bold rounded-xl sm:rounded-2xl">
                   %{discount} İNDİRİM
                 </div>
               )}
             </div>
           </div>
 
-          <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">{product.description}</p>
+          <p className="text-sm sm:text-lg text-slate-500 dark:text-slate-400 leading-relaxed">{product.description}</p>
 
           {/* Stok Göstergesi */}
           {isSelectedVariantInStock && selectedVariantStock > 0 && (
@@ -439,46 +439,46 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
             </div>
           )}
 
-          <div className="pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-4">
+          <div className="pt-4 sm:pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-3 sm:gap-4">
             {isSelectedVariantInStock ? (
               <button 
                 onClick={() => onAddToCart(product)}
-                className="btn-primary flex-1 flex items-center justify-center gap-3"
+                className="btn-primary flex-1 flex items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm py-3.5 sm:py-4"
               >
-                <ShoppingBag size={20} /> Sepete Ekle
+                <ShoppingBag size={18} /> Sepete Ekle
               </button>
             ) : (
               <button 
                 onClick={() => setIsNotifyModalOpen(true)}
-                className="flex-1 flex items-center justify-center gap-3 bg-orange-500 text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40"
+                className="flex-1 flex items-center justify-center gap-2 sm:gap-3 bg-orange-500 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl font-bold uppercase tracking-widest text-[10px] sm:text-xs hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40"
               >
-                <Bell size={20} /> Gelince Haber Ver
+                <Bell size={18} /> Gelince Haber Ver
               </button>
             )}
             <button 
               onClick={() => onToggleCompare(product)}
-              className={`btn-outline flex-1 flex items-center justify-center gap-3 ${isComparing ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-500 text-orange-600' : ''}`}
+              className={`btn-outline flex-1 flex items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm py-3.5 sm:py-4 ${isComparing ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-500 text-orange-600' : ''}`}
             >
-              <BarChart2 size={20} /> {isComparing ? 'Listeden Kaldır' : 'Karşılaştır'}
+              <BarChart2 size={18} /> {isComparing ? 'Listeden Kaldır' : 'Karşılaştır'}
             </button>
           </div>
 
           {/* Fiyat Alarmı Butonu */}
           {onSetPriceAlarm && (
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4">
               {priceAlarm ? (
                 <button 
                   onClick={() => onRemovePriceAlarm && onRemovePriceAlarm(product.id)}
-                  className="flex-1 flex items-center justify-center gap-3 bg-green-500 text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-green-600 transition-all shadow-xl shadow-green-500/20"
+                  className="flex-1 flex items-center justify-center gap-2 sm:gap-3 bg-green-500 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl font-bold uppercase tracking-widest text-[10px] sm:text-xs hover:bg-green-600 transition-all shadow-xl shadow-green-500/20"
                 >
-                  <BellRing size={20} /> Alarm Aktif: {priceAlarm.targetPrice.toLocaleString('tr-TR')} TL (Kaldır)
+                  <BellRing size={18} /> <span className="hidden sm:inline">Alarm Aktif: {priceAlarm.targetPrice.toLocaleString('tr-TR')} TL (Kaldır)</span><span className="sm:hidden">Alarm Kaldır</span>
                 </button>
               ) : (
                 <button 
                   onClick={() => setShowPriceAlarmModal(true)}
-                  className="flex-1 flex items-center justify-center gap-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-8 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                  className="flex-1 flex items-center justify-center gap-2 sm:gap-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl font-bold uppercase tracking-widest text-[10px] sm:text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
                 >
-                  <Bell size={20} /> Fiyat Düşünce Haber Ver
+                  <Bell size={18} /> Fiyat Düşünce Haber Ver
                 </button>
               )}
             </div>
@@ -496,18 +496,18 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
             </div>
           )}
 
-          <div className="grid grid-cols-3 gap-4 pt-8">
-            <div className="text-center space-y-2 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl">
-              <Truck size={24} className="mx-auto text-blue-600" />
-              <p className="text-[10px] font-bold uppercase tracking-widest">Ücretsiz Kargo</p>
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 pt-4 sm:pt-8">
+            <div className="text-center space-y-1.5 sm:space-y-2 p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 rounded-xl sm:rounded-2xl">
+              <Truck size={20} className="mx-auto text-blue-600 sm:w-6 sm:h-6" />
+              <p className="text-[8px] sm:text-[10px] font-bold uppercase tracking-widest">Ücretsiz Kargo</p>
             </div>
-            <div className="text-center space-y-2 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl">
-              <ShieldCheck size={24} className="mx-auto text-blue-600" />
-              <p className="text-[10px] font-bold uppercase tracking-widest">2 Yıl Garanti</p>
+            <div className="text-center space-y-1.5 sm:space-y-2 p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 rounded-xl sm:rounded-2xl">
+              <ShieldCheck size={20} className="mx-auto text-blue-600 sm:w-6 sm:h-6" />
+              <p className="text-[8px] sm:text-[10px] font-bold uppercase tracking-widest">2 Yıl Garanti</p>
             </div>
-            <div className="text-center space-y-2 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl">
-              <RefreshCcw size={24} className="mx-auto text-blue-600" />
-              <p className="text-[10px] font-bold uppercase tracking-widest">14 Gün İade</p>
+            <div className="text-center space-y-1.5 sm:space-y-2 p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 rounded-xl sm:rounded-2xl">
+              <RefreshCcw size={20} className="mx-auto text-blue-600 sm:w-6 sm:h-6" />
+              <p className="text-[8px] sm:text-[10px] font-bold uppercase tracking-widest">14 Gün İade</p>
             </div>
           </div>
 
@@ -540,27 +540,27 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
       </div>
 
       {/* Teknik Özellikler Tablosu */}
-      <section className="mb-16">
-        <div className="text-center mb-10">
-          <span className="text-xs font-bold uppercase tracking-[0.3em] text-blue-600 mb-2 block">Detaylı Bilgi</span>
-          <h3 className="text-3xl font-display font-bold">Teknik Özellikler</h3>
+      <section className="mb-10 sm:mb-16">
+        <div className="text-center mb-6 sm:mb-10">
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-blue-600 mb-1 sm:mb-2 block">Detaylı Bilgi</span>
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-display font-bold">Teknik Özellikler</h3>
         </div>
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
             {Object.entries(product.specs).map(([key, value], index) => (
               <div 
                 key={key} 
-                className={`flex items-center justify-between p-5 ${
+                className={`flex items-center justify-between p-3 sm:p-5 ${
                   index !== Object.entries(product.specs).length - 1 
                     ? 'border-b border-slate-100 dark:border-slate-800' 
                     : ''
                 } hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors`}
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-blue-600" />
-                  <span className="font-medium text-slate-600 dark:text-slate-400 text-sm">{key}</span>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-600" />
+                  <span className="font-medium text-slate-600 dark:text-slate-400 text-xs sm:text-sm">{key}</span>
                 </div>
-                <span className="font-bold text-slate-900 dark:text-white text-sm">{value}</span>
+                <span className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm text-right max-w-[50%]">{value}</span>
               </div>
             ))}
           </div>
@@ -568,11 +568,11 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
       </section>
 
       {/* Taksit Hesaplayıcı - Accordion */}
-      <section className="mb-16">
+      <section className="mb-10 sm:mb-16">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-3 mb-4">
-            <Calculator size={20} className="text-green-600" />
-            <h4 className="font-bold text-slate-900 dark:text-white">Taksit Seçenekleri</h4>
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <Calculator size={18} className="text-green-600 sm:w-5 sm:h-5" />
+            <h4 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">Taksit Seçenekleri</h4>
           </div>
 
           <div className="space-y-2">
@@ -589,12 +589,12 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                   {/* Accordion Header */}
                   <button
                     onClick={() => setExpandedBank(isExpanded ? null : option.bank)}
-                    className="w-full flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                    className="w-full flex items-center justify-between p-3 sm:p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{option.logo}</span>
-                      <span className="font-bold text-slate-900 dark:text-white">{option.bank}</span>
-                      <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
+                    <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                      <span className="text-xl sm:text-2xl">{option.logo}</span>
+                      <span className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">{option.bank}</span>
+                      <span className={`px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-bold rounded-full ${
                         maxInterestFree >= 9 
                           ? 'bg-green-100 dark:bg-green-900/30 text-green-600' 
                           : maxInterestFree >= 6 
@@ -620,8 +620,8 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                       >
-                        <div className="p-4 pt-0 border-t border-slate-100 dark:border-slate-800">
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+                        <div className="p-3 sm:p-4 pt-0 border-t border-slate-100 dark:border-slate-800">
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mt-3 sm:mt-4">
                             {[3, 6, 9, 12].map((months) => {
                               const rate = option.rates[months as keyof typeof option.rates];
                               const monthlyPayment = calculateInstallment(months, rate);
@@ -631,14 +631,14 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                               return (
                                 <div 
                                   key={months}
-                                  className={`rounded-xl p-4 border transition-all text-left ${
+                                  className={`rounded-lg sm:rounded-xl p-3 sm:p-4 border transition-all text-left ${
                                     rate === 0 
                                       ? 'bg-slate-50/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700' 
                                       : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
                                   }`}
                                 >
-                                  <div className="text-center mb-3">
-                                    <span className={`text-2xl font-black ${rate === 0 ? 'text-slate-900 dark:text-white' : 'text-slate-900 dark:text-white'}`}>
+                                  <div className="text-center mb-2 sm:mb-3">
+                                    <span className={`text-xl sm:text-2xl font-black ${rate === 0 ? 'text-slate-900 dark:text-white' : 'text-slate-900 dark:text-white'}`}>
                                       {months}x
                                     </span>
                                     {rate === 0 && (
@@ -646,7 +646,7 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                                     )}
                                   </div>
                                   
-                                  <div className="space-y-2 text-sm">
+                                  <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
                                     <div className="flex justify-between">
                                       <span className="text-slate-500">Aylık:</span>
                                       <span className="font-bold text-green-600">{monthlyPayment.toLocaleString('tr-TR')} TL</span>
@@ -693,16 +693,16 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
       </section>
 
       {/* Fiyat Karşılaştırma Grafiği */}
-      <section className="mb-16">
+      <section className="mb-10 sm:mb-16">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-blue-600 mb-2 block">Fiyat Geçmişi</span>
-            <h3 className="text-3xl font-display font-bold">Son 30 Gün Fiyat Grafiği</h3>
+          <div className="text-center mb-6 sm:mb-10">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-blue-600 mb-1 sm:mb-2 block">Fiyat Geçmişi</span>
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-display font-bold">Son 30 Gün Fiyat Grafiği</h3>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 p-4 sm:p-8">
             {/* Grafik */}
-            <div className="relative h-64 mb-6">
+            <div className="relative h-48 sm:h-64 mb-4 sm:mb-6">
               <svg className="w-full h-full" viewBox="0 0 800 250" preserveAspectRatio="none">
                 {/* Grid Lines */}
                 {[0, 1, 2, 3, 4].map((i) => (
@@ -836,7 +836,7 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
               </svg>
               
               {/* Y Axis Labels */}
-              <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-slate-400 -ml-2">
+              <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-[9px] sm:text-xs text-slate-400 -ml-1 sm:-ml-2">
                 <span>{Math.round(product.price * 1.15).toLocaleString('tr-TR')} ₺</span>
                 <span>{Math.round(product.price * 1.075).toLocaleString('tr-TR')} ₺</span>
                 <span>{product.price.toLocaleString('tr-TR')} ₺</span>
@@ -846,7 +846,7 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
             </div>
             
             {/* X Axis Labels */}
-            <div className="flex justify-between text-xs text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-4">
+            <div className="flex justify-between text-[9px] sm:text-xs text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-3 sm:pt-4">
               <span>30 gün önce</span>
               <span>20 gün önce</span>
               <span>10 gün önce</span>
@@ -854,22 +854,22 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
             </div>
             
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-slate-100 dark:border-slate-800">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-slate-100 dark:border-slate-800">
               <div className="text-center">
-                <p className="text-xs text-slate-500 mb-1">En Düşük (30 gün)</p>
-                <p className="text-lg font-bold text-green-600">
+                <p className="text-[10px] sm:text-xs text-slate-500 mb-0.5 sm:mb-1">En Düşük (30 gün)</p>
+                <p className="text-sm sm:text-lg font-bold text-green-600">
                   {Math.round(product.price * 0.88).toLocaleString('tr-TR')} TL
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs text-slate-500 mb-1">Ortalama</p>
-                <p className="text-lg font-bold text-slate-900 dark:text-white">
+                <p className="text-[10px] sm:text-xs text-slate-500 mb-0.5 sm:mb-1">Ortalama</p>
+                <p className="text-sm sm:text-lg font-bold text-slate-900 dark:text-white">
                   {Math.round(product.price * 0.98).toLocaleString('tr-TR')} TL
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs text-slate-500 mb-1">En Yüksek (30 gün)</p>
-                <p className="text-lg font-bold text-red-500">
+                <p className="text-[10px] sm:text-xs text-slate-500 mb-0.5 sm:mb-1">En Yüksek (30 gün)</p>
+                <p className="text-sm sm:text-lg font-bold text-red-500">
                   {Math.round(product.price * 1.12).toLocaleString('tr-TR')} TL
                 </p>
               </div>
@@ -908,18 +908,18 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-slate-900 z-[310] shadow-2xl rounded-3xl overflow-hidden"
+              className="fixed inset-3 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-md bg-white dark:bg-slate-900 z-[310] shadow-2xl rounded-2xl sm:rounded-3xl overflow-hidden max-h-[calc(100vh-1.5rem)] overflow-y-auto"
             >
               {!isNotifySubmitted ? (
-                <div className="p-8 space-y-6">
+                <div className="p-5 sm:p-8 space-y-4 sm:space-y-6">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center">
-                        <Bell size={24} className="text-orange-600" />
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0">
+                        <Bell size={20} className="text-orange-600 sm:w-6 sm:h-6" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-display font-bold text-slate-900 dark:text-white">Stok Bildirimi</h3>
-                        <p className="text-sm text-slate-500">Ürün stoğa girince haber verelim</p>
+                        <h3 className="text-lg sm:text-xl font-display font-bold text-slate-900 dark:text-white">Stok Bildirimi</h3>
+                        <p className="text-xs sm:text-sm text-slate-500">Ürün stoğa girince haber verelim</p>
                       </div>
                     </div>
                     <button 
@@ -969,16 +969,16 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                   </p>
                 </div>
               ) : (
-                <div className="p-12 text-center space-y-4">
+                <div className="p-4 sm:p-12 text-center space-y-3 sm:space-y-4">
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                    className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto"
+                    className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto"
                   >
-                    <CheckCircle size={40} className="text-green-600" />
+                    <CheckCircle size={32} className="text-green-600 sm:w-10 sm:h-10" />
                   </motion.div>
-                  <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white">Kaydınız Alındı!</h3>
+                  <h3 className="text-xl sm:text-2xl font-display font-bold text-slate-900 dark:text-white">Kaydınız Alındı!</h3>
                   <p className="text-slate-500">
                     <span className="font-bold text-slate-900 dark:text-white">{product.name}</span> stoğa girdiğinde size haber vereceğiz.
                   </p>
@@ -1004,26 +1004,26 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-slate-900 z-310 shadow-2xl rounded-3xl overflow-hidden"
+              className="fixed inset-3 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-md bg-white dark:bg-slate-900 z-310 shadow-2xl rounded-2xl sm:rounded-3xl overflow-hidden max-h-[calc(100vh-1.5rem)] overflow-y-auto"
             >
-              <div className="p-8 space-y-6">
+              <div className="p-5 sm:p-8 space-y-4 sm:space-y-6">
                 <button
                   onClick={() => setShowPriceAlarmModal(false)}
-                  className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 transition-colors"
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 text-slate-400 hover:text-slate-600 transition-colors"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </button>
                 
                 <div className="text-center space-y-2">
-                  <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Bell size={32} className="text-green-600" />
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <Bell size={28} className="text-green-600 sm:w-8 sm:h-8" />
                   </div>
-                  <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white">Fiyat Alarmı Kur</h3>
-                  <p className="text-slate-500 text-sm">Fiyat belirlediğiniz seviyeye düşünce bildirim alın</p>
+                  <h3 className="text-xl sm:text-2xl font-display font-bold text-slate-900 dark:text-white">Fiyat Alarmı Kur</h3>
+                  <p className="text-slate-500 text-xs sm:text-sm">Fiyat belirlediğiniz seviyeye düşünce bildirim alın</p>
                 </div>
                 
-                <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl">
-                  <img src={product.image} alt={product.name} className="w-16 h-16 rounded-xl object-cover" referrerPolicy="no-referrer" />
+                <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-slate-50 dark:bg-slate-800 rounded-xl sm:rounded-2xl">
+                  <img src={product.image} alt={product.name} className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg sm:rounded-xl object-cover" referrerPolicy="no-referrer" />
                   <div>
                     <p className="font-bold text-slate-900 dark:text-white line-clamp-1">{product.name}</p>
                     <p className="text-sm text-blue-600 font-bold">Şu anki fiyat: {product.price.toLocaleString('tr-TR')} TL</p>
@@ -1041,17 +1041,17 @@ export default function ProductDetail({ product, onAddToCart, onToggleFav, onTog
                       onChange={(e) => setAlarmTargetPrice(Number(e.target.value))}
                       max={product.price - 1}
                       min={1}
-                      className="w-full p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white font-bold text-xl focus:ring-2 focus:ring-green-500 outline-none"
+                      className="w-full p-3 sm:p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl sm:rounded-2xl text-slate-900 dark:text-white font-bold text-lg sm:text-xl focus:ring-2 focus:ring-green-500 outline-none"
                     />
                   </div>
                   
                   {/* Hızlı Seçim Butonları */}
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
                     {[5, 10, 15, 20].map((percent) => (
                       <button
                         key={percent}
                         onClick={() => setAlarmTargetPrice(Math.round(product.price * (1 - percent / 100)))}
-                        className={`py-3 rounded-xl text-sm font-bold transition-all ${
+                        className={`py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all ${
                           alarmTargetPrice === Math.round(product.price * (1 - percent / 100))
                             ? 'bg-green-500 text-white'
                             : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'

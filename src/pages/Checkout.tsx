@@ -180,24 +180,24 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-24">
-      <div className="flex flex-col lg:flex-row gap-16 items-start">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 py-8 sm:py-16 lg:py-24">
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
         {/* Form Alanı */}
-        <div className="flex-1 w-full space-y-12">
-          <div className="flex items-center gap-6 text-xs font-bold uppercase tracking-[0.2em] mb-12">
-            <div className={`flex items-center gap-2 ${step >= 1 ? 'text-blue-600' : 'text-slate-300'}`}>
-              <span className={`w-6 h-6 rounded-full flex items-center justify-center border-2 ${step >= 1 ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200 text-slate-300'}`}>1</span>
-              Teslimat
+        <div className="flex-1 w-full space-y-8 sm:space-y-12">
+          <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-6 text-[10px] sm:text-xs font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] mb-6 sm:mb-12">
+            <div className={`flex items-center gap-1 sm:gap-2 ${step >= 1 ? 'text-blue-600' : 'text-slate-300'}`}>
+              <span className={`w-5 h-5 sm:w-6 sm:h-6 text-[10px] sm:text-xs rounded-full flex items-center justify-center border-2 ${step >= 1 ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200 text-slate-300'}`}>1</span>
+              <span className="hidden xs:inline">Teslimat</span>
             </div>
-            <div className="h-px w-12 bg-slate-100 dark:bg-slate-800" />
-            <div className={`flex items-center gap-2 ${step >= 2 ? 'text-blue-600' : 'text-slate-300'}`}>
-              <span className={`w-6 h-6 rounded-full flex items-center justify-center border-2 ${step >= 2 ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200 text-slate-300'}`}>2</span>
-              Ödeme
+            <div className="h-px w-4 sm:w-12 bg-slate-100 dark:bg-slate-800" />
+            <div className={`flex items-center gap-1 sm:gap-2 ${step >= 2 ? 'text-blue-600' : 'text-slate-300'}`}>
+              <span className={`w-5 h-5 sm:w-6 sm:h-6 text-[10px] sm:text-xs rounded-full flex items-center justify-center border-2 ${step >= 2 ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200 text-slate-300'}`}>2</span>
+              <span className="hidden xs:inline">Ödeme</span>
             </div>
-            <div className="h-px w-12 bg-slate-100 dark:bg-slate-800" />
-            <div className={`flex items-center gap-2 ${step >= 3 ? 'text-blue-600' : 'text-slate-300'}`}>
-              <span className={`w-6 h-6 rounded-full flex items-center justify-center border-2 ${step >= 3 ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200 text-slate-300'}`}>3</span>
-              Onay
+            <div className="h-px w-4 sm:w-12 bg-slate-100 dark:bg-slate-800" />
+            <div className={`flex items-center gap-1 sm:gap-2 ${step >= 3 ? 'text-blue-600' : 'text-slate-300'}`}>
+              <span className={`w-5 h-5 sm:w-6 sm:h-6 text-[10px] sm:text-xs rounded-full flex items-center justify-center border-2 ${step >= 3 ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200 text-slate-300'}`}>3</span>
+              <span className="hidden xs:inline">Onay</span>
             </div>
           </div>
 
@@ -208,50 +208,52 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                 initial={{ opacity: 0, x: -20 }} 
                 animate={{ opacity: 1, x: 0 }} 
                 exit={{ opacity: 0, x: 20 }}
-                className="space-y-10"
+                className="space-y-6 sm:space-y-10"
               >
                 <div className="space-y-2">
-                  <h2 className="text-4xl font-display font-bold text-slate-900 dark:text-white">Teslimat Bilgileri</h2>
-                  <p className="text-slate-500">Siparişinizin size ulaşması için bilgilerinizi girin.</p>
+                  <h2 className="text-2xl sm:text-4xl font-display font-bold text-slate-900 dark:text-white">Teslimat Bilgileri</h2>
+                  <p className="text-sm sm:text-base text-slate-500">Siparişinizin size ulaşması için bilgilerinizi girin.</p>
                 </div>
 
                 {/* Teslimat Türü Seçimi */}
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Teslimat Türü</label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <button
                       onClick={() => setDeliveryType('address')}
-                      className={`p-6 rounded-3xl border-2 transition-all text-left flex items-start gap-4 ${
+                      className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all text-left flex items-start gap-3 sm:gap-4 ${
                         deliveryType === 'address'
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                           : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
                       }`}
                     >
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center ${
                         deliveryType === 'address' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
                       }`}>
-                        <Truck size={24} />
+                        <Truck size={20} className="sm:hidden" />
+                        <Truck size={24} className="hidden sm:block" />
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900 dark:text-white">Adrese Teslim</p>
+                        <p className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">Adrese Teslim</p>
                         <p className="text-xs text-slate-500 mt-1">Siparişiniz adresinize teslim edilir</p>
                       </div>
                     </button>
                     <button
                       onClick={() => setDeliveryType('store')}
-                      className={`p-6 rounded-3xl border-2 transition-all text-left flex items-start gap-4 ${
+                      className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all text-left flex items-start gap-3 sm:gap-4 ${
                         deliveryType === 'store'
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                           : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
                       }`}
                     >
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center ${
                         deliveryType === 'store' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
                       }`}>
-                        <Store size={24} />
+                        <Store size={20} className="sm:hidden" />
+                        <Store size={24} className="hidden sm:block" />
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900 dark:text-white">Mağazadan Teslim Al</p>
+                        <p className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">Mağazadan Teslim Al</p>
                         <p className="text-xs text-slate-500 mt-1">Kargo ücretsiz! Mağazadan kendiniz alın</p>
                       </div>
                     </button>
@@ -265,28 +267,31 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="space-y-4 overflow-hidden"
+                      className="space-y-3 sm:space-y-4 overflow-hidden"
                     >
                       <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Mağaza Seçin</label>
-                      <div className="grid grid-cols-1 gap-4">
+                      <div className="grid grid-cols-1 gap-3 sm:gap-4">
                         {STORES.map(store => (
                           <button
                             key={store.id}
                             onClick={() => setSelectedStore(store.id)}
-                            className={`p-6 rounded-3xl border-2 transition-all text-left ${
+                            className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all text-left ${
                               selectedStore === store.id
                                 ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
                                 : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
                             }`}
                           >
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <p className="font-bold text-slate-900 dark:text-white">{store.name}</p>
-                                <p className="text-sm text-slate-500 mt-1">{store.address}</p>
+                            <div className="flex justify-between items-start gap-2">
+                              <div className="min-w-0 flex-1">
+                                <p className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">{store.name}</p>
+                                <p className="text-xs sm:text-sm text-slate-500 mt-1">{store.address}</p>
                                 <p className="text-xs text-slate-400 mt-2">🕐 Çalışma Saatleri: {store.hours}</p>
                               </div>
                               {selectedStore === store.id && (
-                                <CheckCircle2 size={24} className="text-green-500" />
+                                <CheckCircle2 size={20} className="sm:hidden text-green-500 shrink-0" />
+                              )}
+                              {selectedStore === store.id && (
+                                <CheckCircle2 size={24} className="hidden sm:block text-green-500 shrink-0" />
                               )}
                             </div>
                           </button>
@@ -297,14 +302,14 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                 </AnimatePresence>
                 
                 {/* Ad Soyad */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Ad</label>
-                    <input type="text" className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" placeholder="John" />
+                    <input type="text" className="w-full p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white text-sm sm:text-base" placeholder="John" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Soyad</label>
-                    <input type="text" className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" placeholder="Doe" />
+                    <input type="text" className="w-full p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white text-sm sm:text-base" placeholder="Doe" />
                   </div>
                 </div>
 
@@ -315,24 +320,24 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="space-y-6 overflow-hidden"
+                      className="space-y-4 sm:space-y-6 overflow-hidden"
                     >
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Teslimat Adresi</label>
                         <div className="relative">
-                          <MapPin className="absolute left-4 top-4 text-slate-400" size={20} />
-                          <textarea rows={4} className="w-full p-4 pl-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white resize-none" placeholder="Mahalle, sokak, bina no, daire..."></textarea>
+                          <MapPin className="absolute left-3 sm:left-4 top-3 sm:top-4 text-slate-400" size={18} />
+                          <textarea rows={4} className="w-full p-3 sm:p-4 pl-10 sm:pl-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white resize-none text-sm sm:text-base" placeholder="Mahalle, sokak, bina no, daire..."></textarea>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                         <div className="space-y-2">
                           <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Şehir</label>
                           <input 
                             type="text" 
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
-                            className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" 
+                            className="w-full p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white text-sm sm:text-base" 
                             placeholder="İstanbul" 
                           />
                           {city && (
@@ -347,7 +352,7 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Telefon</label>
-                          <input type="tel" className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" placeholder="05XX XXX XX XX" />
+                          <input type="tel" className="w-full p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white text-sm sm:text-base" placeholder="05XX XXX XX XX" />
                         </div>
                       </div>
                     </motion.div>
@@ -393,7 +398,7 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="space-y-4 overflow-hidden p-6 bg-slate-50 dark:bg-slate-900/50 rounded-3xl border border-slate-100 dark:border-slate-800"
+                      className="space-y-4 overflow-hidden p-4 sm:p-6 bg-slate-50 dark:bg-slate-900/50 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-800"
                     >
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Şirket Adı</label>
@@ -401,7 +406,7 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                           type="text"
                           value={companyInfo.name}
                           onChange={(e) => setCompanyInfo({...companyInfo, name: e.target.value})}
-                          className="w-full p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" 
+                          className="w-full p-3 sm:p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white text-sm sm:text-base" 
                           placeholder="Örnek Teknoloji A.Ş." 
                         />
                       </div>
@@ -412,7 +417,7 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                             type="text"
                             value={companyInfo.taxOffice}
                             onChange={(e) => setCompanyInfo({...companyInfo, taxOffice: e.target.value})}
-                            className="w-full p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" 
+                            className="w-full p-3 sm:p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white text-sm sm:text-base" 
                             placeholder="Kadıköy" 
                           />
                         </div>
@@ -422,7 +427,7 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                             type="text"
                             value={companyInfo.taxNumber}
                             onChange={(e) => setCompanyInfo({...companyInfo, taxNumber: e.target.value})}
-                            className="w-full p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" 
+                            className="w-full p-3 sm:p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white text-sm sm:text-base" 
                             placeholder="1234567890" 
                           />
                         </div>
@@ -435,16 +440,16 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                 <div className="space-y-4">
                   <button
                     onClick={() => setGiftWrap(!giftWrap)}
-                    className={`w-full p-6 rounded-3xl border-2 transition-all text-left flex items-start gap-4 ${
+                    className={`w-full p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all text-left flex items-start gap-3 sm:gap-4 ${
                       giftWrap
                         ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
                         : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
                     }`}
                   >
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 ${
                       giftWrap ? 'bg-pink-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
                     }`}>
-                      <Gift size={24} />
+                      <Gift size={20} className="sm:hidden" /><Gift size={24} className="hidden sm:block" />
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-start">
@@ -496,7 +501,7 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                   <p className="text-xs text-slate-400 ml-1">{orderNote.length}/500 karakter</p>
                 </div>
 
-                <button onClick={() => setStep(2)} className="btn-primary w-full py-5 shadow-blue-500/40">Ödemeye Geç</button>
+                <button onClick={() => setStep(2)} className="btn-primary w-full py-4 sm:py-5 shadow-blue-500/40">Ödemeye Geç</button>
               </motion.div>
             )}
 
@@ -506,29 +511,29 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                 initial={{ opacity: 0, x: -20 }} 
                 animate={{ opacity: 1, x: 0 }} 
                 exit={{ opacity: 0, x: 20 }}
-                className="space-y-10"
+                className="space-y-6 sm:space-y-10"
               >
                 <div className="space-y-2">
-                  <h2 className="text-4xl font-display font-bold text-slate-900 dark:text-white">Ödeme Yöntemi</h2>
-                  <p className="text-slate-500">Güvenli ödeme altyapımız ile işleminizi tamamlayın.</p>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-slate-900 dark:text-white">Ödeme Yöntemi</h2>
+                  <p className="text-sm sm:text-base text-slate-500">Güvenli ödeme altyapımız ile işleminizi tamamlayın.</p>
                 </div>
 
                 {/* Ödeme Yöntemi Seçimi */}
                 <div className="space-y-4">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Ödeme Tercihi</label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                     <button
                       onClick={() => setPaymentMethod('card')}
-                      className={`p-6 rounded-3xl border-2 transition-all text-left flex items-start gap-4 ${
+                      className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all text-left flex items-start gap-3 sm:gap-4 ${
                         paymentMethod === 'card'
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                           : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
                       }`}
                     >
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 ${
                         paymentMethod === 'card' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
                       }`}>
-                        <CreditCard size={24} />
+                        <CreditCard size={20} className="sm:hidden" /><CreditCard size={24} className="hidden sm:block" />
                       </div>
                       <div>
                         <p className="font-bold text-slate-900 dark:text-white">Kredi / Banka Kartı</p>
@@ -537,16 +542,16 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                     </button>
                     <button
                       onClick={() => setPaymentMethod('cash')}
-                      className={`p-6 rounded-3xl border-2 transition-all text-left flex items-start gap-4 ${
+                      className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all text-left flex items-start gap-3 sm:gap-4 ${
                         paymentMethod === 'cash'
                           ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
                           : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
                       }`}
                     >
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 ${
                         paymentMethod === 'cash' ? 'bg-green-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
                       }`}>
-                        <Banknote size={24} />
+                        <Banknote size={20} className="sm:hidden" /><Banknote size={24} className="hidden sm:block" />
                       </div>
                       <div>
                         <p className="font-bold text-slate-900 dark:text-white">Kapıda Ödeme</p>
@@ -565,7 +570,7 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                       exit={{ opacity: 0, height: 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="p-6 rounded-3xl bg-green-50 dark:bg-green-900/20 border-2 border-green-500 space-y-4">
+                      <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-green-50 dark:bg-green-900/20 border-2 border-green-500 space-y-3 sm:space-y-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center">
                             <Banknote size={20} />
@@ -609,31 +614,31 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                       className="space-y-10 overflow-hidden"
                     >
                 {/* Interactive Card Visual */}
-                <div className="relative w-full max-w-[400px] h-[240px] mx-auto perspective-1000 group">
+                <div className="relative w-full max-w-[320px] sm:max-w-[400px] h-[180px] sm:h-[240px] mx-auto perspective-1000 group">
                   <motion.div 
-                    className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-950 rounded-[2rem] p-8 text-white shadow-2xl border border-white/10 flex flex-col justify-between overflow-hidden relative"
+                    className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-950 rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 text-white shadow-2xl border border-white/10 flex flex-col justify-between overflow-hidden relative"
                     whileHover={{ scale: 1.02 }}
                   >
                     <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 blur-3xl rounded-full -mr-32 -mt-32" />
                     <div className="flex justify-between items-start relative z-10">
-                      <div className="w-12 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg shadow-inner" />
-                      <CreditCard size={32} className="opacity-50" />
+                      <div className="w-10 h-8 sm:w-12 sm:h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg shadow-inner" />
+                      <CreditCard size={24} className="opacity-50 sm:hidden" /><CreditCard size={32} className="opacity-50 hidden sm:block" />
                     </div>
                     
-                    <div className="space-y-6 relative z-10">
-                      <p className="text-2xl font-mono tracking-[0.2em] break-all">
+                    <div className="space-y-3 sm:space-y-6 relative z-10">
+                      <p className="text-lg sm:text-2xl font-mono tracking-[0.15em] sm:tracking-[0.2em] break-all">
                         {cardInfo.number || '**** **** **** ****'}
                       </p>
                       <div className="flex justify-between items-end">
-                        <div className="space-y-1">
-                          <p className="text-[8px] uppercase tracking-widest opacity-50">Kart Sahibi</p>
-                          <p className="text-sm font-bold uppercase tracking-widest truncate max-w-[200px]">
+                        <div className="space-y-0.5 sm:space-y-1">
+                          <p className="text-[7px] sm:text-[8px] uppercase tracking-widest opacity-50">Kart Sahibi</p>
+                          <p className="text-xs sm:text-sm font-bold uppercase tracking-widest truncate max-w-[140px] sm:max-w-[200px]">
                             {cardInfo.name || 'AD SOYAD'}
                           </p>
                         </div>
-                        <div className="space-y-1 text-right">
-                          <p className="text-[8px] uppercase tracking-widest opacity-50">Son Kullanma</p>
-                          <p className="text-sm font-bold font-mono">
+                        <div className="space-y-0.5 sm:space-y-1 text-right">
+                          <p className="text-[7px] sm:text-[8px] uppercase tracking-widest opacity-50">Son Kullanma</p>
+                          <p className="text-xs sm:text-sm font-bold font-mono">
                             {cardInfo.expiry || 'MM/YY'}
                           </p>
                         </div>
@@ -642,14 +647,14 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                   </motion.div>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Kart Üzerindeki İsim</label>
                     <input 
                       type="text" 
                       value={cardInfo.name}
                       onChange={(e) => setCardInfo({...cardInfo, name: e.target.value})}
-                      className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white" 
+                      className="w-full p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white text-sm sm:text-base" 
                       placeholder="JOHN DOE" 
                     />
                   </div>
@@ -660,11 +665,11 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                       maxLength={19}
                       value={cardInfo.number}
                       onChange={(e) => setCardInfo({...cardInfo, number: formatCardNumber(e.target.value)})}
-                      className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white font-mono" 
+                      className="w-full p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white font-mono text-sm sm:text-base" 
                       placeholder="0000 0000 0000 0000" 
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-6">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-6">
                     <div className="space-y-2">
                       <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Son Kullanma</label>
                       <input 
@@ -672,7 +677,7 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                         maxLength={5}
                         value={cardInfo.expiry}
                         onChange={(e) => setCardInfo({...cardInfo, expiry: e.target.value})}
-                        className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white font-mono" 
+                        className="w-full p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white font-mono text-sm sm:text-base" 
                         placeholder="MM/YY" 
                       />
                     </div>
@@ -683,7 +688,7 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                         maxLength={3}
                         value={cardInfo.cvv}
                         onChange={(e) => setCardInfo({...cardInfo, cvv: e.target.value})}
-                        className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white font-mono" 
+                        className="w-full p-3 sm:p-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white font-mono text-sm sm:text-base" 
                         placeholder="***" 
                       />
                     </div>
@@ -701,14 +706,14 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                     >
                       {/* Tanınan Banka */}
                       <div 
-                        className="p-6 rounded-3xl border-2 flex items-center gap-4"
+                        className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 flex items-center gap-3 sm:gap-4"
                         style={{ 
                           borderColor: detectedBank.color,
                           backgroundColor: `${detectedBank.color}10`
                         }}
                       >
                         <div 
-                          className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl"
+                          className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center text-xl sm:text-2xl shrink-0"
                           style={{ backgroundColor: `${detectedBank.color}20` }}
                         >
                           {detectedBank.logo}
@@ -777,10 +782,10 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                   )}
                 </AnimatePresence>
 
-                <div className="flex gap-4">
-                  <button onClick={() => setStep(1)} className="btn-outline flex-1 py-5">Geri Dön</button>
-                  <button onClick={() => setStep(3)} className="btn-primary flex-[2] py-5 shadow-blue-500/40 flex items-center justify-center gap-3">
-                    <Lock size={18} /> Siparişi Tamamla
+                <div className="flex gap-3 sm:gap-4">
+                  <button onClick={() => setStep(1)} className="btn-outline flex-1 py-4 sm:py-5 text-sm sm:text-base">Geri Dön</button>
+                  <button onClick={() => setStep(3)} className="btn-primary flex-[2] py-4 sm:py-5 shadow-blue-500/40 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base">
+                    <Lock size={16} className="sm:hidden" /><Lock size={18} className="hidden sm:block" /> Siparişi Tamamla
                   </button>
                 </div>
               </motion.div>
@@ -791,17 +796,17 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                 key="step3"
                 initial={{ opacity: 0, scale: 0.9 }} 
                 animate={{ opacity: 1, scale: 1 }} 
-                className="text-center py-20 space-y-8"
+                className="text-center py-10 sm:py-20 space-y-6 sm:space-y-8"
               >
-                <div className="w-32 h-32 bg-green-500/10 text-green-500 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-green-500/20">
-                  <ShieldCheck size={64} />
+                <div className="w-20 h-20 sm:w-32 sm:h-32 bg-green-500/10 text-green-500 rounded-2xl sm:rounded-[2.5rem] flex items-center justify-center mx-auto mb-4 sm:mb-8 shadow-2xl shadow-green-500/20">
+                  <ShieldCheck size={40} className="sm:hidden" /><ShieldCheck size={64} className="hidden sm:block" />
                 </div>
-                <div className="space-y-4">
-                  <h2 className="text-5xl font-display font-bold text-slate-900 dark:text-white">Siparişiniz Alındı!</h2>
-                  <p className="text-xl text-slate-500 max-w-md mx-auto">Sipariş numaranız: <span className="font-bold text-blue-600">#GT-982341</span>. Onay e-postası adresinize gönderildi.</p>
+                <div className="space-y-3 sm:space-y-4">
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white">Siparişiniz Alındı!</h2>
+                  <p className="text-base sm:text-xl text-slate-500 max-w-md mx-auto px-4">Sipariş numaranız: <span className="font-bold text-blue-600">#GT-982341</span>. Onay e-postası adresinize gönderildi.</p>
                 </div>
-                <div className="pt-8">
-                  <button onClick={onComplete} className="btn-primary px-12 py-5">Alışverişe Devam Et</button>
+                <div className="pt-4 sm:pt-8">
+                  <button onClick={onComplete} className="btn-primary px-8 sm:px-12 py-4 sm:py-5 text-sm sm:text-base">Alışverişe Devam Et</button>
                 </div>
               </motion.div>
             )}
@@ -810,20 +815,20 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
 
         {/* Sipariş Özeti */}
         <div className="w-full lg:w-[400px] lg:sticky lg:top-32">
-          <div className="bg-white dark:bg-slate-900 p-10 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-500/5 space-y-8">
-            <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white">Sipariş Özeti</h3>
+          <div className="bg-white dark:bg-slate-900 p-6 sm:p-10 rounded-2xl sm:rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-500/5 space-y-6 sm:space-y-8">
+            <h3 className="text-xl sm:text-2xl font-display font-bold text-slate-900 dark:text-white">Sipariş Özeti</h3>
             
-            <div className="space-y-6 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-4 sm:space-y-6 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
               {cart.map(item => (
-                <div key={item.id} className="flex gap-4 items-center">
-                  <div className="w-16 h-16 rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-800 shrink-0">
+                <div key={item.id} className="flex gap-3 sm:gap-4 items-center">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-800 shrink-0">
                     <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">{item.name}</h4>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">{item.name}</h4>
                     <p className="text-xs text-slate-500">{item.quantity} Adet</p>
                   </div>
-                  <p className="text-sm font-bold text-slate-900 dark:text-white shrink-0">
+                  <p className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white shrink-0">
                     {(item.price * item.quantity).toLocaleString('tr-TR')} TL
                   </p>
                 </div>
@@ -837,19 +842,19 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                 İndirim Kodu
               </label>
               {appliedCoupon ? (
-                <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/20 rounded-2xl border border-green-200 dark:border-green-800">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2 size={20} className="text-green-500" />
-                    <div>
-                      <p className="text-sm font-bold text-green-700 dark:text-green-300">{appliedCoupon}</p>
-                      <p className="text-xs text-green-600 dark:text-green-400">{COUPONS[appliedCoupon]?.description}</p>
+                <div className="flex items-center justify-between p-3 sm:p-4 bg-green-50 dark:bg-green-900/20 rounded-xl sm:rounded-2xl border border-green-200 dark:border-green-800">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <CheckCircle2 size={18} className="text-green-500 shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs sm:text-sm font-bold text-green-700 dark:text-green-300 truncate">{appliedCoupon}</p>
+                      <p className="text-[10px] sm:text-xs text-green-600 dark:text-green-400 truncate">{COUPONS[appliedCoupon]?.description}</p>
                     </div>
                   </div>
                   <button 
                     onClick={removeCoupon}
-                    className="p-2 hover:bg-green-100 dark:hover:bg-green-800/50 rounded-xl transition-colors"
+                    className="p-1.5 sm:p-2 hover:bg-green-100 dark:hover:bg-green-800/50 rounded-lg sm:rounded-xl transition-colors shrink-0"
                   >
-                    <XCircle size={18} className="text-green-600" />
+                    <XCircle size={16} className="text-green-600" />
                   </button>
                 </div>
               ) : (
@@ -860,11 +865,11 @@ export default function Checkout({ cart, total, onComplete }: CheckoutProps) {
                     onChange={(e) => setCouponCode(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && applyCoupon()}
                     placeholder="Kupon kodunuz"
-                    className="flex-1 p-4 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white text-sm"
+                    className="flex-1 p-3 sm:p-4 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900 dark:text-white text-xs sm:text-sm min-w-0"
                   />
                   <button 
                     onClick={applyCoupon}
-                    className="px-6 bg-blue-600 text-white rounded-2xl text-sm font-bold hover:bg-blue-700 transition-colors"
+                    className="px-4 sm:px-6 bg-blue-600 text-white rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold hover:bg-blue-700 transition-colors shrink-0"
                   >
                     Uygula
                   </button>

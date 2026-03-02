@@ -379,7 +379,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="space-y-8"
+      className="space-y-4 sm:space-y-8"
     >
       {/* Başlık */}
       <div className="flex items-center gap-4">
@@ -396,9 +396,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
       </div>
 
       {/* Ana Kart */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden">
-        {/* Profil Resmi */}
-        <div className="p-8 flex flex-col items-center border-b border-slate-100 dark:border-slate-800">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden">{/* Profil Resmi */}<div className="p-4 sm:p-8 flex flex-col items-center border-b border-slate-100 dark:border-slate-800">
           <div className="relative group">
             <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-violet-600 rounded-full flex items-center justify-center text-white text-2xl font-display font-bold shadow-xl shadow-blue-500/25">
               {getInitials(profileData.name)}
@@ -419,7 +417,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         </div>
 
         {/* Form Alanları */}
-        <div className="p-8 space-y-6">
+        <div className="p-4 sm:p-8 space-y-6">
           {/* Ad Soyad */}
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-xs font-medium text-slate-400">
@@ -512,7 +510,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         </div>
 
         {/* Kaydet Butonu */}
-        <div className="p-8 pt-0">
+        <div className="p-4 sm:p-8 pt-0">
           <button className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-0.5">
             <Check size={18} />
             Kaydet
@@ -528,7 +526,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="space-y-8"
+      className="space-y-4 sm:space-y-8"
     >
       {/* Başlık */}
       <div className="flex items-center gap-4">
@@ -547,7 +545,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
       {/* Üst Kısım: Kredi Yükle + Hesap Özeti */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Kredi Yükle Formu */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-8">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-4 sm:p-8">
           <h2 className="text-lg font-bold text-blue-600 mb-6">Kredi Yükle</h2>
           
           <div className="space-y-5">
@@ -610,7 +608,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
             </div>
 
             {/* Son Kullanım ve CVC */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-xs font-medium text-slate-400">
                   <Calendar size={14} />
@@ -718,7 +716,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         {/* İşlem Listesi */}
         <div className="p-6">
           {transactions.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-center py-6 sm:py-12">
               <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-400">
                 <Share2 size={32} />
               </div>
@@ -823,7 +821,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className="space-y-8"
+        className="space-y-4 sm:space-y-8"
       >
         {/* Başlık */}
         <div className="flex items-center gap-4">
@@ -881,9 +879,9 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
           {/* Adres Listesi */}
           <div className="p-6">
             {filteredAddresses.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center mx-auto mb-6 text-slate-400">
-                  <MapPin size={40} />
+              <div className="text-center py-8 sm:py-16">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-100 dark:bg-slate-800 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 text-slate-400">
+                  <MapPin size={32} className="sm:hidden" /><MapPin size={40} className="hidden sm:block" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Henüz adres eklenmemiş</h3>
                 <p className="text-slate-500 mb-6">Teslimat için adres ekleyerek başlayın</p>
@@ -1005,7 +1003,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl z-50 max-h-[90vh] overflow-y-auto"
+                className="fixed inset-3 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-lg bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-2xl z-50 max-h-[calc(100vh-1.5rem)] overflow-y-auto"
               >
                 {/* Modal Header */}
                 <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center sticky top-0 bg-white dark:bg-slate-900">
@@ -1060,7 +1058,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
                   </div>
 
                   {/* Ad Soyad ve Telefon */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-xs font-medium text-slate-400">Ad Soyad *</label>
                       <input 
@@ -1084,7 +1082,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
                   </div>
 
                   {/* İl ve İlçe */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-xs font-medium text-slate-400">İl *</label>
                       <input 
@@ -1229,7 +1227,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className="space-y-8"
+        className="space-y-4 sm:space-y-8"
       >
         {/* Header */}
         <div className="flex items-center gap-4">
@@ -1284,7 +1282,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         {/* Fatura Kartları */}
         <div className="grid gap-4">
           {filteredInvoices.length === 0 ? (
-            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-12 text-center">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 sm:p-12 text-center">
               <div className="w-16 h-16 bg-amber-50 dark:bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <FileText size={32} className="text-amber-500" />
               </div>
@@ -1443,7 +1441,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                       Fatura Tipi *
                     </label>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <button
                         type="button"
                         onClick={() => setNewInvoice({...newInvoice, type: 'individual'})}
@@ -1527,7 +1525,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                             Vergi Dairesi *
@@ -1630,7 +1628,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className="space-y-8"
+        className="space-y-4 sm:space-y-8"
       >
         {/* Header */}
         <div className="flex items-center gap-4">
@@ -1678,7 +1676,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         {/* Sipariş Kartları */}
         <div className="space-y-4">
           {filteredOrders.length === 0 ? (
-            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-12 text-center">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 sm:p-12 text-center">
               <div className="w-16 h-16 bg-rose-50 dark:bg-rose-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <ShoppingBag size={32} className="text-rose-500" />
               </div>
@@ -1836,7 +1834,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
                   </div>
 
                   {/* Sipariş Bilgileri */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl">
                       <p className="text-sm text-slate-500 mb-1">Sipariş Tarihi</p>
                       <p className="font-medium text-slate-900 dark:text-white">{selectedOrderData.date}</p>
@@ -1946,7 +1944,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className="space-y-8"
+        className="space-y-4 sm:space-y-8"
       >
         {/* Header */}
         <div className="flex items-center gap-4">
@@ -1977,7 +1975,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         {/* Sepet Kartları */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredCarts.length === 0 ? (
-            <div className="sm:col-span-2 lg:col-span-3 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-12 text-center">
+            <div className="sm:col-span-2 lg:col-span-3 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 sm:p-12 text-center">
               <div className="w-16 h-16 bg-cyan-50 dark:bg-cyan-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <ShoppingCart size={32} className="text-cyan-500" />
               </div>
@@ -2285,7 +2283,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
                   {/* Fiyat Özeti */}
                   <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 space-y-4">
                     {/* Kaydedilen vs Güncel Tutar */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700">
                         <p className="text-xs text-slate-500 mb-1">Kaydedilen Tutar</p>
                         <p className="font-bold text-slate-900 dark:text-white">
@@ -2404,7 +2402,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className="space-y-8"
+        className="space-y-4 sm:space-y-8"
       >
         {/* Header */}
         <div className="flex items-center gap-4">
@@ -2462,7 +2460,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         {/* Talep Kartları */}
         <div className="space-y-4">
           {filteredRequests.length === 0 ? (
-            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-12 text-center">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 sm:p-12 text-center">
               <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <ArrowLeftRight size={32} className="text-indigo-500" />
               </div>
@@ -2729,7 +2727,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className="space-y-8"
+        className="space-y-4 sm:space-y-8"
       >
         {/* Header */}
         <div className="flex items-center gap-4">
@@ -2746,10 +2744,10 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         </div>
 
         {/* Form */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-8">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-4 sm:p-8">
           <div className="max-w-md mx-auto space-y-6">
             {/* Güvenlik İkonu */}
-            <div className="flex justify-center mb-8">
+            <div className="flex justify-center mb-4 sm:mb-8">
               <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center">
                 <KeyRound size={40} className="text-slate-500" />
               </div>
@@ -2934,7 +2932,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="space-y-8"
+      className="space-y-4 sm:space-y-8"
     >
       <div className="flex items-center gap-4">
         <button 
@@ -2949,8 +2947,8 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-16 text-center">
-        <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center mx-auto mb-6 text-slate-400">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-8 sm:p-16 text-center">
+        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-100 dark:bg-slate-800 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 text-slate-400">
           {icon}
         </div>
         <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Yakında</h3>
@@ -2984,7 +2982,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-24 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-8 sm:py-16 lg:py-24 px-3 sm:px-4">
       <div className="max-w-5xl mx-auto">
         <AnimatePresence mode="wait">
           {activeSection ? (
@@ -2995,27 +2993,28 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, x: -20 }}
-              className="space-y-12"
+              className="space-y-8 sm:space-y-12"
             >
               {/* Header */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-center space-y-6"
+                className="text-center space-y-4 sm:space-y-6"
               >
                 <div className="relative inline-block">
-                  <div className="w-28 h-28 bg-gradient-to-br from-blue-500 to-blue-700 rounded-[2rem] flex items-center justify-center text-white text-4xl font-display font-bold shadow-2xl shadow-blue-500/30">
+                  <div className="w-20 h-20 sm:w-28 sm:h-28 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl sm:rounded-[2rem] flex items-center justify-center text-white text-2xl sm:text-4xl font-display font-bold shadow-2xl shadow-blue-500/30">
                     {getInitials(user.name)}
                   </div>
-                  <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <Check size={16} className="text-white" />
+                  <div className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 w-6 h-6 sm:w-8 sm:h-8 bg-emerald-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                    <Check size={12} className="sm:hidden text-white" />
+                    <Check size={16} className="hidden sm:block text-white" />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-display font-bold text-slate-900 dark:text-white">
+                <div className="space-y-1 sm:space-y-2">
+                  <h1 className="text-xl sm:text-3xl font-display font-bold text-slate-900 dark:text-white">
                     Hoş geldin, {user.name.split(' ')[0]}!
                   </h1>
-                  <p className="text-slate-500 dark:text-slate-400">{user.email}</p>
+                  <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400">{user.email}</p>
                 </div>
               </motion.div>
 
@@ -3024,7 +3023,7 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-6"
+                className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6"
               >
                 {PROFILE_MENU_ITEMS.map((item, index) => (
                   <motion.button
@@ -3033,18 +3032,20 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 + index * 0.05 }}
                     onClick={() => handleMenuClick(item)}
-                    className={`group relative p-6 md:p-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 text-left overflow-hidden ${item.isLogout ? 'col-span-2 sm:col-span-1' : ''}`}
+                    className={`group relative p-4 sm:p-6 md:p-8 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 text-left overflow-hidden ${item.isLogout ? 'col-span-2 sm:col-span-1' : ''}`}
                   >
                     {/* Content */}
-                    <div className="relative z-10 flex flex-col items-center text-center space-y-4">
-                      <div className={`p-4 rounded-2xl transition-all duration-300 ${item.isLogout ? 'bg-red-50 dark:bg-red-900/20 text-red-500 group-hover:bg-red-100 dark:group-hover:bg-red-900/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 group-hover:text-slate-700 dark:group-hover:text-slate-200'}`}>
-                        {item.icon}
+                    <div className="relative z-10 flex flex-col items-center text-center space-y-2 sm:space-y-4">
+                      <div className={`p-2.5 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-300 ${item.isLogout ? 'bg-red-50 dark:bg-red-900/20 text-red-500 group-hover:bg-red-100 dark:group-hover:bg-red-900/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 group-hover:text-slate-700 dark:group-hover:text-slate-200'}`}>
+                        <div className="[&>svg]:w-5 [&>svg]:h-5 sm:[&>svg]:w-7 sm:[&>svg]:h-7">
+                          {item.icon}
+                        </div>
                       </div>
-                      <div className="space-y-1">
-                        <h3 className={`font-bold text-sm md:text-base transition-colors duration-300 ${item.isLogout ? 'text-red-500' : 'text-slate-900 dark:text-white'}`}>
+                      <div className="space-y-0.5 sm:space-y-1">
+                        <h3 className={`font-bold text-xs sm:text-sm md:text-base transition-colors duration-300 ${item.isLogout ? 'text-red-500' : 'text-slate-900 dark:text-white'}`}>
                           {item.name}
                         </h3>
-                        <p className="text-xs text-slate-400 dark:text-slate-500 group-hover:text-slate-500 dark:group-hover:text-slate-400 transition-colors duration-300 hidden md:block">
+                        <p className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 group-hover:text-slate-500 dark:group-hover:text-slate-400 transition-colors duration-300 hidden md:block">
                           {item.description}
                         </p>
                       </div>
@@ -3058,16 +3059,16 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="grid grid-cols-3 gap-4"
+                className="grid grid-cols-3 gap-2 sm:gap-4"
               >
                 {[
                   { label: 'Aktif Sipariş', value: '0', color: 'text-blue-600' },
                   { label: 'Toplam Harcama', value: '0 TL', color: 'text-emerald-600' },
                   { label: 'Puan', value: '150', color: 'text-amber-600' }
                 ].map((stat, i) => (
-                  <div key={i} className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 text-center">
-                    <p className={`text-2xl md:text-3xl font-display font-bold ${stat.color}`}>{stat.value}</p>
-                    <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">{stat.label}</p>
+                  <div key={i} className="p-3 sm:p-6 bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-800 text-center">
+                    <p className={`text-lg sm:text-2xl md:text-3xl font-display font-bold ${stat.color}`}>{stat.value}</p>
+                    <p className="text-[8px] sm:text-[10px] md:text-xs font-bold uppercase tracking-wider text-slate-400 mt-0.5 sm:mt-1">{stat.label}</p>
                   </div>
                 ))}
               </motion.div>
@@ -3077,25 +3078,25 @@ export default function Profile({ user, onNavigate, onLogout, savedCarts, onLoad
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"
               >
-                <div className="relative p-8 bg-gradient-to-br from-blue-600 to-blue-800 rounded-[2rem] text-white overflow-hidden">
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-                  <div className="relative z-10 space-y-4">
-                    <h3 className="text-xl font-display font-bold">Premium Üyelik</h3>
-                    <p className="text-blue-100 text-sm">Ücretsiz kargo ve özel indirimlerden yararlanın.</p>
-                    <button className="px-6 py-2 bg-white text-blue-600 rounded-full text-xs font-bold hover:bg-blue-50 transition-all">
+                <div className="relative p-5 sm:p-8 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl sm:rounded-[2rem] text-white overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 sm:w-40 h-32 sm:h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+                  <div className="relative z-10 space-y-3 sm:space-y-4">
+                    <h3 className="text-lg sm:text-xl font-display font-bold">Premium Üyelik</h3>
+                    <p className="text-blue-100 text-xs sm:text-sm">Ücretsiz kargo ve özel indirimlerden yararlanın.</p>
+                    <button className="px-4 sm:px-6 py-2 bg-white text-blue-600 rounded-full text-xs font-bold hover:bg-blue-50 transition-all">
                       Şimdi Katıl
                     </button>
                   </div>
                 </div>
                 
-                <div className="relative p-8 bg-slate-900 dark:bg-slate-800 rounded-[2rem] text-white overflow-hidden">
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-                  <div className="relative z-10 space-y-4">
-                    <h3 className="text-xl font-display font-bold">Yardım Merkezi</h3>
-                    <p className="text-slate-400 text-sm">Sorularınız için destek ekibimiz burada.</p>
-                    <button className="px-6 py-2 bg-slate-700 text-white rounded-full text-xs font-bold hover:bg-slate-600 transition-all border border-white/10">
+                <div className="relative p-5 sm:p-8 bg-slate-900 dark:bg-slate-800 rounded-2xl sm:rounded-[2rem] text-white overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 sm:w-40 h-32 sm:h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+                  <div className="relative z-10 space-y-3 sm:space-y-4">
+                    <h3 className="text-lg sm:text-xl font-display font-bold">Yardım Merkezi</h3>
+                    <p className="text-slate-400 text-xs sm:text-sm">Sorularınız için destek ekibimiz burada.</p>
+                    <button className="px-4 sm:px-6 py-2 bg-slate-700 text-white rounded-full text-xs font-bold hover:bg-slate-600 transition-all border border-white/10">
                       Destek Al
                     </button>
                   </div>

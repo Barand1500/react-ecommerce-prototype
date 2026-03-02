@@ -1108,7 +1108,7 @@ export default function App() {
         {isAuthModalOpen && (
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsAuthModalOpen(false)} className="fixed inset-0 bg-black/60 backdrop-blur-md z-[250]" />
-            <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-slate-950 z-[260] shadow-2xl rounded-[3rem] overflow-hidden p-10 border border-slate-100 dark:border-slate-800">
+            <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="fixed inset-3 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-md bg-white dark:bg-slate-950 z-[260] shadow-2xl rounded-2xl sm:rounded-[3rem] overflow-hidden p-6 sm:p-10 border border-slate-100 dark:border-slate-800 max-h-[calc(100vh-1.5rem)] overflow-y-auto">
               <button onClick={() => setIsAuthModalOpen(false)} className="absolute top-6 right-6 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"><X size={24} /></button>
               
               <div className="space-y-8">
@@ -1199,67 +1199,67 @@ export default function App() {
         {quickViewProduct && (
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setQuickViewProduct(null)} className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100]" />
-            <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl bg-white dark:bg-slate-950 z-[110] shadow-2xl rounded-2xl overflow-hidden flex flex-col md:flex-row">
-              <button onClick={() => setQuickViewProduct(null)} className="absolute top-4 right-4 p-2 bg-white/80 dark:bg-slate-900/80 rounded-full z-10"><X size={24} /></button>
-              <div className="w-full md:w-1/2 aspect-square bg-slate-100 dark:bg-slate-900">
+            <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="fixed inset-4 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-4xl bg-white dark:bg-slate-950 z-[110] shadow-2xl rounded-2xl overflow-hidden flex flex-col md:flex-row max-h-[calc(100vh-2rem)] sm:max-h-[90vh]">
+              <button onClick={() => setQuickViewProduct(null)} className="absolute top-3 right-3 sm:top-4 sm:right-4 p-1.5 sm:p-2 bg-white/80 dark:bg-slate-900/80 rounded-full z-10"><X size={20} className="sm:hidden" /><X size={24} className="hidden sm:block" /></button>
+              <div className="w-full md:w-1/2 aspect-[4/3] sm:aspect-square bg-slate-100 dark:bg-slate-900 shrink-0">
                 <img src={quickViewProduct.image} alt={quickViewProduct.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               </div>
-              <div className="w-full md:w-1/2 p-12 flex flex-col justify-center space-y-6">
-                <span className="text-xs font-bold uppercase tracking-widest text-blue-600">{quickViewProduct.brand}</span>
-                <h2 className="text-3xl font-display font-bold">{quickViewProduct.name}</h2>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white">{quickViewProduct.price.toLocaleString('tr-TR')} TL</p>
-                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-3">{quickViewProduct.description}</p>
+              <div className="w-full md:w-1/2 p-5 sm:p-8 md:p-12 flex flex-col justify-start md:justify-center space-y-4 sm:space-y-6 overflow-y-auto">
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-blue-600">{quickViewProduct.brand}</span>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold">{quickViewProduct.name}</h2>
+                <p className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">{quickViewProduct.price.toLocaleString('tr-TR')} TL</p>
+                <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed line-clamp-3">{quickViewProduct.description}</p>
                 
                 {/* Mağaza Stok Durumu */}
-                <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4">
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Mağaza Durumu</h4>
+                <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-3 sm:p-4">
+                  <h4 className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 sm:mb-3">Mağaza Durumu</h4>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <MapPin size={14} className="text-blue-600" />
-                        <span className="text-sm text-slate-600 dark:text-slate-300">Antalya / Merkez</span>
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <MapPin size={12} className="text-blue-600" />
+                        <span className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">Antalya / Merkez</span>
                       </div>
                       {STORE_AVAILABILITY[quickViewProduct.id]?.antalya ? (
-                        <span className="text-xs font-bold text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">Stokta</span>
+                        <span className="text-[10px] sm:text-xs font-bold text-green-600 bg-green-50 dark:bg-green-900/30 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">Stokta</span>
                       ) : (
-                        <span className="text-xs font-bold text-red-500 bg-red-50 dark:bg-red-900/30 px-2 py-1 rounded-full">Stokta Yok</span>
+                        <span className="text-[10px] sm:text-xs font-bold text-red-500 bg-red-50 dark:bg-red-900/30 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">Stokta Yok</span>
                       )}
                     </div>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <MapPin size={14} className="text-blue-600" />
-                        <span className="text-sm text-slate-600 dark:text-slate-300">Nevşehir / Merkez</span>
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <MapPin size={12} className="text-blue-600" />
+                        <span className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">Nevşehir / Merkez</span>
                       </div>
                       {STORE_AVAILABILITY[quickViewProduct.id]?.nevsehir ? (
-                        <span className="text-xs font-bold text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">Stokta</span>
+                        <span className="text-[10px] sm:text-xs font-bold text-green-600 bg-green-50 dark:bg-green-900/30 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">Stokta</span>
                       ) : (
-                        <span className="text-xs font-bold text-red-500 bg-red-50 dark:bg-red-900/30 px-2 py-1 rounded-full">Stokta Yok</span>
+                        <span className="text-[10px] sm:text-xs font-bold text-red-500 bg-red-50 dark:bg-red-900/30 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">Stokta Yok</span>
                       )}
                     </div>
                   </div>
                 </div>
                 
-                <div className="flex gap-4">
-                  <button onClick={() => { addToCart(quickViewProduct); setQuickViewProduct(null); }} className="btn-primary flex-1">Sepete Ekle</button>
-                  <button onClick={() => { navigateToProduct(quickViewProduct); setQuickViewProduct(null); }} className="btn-outline flex-1">Detaylar</button>
+                <div className="flex gap-2 sm:gap-4">
+                  <button onClick={() => { addToCart(quickViewProduct); setQuickViewProduct(null); }} className="btn-primary flex-1 text-xs sm:text-sm py-3 sm:py-4">Sepete Ekle</button>
+                  <button onClick={() => { navigateToProduct(quickViewProduct); setQuickViewProduct(null); }} className="btn-outline flex-1 text-xs sm:text-sm py-3 sm:py-4">Detaylar</button>
                 </div>
 
                 {/* Önerilen Ürünler */}
                 {suggestedProducts.length > 0 && (
-                  <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
-                    <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Bu ürünü alanlar bunları da aldı</h4>
-                    <div className="flex gap-3">
+                  <div className="pt-3 sm:pt-4 border-t border-slate-200 dark:border-slate-800">
+                    <h4 className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 sm:mb-3">Bu ürünü alanlar bunları da aldı</h4>
+                    <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-1">
                       {suggestedProducts.map(sp => (
                         <button
                           key={sp.id}
                           onClick={() => {
                             setQuickViewProduct(sp);
                           }}
-                          className="flex-1 group/suggest bg-slate-50 dark:bg-slate-900 rounded-xl p-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-left"
+                          className="flex-shrink-0 w-20 sm:w-auto sm:flex-1 group/suggest bg-slate-50 dark:bg-slate-900 rounded-lg sm:rounded-xl p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-left"
                         >
-                          <img src={sp.image} alt={sp.name} className="w-full aspect-square object-cover rounded-lg mb-2" referrerPolicy="no-referrer" />
-                          <p className="text-[10px] font-bold text-slate-800 dark:text-white line-clamp-1 group-hover/suggest:text-blue-600 transition-colors">{sp.name}</p>
-                          <p className="text-[10px] font-bold text-blue-600">{sp.price.toLocaleString('tr-TR')} TL</p>
+                          <img src={sp.image} alt={sp.name} className="w-full aspect-square object-cover rounded-md sm:rounded-lg mb-1 sm:mb-2" referrerPolicy="no-referrer" />
+                          <p className="text-[9px] sm:text-[10px] font-bold text-slate-800 dark:text-white line-clamp-1 group-hover/suggest:text-blue-600 transition-colors">{sp.name}</p>
+                          <p className="text-[9px] sm:text-[10px] font-bold text-blue-600">{sp.price.toLocaleString('tr-TR')} TL</p>
                         </button>
                       ))}
                     </div>

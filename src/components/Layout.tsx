@@ -148,14 +148,14 @@ export default function Layout({
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
       {/* --- Header --- */}
       <header className="fixed top-0 left-0 right-0 z-50 glass-nav">
-        <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button onClick={() => setIsNavSidebarOpen(true)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-              <Menu size={24} className="text-slate-700 dark:text-slate-200" />
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 h-16 sm:h-20 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <button onClick={() => setIsNavSidebarOpen(true)} className="p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+              <Menu size={22} className="text-slate-700 dark:text-slate-200" />
             </button>
             <h1 
               onClick={() => onNavigate('home')}
-              className="text-2xl font-display font-bold tracking-tighter text-blue-600 cursor-pointer"
+              className="text-lg sm:text-2xl font-display font-bold tracking-tighter text-blue-600 cursor-pointer"
             >
               GÜZEL TEKNOLOJİ
             </h1>
@@ -359,7 +359,7 @@ export default function Layout({
 
       {/* --- Kullanıcı Bilgi Barı (Giriş yapılmışsa) --- */}
       {user && (
-        <div className="fixed top-20 left-0 right-0 z-30">
+        <div className="fixed top-16 sm:top-20 left-0 right-0 z-30">
           {/* Kapalı Hali - Sadece İsim */}
           {!isUserBarOpen && (
             <button
@@ -475,13 +475,13 @@ export default function Layout({
             />
             <motion.div 
               initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
-              className="fixed top-0 left-0 bottom-0 w-[340px] bg-white dark:bg-slate-950 z-[110] shadow-2xl flex flex-col overflow-hidden"
+              className="fixed top-0 left-0 bottom-0 w-[85vw] max-w-[340px] bg-white dark:bg-slate-950 z-[110] shadow-2xl flex flex-col overflow-hidden"
             >
               {/* Header */}
-              <div className="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800">
-                <h2 className="text-xl font-display font-bold text-blue-600">MENÜ</h2>
+              <div className="flex justify-between items-center p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800">
+                <h2 className="text-lg sm:text-xl font-display font-bold text-blue-600">MENÜ</h2>
                 <button onClick={() => setIsNavSidebarOpen(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors text-slate-900 dark:text-white">
-                  <X size={24} />
+                  <X size={22} />
                 </button>
               </div>
               
@@ -592,30 +592,30 @@ export default function Layout({
       </AnimatePresence>
 
       {/* --- Main Content --- */}
-      <main className={`flex-1 transition-all duration-300 ${user && isUserBarOpen ? 'pt-44' : 'pt-20'}`}>
+      <main className={`flex-1 transition-all duration-300 ${user && isUserBarOpen ? 'pt-36 sm:pt-44' : 'pt-16 sm:pt-20'}`}>
         {children}
       </main>
 
       {/* --- Footer --- */}
       <footer className="bg-white dark:bg-slate-900 border-t border-slate-200/50 dark:border-slate-800/50 transition-colors duration-500">
-        <div className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-4 gap-12 text-slate-800 dark:text-white">
-          <div>
-            <h4 className="font-display font-bold mb-6">İletişim Bilgileri</h4>
-            <ul className="space-y-4 text-sm text-slate-500 dark:text-slate-400">
-              <li className="flex items-start gap-3"><MapPin size={18} className="text-blue-600 shrink-0" /> Teknoloji Cad. No:123, İstanbul</li>
-              <li className="flex items-center gap-3"><Phone size={18} className="text-blue-600 shrink-0" /> 0850 123 45 67</li>
-              <li className="flex items-center gap-3"><Mail size={18} className="text-blue-600 shrink-0" /> destek@guzelteknoloji.com</li>
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-8 sm:py-16 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-12 text-slate-800 dark:text-white">
+          <div className="col-span-2 md:col-span-1">
+            <h4 className="font-display font-bold text-sm sm:text-base mb-4 sm:mb-6">İletişim Bilgileri</h4>
+            <ul className="space-y-3 sm:space-y-4 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+              <li className="flex items-start gap-2 sm:gap-3"><MapPin size={16} className="text-blue-600 shrink-0 mt-0.5" /> Teknoloji Cad. No:123, İstanbul</li>
+              <li className="flex items-center gap-2 sm:gap-3"><Phone size={16} className="text-blue-600 shrink-0" /> 0850 123 45 67</li>
+              <li className="flex items-center gap-2 sm:gap-3"><Mail size={16} className="text-blue-600 shrink-0" /> destek@guzelteknoloji.com</li>
             </ul>
-            <div className="flex gap-4 mt-6">
-              <Instagram size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
-              <Twitter size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
-              <Facebook size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
-              <Youtube size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
+            <div className="flex gap-3 sm:gap-4 mt-4 sm:mt-6">
+              <Instagram size={18} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
+              <Twitter size={18} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
+              <Facebook size={18} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
+              <Youtube size={18} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
             </div>
           </div>
           <div>
-            <h4 className="font-display font-bold mb-6">Sık Kullanılanlar</h4>
-            <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+            <h4 className="font-display font-bold text-sm sm:text-base mb-4 sm:mb-6">Sık Kullanılanlar</h4>
+            <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
               <li className="hover:text-blue-600 cursor-pointer transition-colors">Yeni Gelenler</li>
               <li className="hover:text-blue-600 cursor-pointer transition-colors">Çok Satanlar</li>
               <li className="hover:text-blue-600 cursor-pointer transition-colors">Kampanyalar</li>
@@ -623,8 +623,8 @@ export default function Layout({
             </ul>
           </div>
           <div>
-            <h4 className="font-display font-bold mb-6">Sözleşmeler</h4>
-            <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+            <h4 className="font-display font-bold text-sm sm:text-base mb-4 sm:mb-6">Sözleşmeler</h4>
+            <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
               <li className="hover:text-blue-600 cursor-pointer transition-colors">Mesafeli Satış Sözleşmesi</li>
               <li className="hover:text-blue-600 cursor-pointer transition-colors">İptal ve İade Koşulları</li>
               <li className="hover:text-blue-600 cursor-pointer transition-colors">Gizlilik Politikası</li>
@@ -632,8 +632,8 @@ export default function Layout({
             </ul>
           </div>
           <div>
-            <h4 className="font-display font-bold mb-6">Bilgi/İletişim</h4>
-            <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+            <h4 className="font-display font-bold text-sm sm:text-base mb-4 sm:mb-6">Bilgi/İletişim</h4>
+            <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
               <li onClick={() => onNavigate('hakkimizda')} className="hover:text-blue-600 cursor-pointer transition-colors">Hakkımızda</li>
               <li className="hover:text-blue-600 cursor-pointer transition-colors">Mağazalarımız</li>
               <li className="hover:text-blue-600 cursor-pointer transition-colors">Kariyer</li>
@@ -643,53 +643,53 @@ export default function Layout({
         </div>
 
         {/* SATIŞ PLATFORMLARIMIZ Bantı */}
-        <div className="bg-slate-100/50 dark:bg-slate-800/50 py-8 transition-colors duration-500">
-          <div className="max-w-7xl mx-auto px-4">
-            <h5 className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 mb-6">SATIŞ PLATFORMLARIMIZ</h5>
-            <div className="flex flex-wrap justify-center items-center gap-4">
+        <div className="bg-slate-100/50 dark:bg-slate-800/50 py-6 sm:py-8 transition-colors duration-500">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4">
+            <h5 className="text-center text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-slate-500 dark:text-slate-400 mb-4 sm:mb-6">SATIŞ PLATFORMLARIMIZ</h5>
+            <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4">
               {/* Hepsiburada */}
-              <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-orange-400 hover:shadow-lg hover:shadow-orange-500/10 transition-all cursor-pointer group">
-                <div className="w-7 h-7 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white font-black text-xs">H</div>
-                <span className="font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-orange-500 transition-colors">Hepsiburada</span>
+              <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 bg-white dark:bg-slate-900 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-700 hover:border-orange-400 hover:shadow-lg hover:shadow-orange-500/10 transition-all cursor-pointer group">
+                <div className="w-5 h-5 sm:w-7 sm:h-7 bg-gradient-to-br from-orange-500 to-orange-600 rounded-md sm:rounded-lg flex items-center justify-center text-white font-black text-[10px] sm:text-xs">H</div>
+                <span className="font-bold text-[10px] sm:text-sm text-slate-700 dark:text-slate-300 group-hover:text-orange-500 transition-colors">Hepsiburada</span>
               </div>
               
               {/* Trendyol */}
-              <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-orange-500 hover:shadow-lg hover:shadow-orange-500/10 transition-all cursor-pointer group">
-                <div className="w-7 h-7 bg-gradient-to-br from-orange-600 to-red-500 rounded-lg flex items-center justify-center text-white font-black text-xs">T</div>
-                <span className="font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-orange-600 transition-colors">Trendyol</span>
+              <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 bg-white dark:bg-slate-900 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-700 hover:border-orange-500 hover:shadow-lg hover:shadow-orange-500/10 transition-all cursor-pointer group">
+                <div className="w-5 h-5 sm:w-7 sm:h-7 bg-gradient-to-br from-orange-600 to-red-500 rounded-md sm:rounded-lg flex items-center justify-center text-white font-black text-[10px] sm:text-xs">T</div>
+                <span className="font-bold text-[10px] sm:text-sm text-slate-700 dark:text-slate-300 group-hover:text-orange-600 transition-colors">Trendyol</span>
               </div>
               
               {/* N11 */}
-              <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/10 transition-all cursor-pointer group">
-                <div className="w-7 h-7 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center text-white font-black text-[10px]">N11</div>
-                <span className="font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-purple-600 transition-colors">N11</span>
+              <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 bg-white dark:bg-slate-900 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-700 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/10 transition-all cursor-pointer group">
+                <div className="w-5 h-5 sm:w-7 sm:h-7 bg-gradient-to-br from-purple-600 to-purple-700 rounded-md sm:rounded-lg flex items-center justify-center text-white font-black text-[8px] sm:text-[10px]">N11</div>
+                <span className="font-bold text-[10px] sm:text-sm text-slate-700 dark:text-slate-300 group-hover:text-purple-600 transition-colors">N11</span>
               </div>
               
               {/* Amazon */}
-              <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-500 hover:shadow-lg hover:shadow-amber-500/10 transition-all cursor-pointer group">
-                <div className="w-7 h-7 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center text-amber-400 font-black text-xs">a</div>
-                <span className="font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-amber-600 transition-colors">Amazon</span>
+              <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 bg-white dark:bg-slate-900 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-500 hover:shadow-lg hover:shadow-amber-500/10 transition-all cursor-pointer group">
+                <div className="w-5 h-5 sm:w-7 sm:h-7 bg-gradient-to-br from-slate-800 to-slate-900 rounded-md sm:rounded-lg flex items-center justify-center text-amber-400 font-black text-[10px] sm:text-xs">a</div>
+                <span className="font-bold text-[10px] sm:text-sm text-slate-700 dark:text-slate-300 group-hover:text-amber-600 transition-colors">Amazon</span>
               </div>
               
               {/* Çiçeksepeti */}
-              <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-pink-500 hover:shadow-lg hover:shadow-pink-500/10 transition-all cursor-pointer group">
-                <div className="w-7 h-7 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg flex items-center justify-center text-white text-sm">🌸</div>
-                <span className="font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-pink-500 transition-colors">Çiçeksepeti</span>
+              <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 bg-white dark:bg-slate-900 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-700 hover:border-pink-500 hover:shadow-lg hover:shadow-pink-500/10 transition-all cursor-pointer group">
+                <div className="w-5 h-5 sm:w-7 sm:h-7 bg-gradient-to-br from-pink-500 to-rose-500 rounded-md sm:rounded-lg flex items-center justify-center text-white text-xs sm:text-sm">🌸</div>
+                <span className="font-bold text-[10px] sm:text-sm text-slate-700 dark:text-slate-300 group-hover:text-pink-500 transition-colors">Çiçeksepeti</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Banka Hesapları Bölümü (Gradyanlı) */}
-        <div className="footer-gradient py-10 text-white">
-          <div className="max-w-7xl mx-auto px-4">
-            <h5 className="text-center text-sm font-bold uppercase tracking-widest mb-8">Banka Hesaplarımız</h5>
-            <div className="flex flex-wrap justify-center gap-4">
+        <div className="footer-gradient py-6 sm:py-10 text-white">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4">
+            <h5 className="text-center text-xs sm:text-sm font-bold uppercase tracking-widest mb-4 sm:mb-8">Banka Hesaplarımız</h5>
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
               {['QNB Finansbank', 'Garanti BBVA', 'Akbank', 'İş Bankası', 'Ziraat Bankası'].map(bank => (
                 <button 
                   key={bank} 
                   onClick={() => setSelectedBank(bank)}
-                  className="px-8 py-3 bg-white/10 hover:bg-white/20 rounded-full text-xs font-bold transition-all border border-white/20 backdrop-blur-sm"
+                  className="px-4 sm:px-8 py-2 sm:py-3 bg-white/10 hover:bg-white/20 rounded-full text-[10px] sm:text-xs font-bold transition-all border border-white/20 backdrop-blur-sm"
                 >
                   {bank}
                 </button>
@@ -699,15 +699,19 @@ export default function Layout({
         </div>
 
         {/* Alt Bilgi */}
-        <div className="bg-white dark:bg-slate-900 py-8 border-t border-slate-200/50 dark:border-slate-800/50 transition-colors duration-500">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">© 2024 GÜZEL TEKNOLOJİ. TÜM HAKLARI SAKLIDIR.</p>
-            <div className="flex gap-4">
-              <button className="flex items-center gap-2 px-5 py-2.5 bg-black text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-all shadow-lg">
-                <Smartphone size={16} /> App Store
+        <div className="bg-white dark:bg-slate-900 py-6 sm:py-8 border-t border-slate-200/50 dark:border-slate-800/50 transition-colors duration-500">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6">
+            <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium text-center md:text-left">© 2024 GÜZEL TEKNOLOJİ. TÜM HAKLARI SAKLIDIR.</p>
+            <div className="flex gap-2 sm:gap-4">
+              <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 bg-black text-white rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold hover:bg-slate-900 transition-all shadow-lg">
+                <Smartphone size={14} className="sm:hidden" />
+                <Smartphone size={16} className="hidden sm:block" />
+                App Store
               </button>
-              <button className="flex items-center gap-2 px-5 py-2.5 bg-black text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-all shadow-lg">
-                <CreditCard size={16} /> Google Play
+              <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 bg-black text-white rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold hover:bg-slate-900 transition-all shadow-lg">
+                <CreditCard size={14} className="sm:hidden" />
+                <CreditCard size={16} className="hidden sm:block" />
+                Google Play
               </button>
             </div>
           </div>
@@ -729,7 +733,7 @@ export default function Layout({
               initial={{ opacity: 0, y: -20 }} 
               animate={{ opacity: 1, y: 0 }} 
               exit={{ opacity: 0, y: -20 }}
-              className="fixed top-24 left-1/2 -translate-x-1/2 w-full max-w-xl bg-white dark:bg-slate-900 z-[310] shadow-2xl rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800"
+              className="fixed top-20 sm:top-24 left-2 right-2 sm:left-1/2 sm:-translate-x-1/2 sm:w-full sm:max-w-xl bg-white dark:bg-slate-900 z-[310] shadow-2xl rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800"
             >
               {/* Search Input */}
               <div className="relative border-b border-slate-100 dark:border-slate-800">
@@ -830,11 +834,11 @@ export default function Layout({
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white dark:bg-slate-950 z-[160] shadow-2xl flex flex-col"
             >
-              <div className="p-6 border-b border-slate-100 dark:border-slate-900 flex justify-between items-center">
-                <h2 className="text-xl font-display font-bold text-slate-900 dark:text-white">Sepetim ({cartCount})</h2>
-                <button onClick={() => setIsCartOpen(false)} className="text-slate-900 dark:text-white"><X size={24} /></button>
+              <div className="p-4 sm:p-6 border-b border-slate-100 dark:border-slate-900 flex justify-between items-center">
+                <h2 className="text-lg sm:text-xl font-display font-bold text-slate-900 dark:text-white">Sepetim ({cartCount})</h2>
+                <button onClick={() => setIsCartOpen(false)} className="text-slate-900 dark:text-white"><X size={22} /></button>
               </div>
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
                 {cart.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-slate-400">
                     <ShoppingBag size={64} className="mb-4 opacity-20" />
@@ -859,7 +863,7 @@ export default function Layout({
                 )}
               </div>
               {cart.length > 0 && (
-                <div className="p-6 border-t border-slate-100 dark:border-slate-900 space-y-3">
+                <div className="p-4 sm:p-6 border-t border-slate-100 dark:border-slate-900 space-y-3">
                   <div className="flex justify-between font-bold text-slate-900 dark:text-white">
                     <span>Toplam</span>
                     <span>{cartTotal.toLocaleString('tr-TR')} TL</span>
@@ -901,7 +905,7 @@ export default function Layout({
               initial={{ opacity: 0, scale: 0.9, y: 20 }} 
               animate={{ opacity: 1, scale: 1, y: 0 }} 
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-white dark:bg-slate-900 z-[210] shadow-2xl rounded-2xl p-6 border border-slate-100 dark:border-slate-800"
+              className="fixed inset-3 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-sm bg-white dark:bg-slate-900 z-[210] shadow-2xl rounded-2xl p-5 sm:p-6 border border-slate-100 dark:border-slate-800 flex flex-col justify-center"
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white">Sepeti Kaydet</h3>
@@ -977,13 +981,13 @@ export default function Layout({
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white dark:bg-slate-950 z-[160] shadow-2xl flex flex-col"
             >
-              <div className="p-6 border-b border-slate-100 dark:border-slate-900 flex justify-between items-center">
-                <h2 className="text-xl font-display font-bold text-red-500 flex items-center gap-2">
-                  <Heart size={24} fill="currentColor" /> Favorilerim ({favCount})
+              <div className="p-4 sm:p-6 border-b border-slate-100 dark:border-slate-900 flex justify-between items-center">
+                <h2 className="text-lg sm:text-xl font-display font-bold text-red-500 flex items-center gap-2">
+                  <Heart size={20} fill="currentColor" className="sm:hidden" /><Heart size={24} fill="currentColor" className="hidden sm:block" /> Favorilerim ({favCount})
                 </h2>
-                <button onClick={() => setIsFavOpen(false)} className="text-slate-900 dark:text-white"><X size={24} /></button>
+                <button onClick={() => setIsFavOpen(false)} className="text-slate-900 dark:text-white"><X size={22} /></button>
               </div>
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
                 {favorites.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-slate-400">
                     <Heart size={64} className="mb-4 opacity-20" />
@@ -1034,18 +1038,18 @@ export default function Layout({
             />
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-slate-900 z-[210] shadow-2xl rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800"
+              className="fixed inset-4 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-md bg-white dark:bg-slate-900 z-[210] shadow-2xl rounded-2xl sm:rounded-[2.5rem] p-6 sm:p-10 border border-slate-100 dark:border-slate-800 overflow-y-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] flex flex-col justify-center"
             >
-              <div className="flex justify-between items-center mb-8">
+              <div className="flex justify-between items-center mb-5 sm:mb-8">
                 <div className="space-y-1">
-                  <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white">{selectedBank}</h3>
-                  <p className="text-xs font-bold text-blue-600 uppercase tracking-widest">Hesap Bilgileri</p>
+                  <h3 className="text-xl sm:text-2xl font-display font-bold text-slate-900 dark:text-white">{selectedBank}</h3>
+                  <p className="text-[10px] sm:text-xs font-bold text-blue-600 uppercase tracking-widest">Hesap Bilgileri</p>
                 </div>
-                <button onClick={() => setSelectedBank(null)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"><X size={24} /></button>
+                <button onClick={() => setSelectedBank(null)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"><X size={22} /></button>
               </div>
 
-              <div className="space-y-6">
-                <div className="p-6 bg-slate-50 dark:bg-slate-950 rounded-3xl border border-slate-100 dark:border-slate-800 space-y-4">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="p-4 sm:p-6 bg-slate-50 dark:bg-slate-950 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-800 space-y-3 sm:space-y-4">
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Alıcı Adı</label>
                     <p className="font-bold text-slate-900 dark:text-white">ERCAN GÜZEL</p>
@@ -1053,7 +1057,7 @@ export default function Layout({
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">IBAN</label>
                     <div className="flex items-center justify-between gap-4">
-                      <p className="font-mono text-sm font-bold text-blue-600 break-all">TR00 0000 0000 0000 0000 0000 00</p>
+                      <p className="font-mono text-xs sm:text-sm font-bold text-blue-600 break-all">TR00 0000 0000 0000 0000 0000 00</p>
                       <button 
                         onClick={() => copyToClipboard('TR00 0000 0000 0000 0000 0000 00')}
                         className="p-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all shrink-0"
@@ -1064,7 +1068,7 @@ export default function Layout({
                   </div>
                 </div>
                 <p className="text-xs text-slate-400 text-center leading-relaxed">Ödeme yaparken açıklama kısmına sipariş numaranızı yazmayı unutmayınız.</p>
-                <button onClick={() => setSelectedBank(null)} className="btn-primary w-full py-5">Kapat</button>
+                <button onClick={() => setSelectedBank(null)} className="btn-primary w-full py-4 sm:py-5">Kapat</button>
               </div>
             </motion.div>
           </>
@@ -1076,7 +1080,7 @@ export default function Layout({
         href="https://wa.me/905001234567?text=Merhaba,%20ürünleriniz%20hakkında%20bilgi%20almak%20istiyorum."
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 left-6 z-50 group"
+        className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 group"
       >
         <motion.div
           initial={{ scale: 0 }}
@@ -1085,8 +1089,9 @@ export default function Layout({
           whileTap={{ scale: 0.95 }}
           className="relative"
         >
-          <div className="w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-shadow">
-            <MessageCircle size={26} className="text-white fill-white" />
+          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-shadow">
+            <MessageCircle size={22} className="text-white fill-white sm:hidden" />
+            <MessageCircle size={26} className="text-white fill-white hidden sm:block" />
           </div>
           
           {/* Tooltip */}
