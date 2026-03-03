@@ -61,20 +61,28 @@ npm run dev
 
 ```
 src/
-├── components/          # Yeniden kullanılabilir bileşenler
-│   ├── HeroSlider.tsx   # Ana sayfa slider
-│   ├── Layout.tsx       # Sayfa düzeni
-│   └── ProductCard.tsx  # Ürün kartı
-├── pages/               # Sayfa bileşenleri
-│   ├── Home.tsx         # Ana sayfa
-│   ├── ProductDetail.tsx # Ürün detay
-│   ├── Checkout.tsx     # Ödeme sayfası
-│   ├── Brands.tsx       # Markalar
-│   └── FAQ.tsx          # Sıkça sorulan sorular
-├── App.tsx              # Ana uygulama
-├── constants.ts         # Sabit veriler
-├── types.ts             # TypeScript tipleri
-└── index.css            # Global stiller
+├── components/            # Yeniden kullanılabilir bileşenler
+│   ├── ErrorBoundary.tsx  # Hata yakalama
+│   ├── HeroSlider.tsx     # Ana sayfa slider
+│   ├── Layout.tsx         # Sayfa düzeni, header, footer, drawer'lar
+│   ├── LiveChat.tsx       # Canlı destek widget'ı
+│   └── ProductCard.tsx    # Ürün kartı
+├── pages/                 # Sayfa bileşenleri
+│   ├── About.tsx          # Hakkımızda
+│   ├── Brands.tsx         # Markalar
+│   ├── Checkout.tsx       # Ödeme sayfası
+│   ├── Comparison.tsx     # Ürün karşılaştırma
+│   ├── Contact.tsx        # İletişim
+│   ├── FAQ.tsx            # Sıkça sorulan sorular
+│   ├── Home.tsx           # Ana sayfa
+│   ├── MyAccount.tsx      # Hesabım
+│   ├── NotFound.tsx       # 404 sayfası
+│   ├── ProductDetail.tsx  # Ürün detay
+│   └── Profile.tsx        # Profil sayfası
+├── App.tsx                # Ana uygulama & state yönetimi
+├── constants.ts           # Sabit veriler & ürün kataloğu
+├── types.ts               # TypeScript tipleri
+└── index.css              # Global stiller
 ```
 
 ---
@@ -140,17 +148,141 @@ npm run dev
 
 ### 📸 Screenshots / Ekran Görüntüleri
 
-#### 🏠 Ana Sayfa / Home Page
-<img src="screenshots/home.png" width="800" alt="Ana Sayfa">
+<details>
+<summary><strong>🏠 Ana Sayfa / Home Page</strong></summary>
+<br>
 
-#### 🛍️ Ürün Detay / Product Detail
-<img src="screenshots/product-detail.png" width="800" alt="Ürün Detay">
+| Hero Slider | Filtre Çubuğu |
+|:-----------:|:-------------:|
+| <img src="screenshots/01-hero-slider.png" width="400"> | <img src="screenshots/02-filtre-cubugu.png" width="400"> |
 
-#### 🛒 Sepet / Cart
-<img src="screenshots/cart.png" width="800" alt="Sepet">
+| Filtre Sidebar | Ürün Grid |
+|:--------------:|:---------:|
+| <img src="screenshots/03-filtre-sidebar.png" width="400"> | <img src="screenshots/04-urun-grid.png" width="400"> |
 
-#### 🌙 Karşılaştırma Modu
-<img src="screenshots/km.png" width="800" alt="Karşılaştırma Modu">
+</details>
+
+<details>
+<summary><strong>🛍️ Ürün Detay / Product Detail</strong></summary>
+<br>
+
+| Ürün Detay Üst | Hızlı Önizleme |
+|:--------------:|:---------------:|
+| <img src="screenshots/05-urun-detay-ust.png" width="400"> | <img src="screenshots/05-urun-h%C4%B1zl%C4%B1-detay.png" width="400"> |
+
+| Varyantlar | Güven Rozetleri |
+|:----------:|:---------------:|
+| <img src="screenshots/06-varyantlar.png" width="400"> | <img src="screenshots/07-guven-rozetleri.png" width="400"> |
+
+| Teknik Özellikler | Taksit Tablosu |
+|:-----------------:|:--------------:|
+| <img src="screenshots/08-teknik-ozellikler.png" width="400"> | <img src="screenshots/09-taksit-tablosu.png" width="400"> |
+
+| Fiyat Grafiği | Fiyat Alarmı |
+|:-------------:|:------------:|
+| <img src="screenshots/10-fiyat-grafigi.png" width="400"> | <img src="screenshots/11-fiyat-alarmi.png" width="400"> |
+
+</details>
+
+<details>
+<summary><strong>💳 Ödeme / Checkout</strong></summary>
+<br>
+
+| Adım 1 - Bilgiler | Kart Bilgileri |
+|:------------------:|:--------------:|
+| <img src="screenshots/12-checkout-adim1.png" width="400"> | <img src="screenshots/13-checkout-kart.png" width="400"> |
+
+| Taksit Seçimi | Sipariş Onayı |
+|:-------------:|:-------------:|
+| <img src="screenshots/14-checkout-taksit.png" width="400"> | <img src="screenshots/15-checkout-onay.png" width="400"> |
+
+| Sipariş Özeti | Sipariş Detayı |
+|:-------------:|:--------------:|
+| <img src="screenshots/16-siparis-ozeti.png" width="400"> | <img src="screenshots/16-siparis-detay%C4%B1.png" width="400"> |
+
+</details>
+
+<details>
+<summary><strong>👤 Profil / Profile</strong></summary>
+<br>
+
+| Profil Menü | Profil Düzenle |
+|:-----------:|:--------------:|
+| <img src="screenshots/17-profil-menu.png" width="400"> | <img src="screenshots/18-profil-duzenle.png" width="400"> |
+
+| Hesap Hareketleri | Adreslerim |
+|:-----------------:|:----------:|
+| <img src="screenshots/19-hesap-hareketleri.png" width="400"> | <img src="screenshots/20-adreslerim.png" width="400"> |
+
+| Fatura | Siparişlerim |
+|:------:|:------------:|
+| <img src="screenshots/21-fatura.png" width="400"> | <img src="screenshots/22-siparislerim.png" width="400"> |
+
+| Kayıtlı Sepetler | İade & Değişim |
+|:-----------------:|:--------------:|
+| <img src="screenshots/23-kayitli-sepetler.png" width="400"> | <img src="screenshots/24-iade-degisim.png" width="400"> |
+
+| Şifre Değiştir |
+|:--------------:|
+| <img src="screenshots/25-sifre-degistir.png" width="400"> |
+
+</details>
+
+<details>
+<summary><strong>📄 Sayfalar / Pages</strong></summary>
+<br>
+
+| Markalar | SSS |
+|:--------:|:---:|
+| <img src="screenshots/26-markalar.png" width="400"> | <img src="screenshots/27-sss-hero.png" width="400"> |
+
+| İletişim | Hakkımızda |
+|:--------:|:----------:|
+| <img src="screenshots/28-ileti%C5%9Fim-accordion.png" width="400"> | <img src="screenshots/29-hakkimizda.png" width="400"> |
+
+| Hakkımızda 2 | Karşılaştırma |
+|:------------:|:-------------:|
+| <img src="screenshots/29-hakkimizda2.png" width="400"> | <img src="screenshots/31-karsilastirma.png" width="400"> |
+
+</details>
+
+<details>
+<summary><strong>🧩 UI Bileşenleri / Components</strong></summary>
+<br>
+
+| Header Desktop | Header Mobil |
+|:--------------:|:------------:|
+| <img src="screenshots/33-header-desktop.png" width="400"> | <img src="screenshots/34-header-mobil.png" width="400"> |
+
+| Sidebar | Arama |
+|:-------:|:-----:|
+| <img src="screenshots/35-sidebar.png" width="400"> | <img src="screenshots/36-arama.png" width="400"> |
+
+| Sepet | Favoriler |
+|:-----:|:---------:|
+| <img src="screenshots/37-sepet.png" width="400"> | <img src="screenshots/38-favoriler.png" width="400"> |
+
+| Footer | Platformlar |
+|:------:|:-----------:|
+| <img src="screenshots/39-footer.png" width="400"> | <img src="screenshots/40-platformlar.png" width="400"> |
+
+| Banka Kartları | Ürün Kartı |
+|:--------------:|:----------:|
+| <img src="screenshots/41-banka-kartlari.png" width="400"> | <img src="screenshots/42-urun-karti.png" width="400"> |
+
+| Canlı Destek | Auth Modal |
+|:------------:|:----------:|
+| <img src="screenshots/43-canli-destek.png" width="400"> | <img src="screenshots/44-auth-modal.png" width="400"> |
+
+| Toast Bildirimi | Dark Mode |
+|:---------------:|:---------:|
+| <img src="screenshots/46-toast.png" width="400"> | <img src="screenshots/47-dark-mode.png" width="400"> |
+
+| Responsive | Banka Modal |
+|:----------:|:-----------:|
+| <img src="screenshots/48-responsive.png" width="400"> | <img src="screenshots/50-banka-modal.png" width="400"> |
+
+</details>
 
 ---
 
