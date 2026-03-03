@@ -180,7 +180,11 @@ export default function App() {
   const toggleFavorite = (product: Product) => {
     setFavorites(prev => {
       const isFav = prev.find(p => p.id === product.id);
-      if (isFav) return prev.filter(p => p.id !== product.id);
+      if (isFav) {
+        showToast('info', 'Favorilerden Çıkarıldı', `${product.name} favorilerden kaldırıldı.`);
+        return prev.filter(p => p.id !== product.id);
+      }
+      showToast('success', 'Favorilere Eklendi', `${product.name} favorilere eklendi! ❤️`);
       return [...prev, product];
     });
   };
