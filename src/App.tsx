@@ -327,6 +327,7 @@ export default function App() {
             favorites={favorites}
             comparisonList={comparisonList}
             selectedStore={selectedStore}
+            setSelectedStore={setSelectedStore}
             getPriceAlarm={getPriceAlarm}
             onSetPriceAlarm={addPriceAlarm}
             onRemovePriceAlarm={removePriceAlarm}
@@ -355,6 +356,7 @@ export default function App() {
             favorites={favorites}
             comparisonList={comparisonList}
             selectedStore={selectedStore}
+            setSelectedStore={setSelectedStore}
             getPriceAlarm={getPriceAlarm}
             onSetPriceAlarm={addPriceAlarm}
             onRemovePriceAlarm={removePriceAlarm}

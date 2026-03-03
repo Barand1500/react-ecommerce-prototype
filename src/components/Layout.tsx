@@ -681,17 +681,46 @@ export default function Layout({
         </div>
 
         {/* Banka Hesapları Bölümü (Gradyanlı) */}
-        <div className="footer-gradient py-6 sm:py-10 text-white">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4">
-            <h5 className="text-center text-xs sm:text-sm font-bold uppercase tracking-widest mb-4 sm:mb-8">Banka Hesaplarımız</h5>
-            <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
-              {['QNB Finansbank', 'Garanti BBVA', 'Akbank', 'İş Bankası', 'Ziraat Bankası'].map(bank => (
+        <div className="footer-gradient py-8 sm:py-12 md:py-16 text-white relative overflow-hidden">
+          {/* Decorative elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-24 -right-24 w-48 h-48 sm:w-72 sm:h-72 bg-white/5 rounded-full blur-3xl" />
+            <div className="absolute -bottom-24 -left-24 w-48 h-48 sm:w-72 sm:h-72 bg-white/5 rounded-full blur-3xl" />
+            <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+          </div>
+
+          <div className="relative max-w-5xl mx-auto px-3 sm:px-4">
+            {/* Header */}
+            <div className="text-center mb-6 sm:mb-10">
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 mb-3 sm:mb-4">
+                <Wallet size={14} className="text-white/80" />
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white/80">Güvenli Ödeme</span>
+              </div>
+              <h5 className="text-lg sm:text-xl md:text-2xl font-display font-bold">Banka Hesaplarımız</h5>
+              <p className="text-[10px] sm:text-xs text-white/50 mt-1 sm:mt-2">Havale/EFT ile güvenle ödeme yapabilirsiniz</p>
+            </div>
+
+            {/* Bank Cards Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
+              {[
+                { name: 'QNB Finansbank', short: 'QNB', color: 'from-purple-500/20 to-purple-600/20', borderColor: 'border-purple-400/30', hoverBg: 'hover:bg-purple-500/20', logoGradient: 'from-purple-400 to-violet-500' },
+                { name: 'Garanti BBVA', short: 'BBVA', color: 'from-green-500/20 to-emerald-600/20', borderColor: 'border-green-400/30', hoverBg: 'hover:bg-green-500/20', logoGradient: 'from-green-400 to-emerald-500' },
+                { name: 'Akbank', short: 'Akbank', color: 'from-red-400/15 to-rose-500/15', borderColor: 'border-red-300/25', hoverBg: 'hover:bg-red-400/20', logoGradient: 'from-red-400 to-rose-500' },
+                { name: 'İş Bankası', short: 'İşBank', color: 'from-blue-500/20 to-blue-600/20', borderColor: 'border-blue-400/30', hoverBg: 'hover:bg-blue-500/20', logoGradient: 'from-blue-400 to-indigo-500' },
+                { name: 'Ziraat Bankası', short: 'Ziraat', color: 'from-cyan-500/20 to-teal-600/20', borderColor: 'border-cyan-400/30', hoverBg: 'hover:bg-cyan-500/20', logoGradient: 'from-cyan-400 to-teal-500' },
+              ].map((bank) => (
                 <button 
-                  key={bank} 
-                  onClick={() => setSelectedBank(bank)}
-                  className="px-4 sm:px-8 py-2 sm:py-3 bg-white/10 hover:bg-white/20 rounded-full text-[10px] sm:text-xs font-bold transition-all border border-white/20 backdrop-blur-sm"
+                  key={bank.name} 
+                  onClick={() => setSelectedBank(bank.name)}
+                  className={`group relative bg-gradient-to-br ${bank.color} ${bank.hoverBg} backdrop-blur-sm rounded-xl sm:rounded-2xl border ${bank.borderColor} p-3 sm:p-4 md:p-5 transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-white/5`}
                 >
-                  {bank}
+                  <div className="flex flex-col items-center gap-2 sm:gap-3">
+                    <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br ${bank.logoGradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <span className="text-white font-display font-black text-[10px] sm:text-sm tracking-tight">{bank.short}</span>
+                    </div>
+                    <span className="text-[10px] sm:text-xs font-bold text-white/90 text-center leading-tight">{bank.name}</span>
+                  </div>
+                  <div className="absolute inset-0 rounded-xl sm:rounded-2xl bg-white/0 group-hover:bg-white/5 transition-colors" />
                 </button>
               ))}
             </div>
@@ -1038,37 +1067,113 @@ export default function Layout({
             />
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="fixed inset-4 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-md bg-white dark:bg-slate-900 z-[210] shadow-2xl rounded-2xl sm:rounded-[2.5rem] p-6 sm:p-10 border border-slate-100 dark:border-slate-800 overflow-y-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] flex flex-col justify-center"
+              className="fixed inset-3 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-md bg-white dark:bg-slate-900 z-[210] shadow-2xl rounded-2xl sm:rounded-[2.5rem] overflow-hidden overflow-y-auto max-h-[calc(100vh-1.5rem)] sm:max-h-[90vh]"
             >
-              <div className="flex justify-between items-center mb-5 sm:mb-8">
-                <div className="space-y-1">
-                  <h3 className="text-xl sm:text-2xl font-display font-bold text-slate-900 dark:text-white">{selectedBank}</h3>
-                  <p className="text-[10px] sm:text-xs font-bold text-blue-600 uppercase tracking-widest">Hesap Bilgileri</p>
+              {/* Card Header - Bank Brand */}
+              <div className={`relative p-5 sm:p-8 pb-10 sm:pb-12 ${
+                selectedBank === 'QNB Finansbank' ? 'bg-gradient-to-br from-purple-600 via-purple-700 to-violet-800' :
+                selectedBank === 'Garanti BBVA' ? 'bg-gradient-to-br from-green-600 via-green-700 to-emerald-800' :
+                selectedBank === 'Akbank' ? 'bg-gradient-to-br from-red-600 via-red-700 to-rose-800' :
+                selectedBank === 'İş Bankası' ? 'bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800' :
+                'bg-gradient-to-br from-cyan-600 via-teal-700 to-teal-800'
+              }`}>
+                <div className="absolute inset-0 overflow-hidden">
+                  <div className="absolute -top-12 -right-12 w-32 h-32 sm:w-48 sm:h-48 bg-white/10 rounded-full blur-2xl" />
+                  <div className="absolute -bottom-8 -left-8 w-24 h-24 sm:w-36 sm:h-36 bg-white/10 rounded-full blur-2xl" />
+                  <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
                 </div>
-                <button onClick={() => setSelectedBank(null)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"><X size={22} /></button>
-              </div>
-
-              <div className="space-y-4 sm:space-y-6">
-                <div className="p-4 sm:p-6 bg-slate-50 dark:bg-slate-950 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-800 space-y-3 sm:space-y-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Alıcı Adı</label>
-                    <p className="font-bold text-slate-900 dark:text-white">ERCAN GÜZEL</p>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">IBAN</label>
-                    <div className="flex items-center justify-between gap-4">
-                      <p className="font-mono text-xs sm:text-sm font-bold text-blue-600 break-all">TR00 0000 0000 0000 0000 0000 00</p>
-                      <button 
-                        onClick={() => copyToClipboard('TR00 0000 0000 0000 0000 0000 00')}
-                        className="p-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all shrink-0"
-                      >
-                        {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} className="text-slate-400" />}
-                      </button>
+                <div className="relative flex justify-between items-start">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    {/* Bank Logo */}
+                    <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg border border-white/20">
+                      <span className="text-white font-display font-black text-xs sm:text-base tracking-tight">
+                        {selectedBank === 'QNB Finansbank' ? 'QNB' :
+                         selectedBank === 'Garanti BBVA' ? 'BBVA' :
+                         selectedBank === 'Akbank' ? 'Ak' :
+                         selectedBank === 'İş Bankası' ? 'İş' : 'ZB'}
+                      </span>
+                    </div>
+                    <div className="space-y-0.5 sm:space-y-1">
+                      <h3 className="text-base sm:text-xl font-display font-bold text-white">{selectedBank}</h3>
+                      <div className="inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white/15 backdrop-blur-sm">
+                        <CreditCard size={10} className="text-white/80 sm:hidden" /><CreditCard size={12} className="text-white/80 hidden sm:block" />
+                        <span className="text-[8px] sm:text-[10px] font-bold text-white/80 uppercase tracking-wider">Hesap Bilgileri</span>
+                      </div>
                     </div>
                   </div>
+                  <button onClick={() => setSelectedBank(null)} className="p-1.5 sm:p-2 hover:bg-white/20 rounded-full transition-colors text-white/80 hover:text-white">
+                    <X size={18} className="sm:hidden" /><X size={22} className="hidden sm:block" />
+                  </button>
                 </div>
-                <p className="text-xs text-slate-400 text-center leading-relaxed">Ödeme yaparken açıklama kısmına sipariş numaranızı yazmayı unutmayınız.</p>
-                <button onClick={() => setSelectedBank(null)} className="btn-primary w-full py-4 sm:py-5">Kapat</button>
+              </div>
+
+              {/* Content */}
+              <div className="p-5 sm:p-8 -mt-5 sm:-mt-6 relative">
+                {/* Main Info Card */}
+                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm overflow-hidden">
+                  {/* Alıcı Adı */}
+                  <div className="p-3.5 sm:p-5 border-b border-slate-100 dark:border-slate-700/50">
+                    <label className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5 sm:mb-2">
+                      <UserIcon size={12} className="text-slate-300 dark:text-slate-600" />
+                      Alıcı Adı
+                    </label>
+                    <p className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">ERCAN GÜZEL</p>
+                  </div>
+
+                  {/* Şube */}
+                  <div className="p-3.5 sm:p-5 border-b border-slate-100 dark:border-slate-700/50">
+                    <label className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5 sm:mb-2">
+                      <MapPin size={12} className="text-slate-300 dark:text-slate-600" />
+                      Şube
+                    </label>
+                    <p className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Merkez Şube</p>
+                  </div>
+
+                  {/* IBAN */}
+                  <div className="p-3.5 sm:p-5">
+                    <label className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5 sm:mb-2">
+                      <CreditCard size={12} className="text-slate-300 dark:text-slate-600" />
+                      IBAN
+                    </label>
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <p className="font-mono text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 break-all flex-1 leading-relaxed">TR00 0000 0000 0000 0000 0000 00</p>
+                      <button 
+                        onClick={() => copyToClipboard('TR00 0000 0000 0000 0000 0000 00')}
+                        className={`p-2 sm:p-2.5 rounded-lg sm:rounded-xl transition-all shrink-0 ${
+                          copied 
+                            ? 'bg-green-50 dark:bg-green-500/10 text-green-500 shadow-sm shadow-green-500/10' 
+                            : 'bg-white dark:bg-slate-700 text-slate-400 hover:text-blue-600 shadow-sm hover:shadow-md'
+                        }`}
+                      >
+                        {copied ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                    {copied && (
+                      <motion.p 
+                        initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }}
+                        className="text-[10px] sm:text-xs text-green-500 font-medium mt-1.5 sm:mt-2 flex items-center gap-1"
+                      >
+                        <Check size={12} /> IBAN kopyalandı!
+                      </motion.p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Info Note */}
+                <div className="mt-4 sm:mt-5 p-3 sm:p-4 bg-amber-50 dark:bg-amber-500/5 rounded-lg sm:rounded-xl border border-amber-100 dark:border-amber-500/10">
+                  <p className="text-[10px] sm:text-xs text-amber-700 dark:text-amber-400 text-center leading-relaxed flex items-start sm:items-center justify-center gap-1.5 sm:gap-2">
+                    <FileText size={14} className="shrink-0 mt-0.5 sm:mt-0" />
+                    <span>Ödeme yaparken açıklama kısmına <strong>sipariş numaranızı</strong> yazmayı unutmayınız.</span>
+                  </p>
+                </div>
+
+                {/* Close Button */}
+                <button 
+                  onClick={() => setSelectedBank(null)} 
+                  className="mt-4 sm:mt-5 btn-primary w-full py-3.5 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base"
+                >
+                  Kapat
+                </button>
               </div>
             </motion.div>
           </>

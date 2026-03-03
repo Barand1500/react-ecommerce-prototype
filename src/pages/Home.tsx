@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Filter, ChevronDown, Smartphone, Laptop, Headphones, Watch, MousePointer2, Check, X } from 'lucide-react';
+import { Filter, ChevronDown, Smartphone, Laptop, Headphones, Watch, MousePointer2, Check, X, MapPin } from 'lucide-react';
 import { PRODUCTS, STORE_AVAILABILITY } from '../constants';
 import { Product } from '../types';
 import ProductCard from '../components/ProductCard';
@@ -15,6 +15,7 @@ interface HomeProps {
   favorites: Product[];
   comparisonList: Product[];
   selectedStore: string;
+  setSelectedStore: (val: string) => void;
   // Fiyat Alarmı
   getPriceAlarm?: (productId: number) => { targetPrice: number } | undefined;
   onSetPriceAlarm?: (product: Product, targetPrice: number) => void;
@@ -31,7 +32,13 @@ const CATEGORY_ICONS = {
 
 const ITEMS_PER_PAGE = 8;
 
-export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, onToggleFav, onToggleCompare, favorites, comparisonList, selectedStore, getPriceAlarm, onSetPriceAlarm, onRemovePriceAlarm }: HomeProps) {
+const STORES = [
+  { id: 'all', name: 'Tüm Mağazalar', shortName: 'Tümü' },
+  { id: 'antalya', name: 'Antalya / Merkez', shortName: 'Antalya' },
+  { id: 'nevsehir', name: 'Nevşehir / Merkez', shortName: 'Nevşehir' }
+];
+
+export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, onToggleFav, onToggleCompare, favorites, comparisonList, selectedStore, setSelectedStore, getPriceAlarm, onSetPriceAlarm, onRemovePriceAlarm }: HomeProps) {
   const [selectedCategory, setSelectedCategory] = useState('Tümü');
   const [priceRange, setPriceRange] = useState(150000);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -152,6 +159,29 @@ export default function Home({ onAddToCart, onQuickView, onNavigateToProduct, on
   return (
     <div className="space-y-0 pb-20 bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
       <HeroSlider />
+
+      {/* Mobil Mağaza Seçici - Slider Altında */}
+      <div className="sm:hidden bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 px-3 py-2.5 shadow-lg">
+        <div className="flex items-center gap-2">
+          <MapPin size={14} className="text-white/80 shrink-0" />
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar flex-1">
+            {STORES.map(store => (
+              <motion.button
+                key={store.id}
+                onClick={() => setSelectedStore(store.id)}
+                whileTap={{ scale: 0.95 }}
+                className={`px-3 py-1.5 rounded-full text-[11px] font-bold whitespace-nowrap transition-all ${
+                  selectedStore === store.id
+                    ? 'bg-white text-amber-700 shadow-md shadow-orange-900/20'
+                    : 'bg-white/15 text-white/90 hover:bg-white/25'
+                }`}
+              >
+                {store.shortName}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Filter Bar */}
       <div className="sticky top-20 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 py-3 md:py-4 shadow-sm">
