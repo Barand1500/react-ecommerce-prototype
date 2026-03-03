@@ -730,7 +730,7 @@ export default function Layout({
         {/* Alt Bilgi */}
         <div className="bg-white dark:bg-slate-900 py-6 sm:py-8 border-t border-slate-200/50 dark:border-slate-800/50 transition-colors duration-500">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6">
-            <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium text-center md:text-left">© 2024 GÜZEL TEKNOLOJİ. TÜM HAKLARI SAKLIDIR.</p>
+            <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium text-center md:text-left">© 2026 GÜZEL TEKNOLOJİ. TÜM HAKLARI SAKLIDIR.</p>
             <div className="flex gap-2 sm:gap-4">
               <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 bg-black text-white rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold hover:bg-slate-900 transition-all shadow-lg">
                 <Smartphone size={14} className="sm:hidden" />
@@ -1014,7 +1014,31 @@ export default function Layout({
                 <h2 className="text-lg sm:text-xl font-display font-bold text-red-500 flex items-center gap-2">
                   <Heart size={20} fill="currentColor" className="sm:hidden" /><Heart size={24} fill="currentColor" className="hidden sm:block" /> Favorilerim ({favCount})
                 </h2>
-                <button onClick={() => setIsFavOpen(false)} className="text-slate-900 dark:text-white"><X size={22} /></button>
+                <div className="flex items-center gap-2">
+                  {favorites.length > 0 && (
+                    <button
+                      onClick={async () => {
+                        const text = `🛍️ Güzel Teknoloji - Favori Listem\n\n${favorites.map((p, i) => `${i + 1}. ${p.name} — ${p.price.toLocaleString('tr-TR')} TL`).join('\n')}\n\nToplam: ${favorites.length} ürün`;
+                        
+                        if (navigator.share) {
+                          try {
+                            await navigator.share({ title: 'Favori Listem - Güzel Teknoloji', text });
+                          } catch { /* kullanıcı iptal etti */ }
+                        } else {
+                          await navigator.clipboard.writeText(text);
+                          setCopied(true);
+                          setTimeout(() => setCopied(false), 2000);
+                        }
+                      }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-pink-50 dark:bg-pink-900/20 text-pink-600 rounded-lg text-xs font-bold hover:bg-pink-100 dark:hover:bg-pink-900/40 transition-colors"
+                      title="Favori listeni paylaş"
+                    >
+                      {copied ? <Check size={14} /> : <Copy size={14} />}
+                      <span className="hidden sm:inline">{copied ? 'Kopyalandı!' : 'Paylaş'}</span>
+                    </button>
+                  )}
+                  <button onClick={() => setIsFavOpen(false)} className="text-slate-900 dark:text-white"><X size={22} /></button>
+                </div>
               </div>
               <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
                 {favorites.length === 0 ? (
@@ -1023,32 +1047,51 @@ export default function Layout({
                     <p>Henüz favori ürününüz yok.</p>
                   </div>
                 ) : (
-                  favorites.map(item => (
-                    <div key={item.id} className="flex gap-4">
-                      <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-lg" />
-                      <div className="flex-1">
-                        <h4 className="font-medium text-sm text-slate-900 dark:text-white">{item.name}</h4>
-                        <p className="text-blue-600 font-bold text-sm">{item.price.toLocaleString('tr-TR')} TL</p>
-                        <div className="flex items-center gap-3 mt-4">
-                          <button 
-                            onClick={() => {
-                              addToCart(item);
-                              removeFromFav(item.id);
-                            }}
-                            className="text-xs font-bold text-blue-600 hover:underline"
-                          >
-                            Sepete Ekle
-                          </button>
-                          <button 
-                            onClick={() => removeFromFav(item.id)}
-                            className="ml-auto text-slate-400 hover:text-red-500 transition-colors"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                  <>
+                    {favorites.map(item => (
+                      <div key={item.id} className="flex gap-4">
+                        <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-lg" />
+                        <div className="flex-1">
+                          <h4 className="font-medium text-sm text-slate-900 dark:text-white">{item.name}</h4>
+                          <p className="text-blue-600 font-bold text-sm">{item.price.toLocaleString('tr-TR')} TL</p>
+                          <div className="flex items-center gap-3 mt-4">
+                            <button 
+                              onClick={() => {
+                                addToCart(item);
+                                removeFromFav(item.id);
+                              }}
+                              className="text-xs font-bold text-blue-600 hover:underline"
+                            >
+                              Sepete Ekle
+                            </button>
+                            <button 
+                              onClick={() => removeFromFav(item.id)}
+                              className="ml-auto text-slate-400 hover:text-red-500 transition-colors"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
                         </div>
                       </div>
+                    ))}
+                    {/* Toplam + Tümünü Sepete Ekle */}
+                    <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-500">{favorites.length} ürün</span>
+                        <span className="font-bold text-slate-900 dark:text-white">
+                          {favorites.reduce((sum, p) => sum + p.price, 0).toLocaleString('tr-TR')} TL
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          favorites.forEach(p => addToCart(p));
+                        }}
+                        className="w-full py-3 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20"
+                      >
+                        Tümünü Sepete Ekle
+                      </button>
                     </div>
-                  ))
+                  </>
                 )}
               </div>
             </motion.div>
